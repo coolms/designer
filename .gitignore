@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+.vitest-cache/
+
+# Visual regression -- generated fixture bundle + Playwright outputs.
+# Goldens under tests/visual/__snapshots__/ ARE committed (per-platform PNGs);
+# everything else here is per-run state that should never enter source control.
+tests/visual/.compiled/
+test-results/
+playwright-report/
+playwright/.cache/

@@ -1,0 +1,1301 @@
+/*
+ * @coolms/designer — base stylesheet.
+ *
+ * The theme contract is the CSS custom properties listed at `:root` (or
+ * any ancestor of the editor). Consumers re-skin by overriding these
+ * variables; the class names themselves are NOT a stability contract.
+ *
+ * ships the minimal contract — surface backgrounds + a banner
+ * line. Real toolbar / sidebar / palette tokens land with M3.2.d.
+ */
+
+.coolms-designer {
+    /*
+     * Theme variables (public contract).
+     * --------------------------------------------------------------
+     * Override these on the editor host or any ancestor to re-skin.
+     * Naming follows the CoolMS convention `--coolms-designer-*` so
+     * a single root `:root { ... }` block can host tokens for several
+     * coolms-* packages without prefix collisions.
+     */
+    --coolms-designer-surface-bg: #fafafa;
+    --coolms-designer-surface-fg: #1f2937;
+    --coolms-designer-banner-bg: #1f2937;
+    --coolms-designer-banner-fg: #f9fafb;
+    --coolms-designer-banner-pad: 0.5rem 0.75rem;
+    --coolms-designer-font: 13px system-ui, -apple-system, "Segoe UI", sans-serif;
+    --coolms-designer-radius: 4px;
+
+    /*
+     * Internal layout (private — do not override in consumer CSS).
+     */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    overflow: hidden;
+    background: var(--coolms-designer-surface-bg);
+    color: var(--coolms-designer-surface-fg);
+    font: var(--coolms-designer-font);
+    border-radius: var(--coolms-designer-radius);
+}
+
+/*
+ * shell composition (toolbar + body{canvas + sidebar}).
+ * The banner from M3.2.a is gone; the toolbar replaces it as the
+ * editor's visible identity signal.
+ */
+
+.coolms-designer__body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    min-height: 0;          /* allow children to shrink so the canvas can scroll */
+    min-width: 0;
+    /* F-8 redesign -- body is the positioning context for the
+     * slide-over sidebar. The sidebar uses absolute positioning
+     * inside the body so opening/closing on selection change does
+     * NOT shrink/grow the canvas (Figma right-rail behaviour). */
+    position: relative;
+}
+
+/* Sidebar on the left swaps the body's flex order so it leads the row. */
+.coolms-designer:has(.coolms-designer__sidebar--left) .coolms-designer__body {
+    flex-direction: row-reverse;
+}
+
+/*
+ * Toolbar — top-bar chrome with save/deploy/undo/redo/zoom.
+ * --------------------------------------------------------------
+ */
+
+.coolms-designer__toolbar {
+    --coolms-designer-toolbar-height: 36px;
+    --coolms-designer-toolbar-bg: #ffffff;
+    --coolms-designer-toolbar-fg: #1f2937;
+    --coolms-designer-toolbar-border: #e5e7eb;
+    --coolms-designer-toolbar-button-hover: #f3f4f6;
+    --coolms-designer-toolbar-button-active: #e5e7eb;
+
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    /* F-8 redesign -- left-aligned single row of subgroups (was
+     * space-between left/right split). All subgroups flow left to
+     * right with separators between non-empty ones; trailing space
+     * stays empty. */
+    justify-content: flex-start;
+    gap: 8px;
+    height: var(--coolms-designer-toolbar-height);
+    padding: 0 8px;
+    background: var(--coolms-designer-toolbar-bg);
+    color: var(--coolms-designer-toolbar-fg);
+    border-bottom: 1px solid var(--coolms-designer-toolbar-border);
+}
+
+.coolms-designer__toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* F-8 redesign -- non-first subgroup that is BOTH non-empty AND
+ * follows another non-empty subgroup gets a left divider. `:empty`
+ * collapses subgroups whose consumer didn't wire anything (action
+ * subgroup when there's no save/deploy, creation subgroup when
+ * there's no connect + no palette mounted yet) so no orphan
+ * dividers render. Using a left-border + padding keeps the
+ * separator visually attached to the subgroup it belongs to. */
+.coolms-designer__toolbar-group:empty {
+    display: none;
+}
+
+.coolms-designer__toolbar-group + .coolms-designer__toolbar-group:not(:empty) {
+    border-left: 1px solid var(--coolms-designer-toolbar-border);
+    padding-left: 8px;
+    margin-left: 0;
+}
+
+.coolms-designer__toolbar-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 80ms ease-out;
+}
+
+.coolms-designer__toolbar-button:hover:not(:disabled) {
+    background: var(--coolms-designer-toolbar-button-hover);
+}
+
+.coolms-designer__toolbar-button:active:not(:disabled) {
+    background: var(--coolms-designer-toolbar-button-active);
+}
+
+.coolms-designer__toolbar-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.coolms-designer__toolbar-button[aria-busy="true"] {
+    opacity: 0.7;
+    cursor: progress;
+}
+
+.coolms-designer__toolbar-separator {
+    width: 1px;
+    height: 16px;
+    margin: 0 4px;
+    background: var(--coolms-designer-toolbar-border);
+}
+
+/* M3.3.m polish-bundle (F-3): icon-bearing toolbar buttons match the
+ * Image Editor's top-toolbar icon-button shape -- square footprint,
+ * larger glyph, centred. The base `.coolms-designer__toolbar-button`
+ * rule sets a min-width of 28px + 8px horizontal padding that's fine
+ * for text labels (save / deploy / 100%) but ugly for icon-only
+ * buttons; the `--icon` modifier drops the inner padding + scales
+ * the glyph to ~14px (matching Image Editor's `.top-toolbar__btn`). */
+.coolms-designer__toolbar-button--icon {
+    min-width: 28px;
+    padding: 0;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.coolms-designer__toolbar-button--icon .bi {
+    line-height: 1;
+}
+
+/* M3.3.m polish-bundle (F-3): the zoom-reset button doubles as the
+ * percentage indicator (single source of truth -- matches the Image
+ * Editor's clickable "{percent}%" display). Slightly wider footprint
+ * for the 3-4 character text + tabular-nums so digit-width doesn't
+ * jitter on zoom. */
+.coolms-designer__toolbar-button--zoom-display {
+    min-width: 44px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* M3.3.m polish-bundle (F-6): pressed-state styling for mode-toggle
+ * buttons (Connect, Hand). Mirrors the Image Editor's
+ * `.top-toolbar__btn--active` modifier: a soft blue tint + a colored
+ * border so users have an unambiguous "you are in this mode" signal.
+ * Driven by the Toolbar's `setConnectActive`/`setHandActive` setters
+ * which the dialog wires through `createEditor`. */
+.coolms-designer__toolbar-button--mode-active {
+    background: var(--coolms-designer-toolbar-mode-active-bg, #dbeafe);
+    border-color: var(--coolms-designer-toolbar-mode-active-border, #2563eb);
+    color: var(--coolms-designer-toolbar-mode-active-fg, #1d4ed8);
+}
+
+.coolms-designer__toolbar-button--mode-active:hover:not(:disabled) {
+    background: var(--coolms-designer-toolbar-mode-active-bg-hover, #bfdbfe);
+}
+
+/*
+ * Sidebar — palette + property panel host.
+ * --------------------------------------------------------------
+ */
+
+/*
+ * F-8 redesign -- sidebar is a FLOATING slide-over panel, not a flex
+ * sibling that shrinks the canvas. `position: absolute` inside the
+ * body element (which now has `position: relative`) pins it to the
+ * right edge; `transform: translateX(...)` animates it on/off when
+ * the consumer flips `setCollapsed`. The canvas underneath is the
+ * full body width regardless of panel state, so opening/closing
+ * doesn't reflow the diagram (Figma right-rail behaviour).
+ *
+ * Z-index keeps the sidebar above canvas overlays + the floating
+ * connect-mode rubber band. Drop-shadow lifts it off the canvas
+ * visually.
+ */
+.coolms-designer__sidebar {
+    --coolms-designer-sidebar-bg: #f9fafb;
+    --coolms-designer-sidebar-border: #e5e7eb;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    background: var(--coolms-designer-sidebar-bg);
+    border-left: 1px solid var(--coolms-designer-sidebar-border);
+    width: 280px;          /* default; overridden by inline style from JS */
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.06);
+    transform: translateX(0);
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
+}
+
+.coolms-designer__sidebar--left {
+    right: auto;
+    left: 0;
+    border-left: none;
+    border-right: 1px solid var(--coolms-designer-sidebar-border);
+    flex-direction: row-reverse;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06);
+}
+
+/* F-8 slide-over -- collapsed panel slides ENTIRELY off the right
+ * edge (left edge for sidebar--left). The toggle button goes with
+ * it; manual re-expansion happens via consumer-driven setCollapsed
+ * (BPMN-Lite dialog wires this to selection.onChange). */
+.coolms-designer__sidebar--collapsed {
+    transform: translateX(100%);
+}
+
+.coolms-designer__sidebar--left.coolms-designer__sidebar--collapsed {
+    transform: translateX(-100%);
+}
+
+.coolms-designer__sidebar-toggle {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 100%;
+    border: none;
+    border-right: 1px solid var(--coolms-designer-sidebar-border);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.coolms-designer__sidebar--right .coolms-designer__sidebar-toggle {
+    border-right: none;
+    border-left: 1px solid var(--coolms-designer-sidebar-border);
+}
+
+.coolms-designer__sidebar-toggle:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.coolms-designer__sidebar-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* F-8 redesign -- sidebar is property-panel-only; the palette
+ * section moved to the Toolbar `paletteHost`. The old
+ * `.coolms-designer__sidebar-palette` rule is gone; only the
+ * properties section remains. */
+.coolms-designer__sidebar-properties {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 8px;
+}
+
+/*
+ * Property panel fields.
+ * The panel wraps each field in `.coolms-designer__property-field`
+ * with a label + control + optional description. Field renderers
+ * append their input(s) to `.coolms-designer__property-control`.
+ * --------------------------------------------------------------
+ */
+
+.coolms-designer__property-field {
+    --coolms-designer-field-gap: 4px;
+    --coolms-designer-field-label-fg: #374151;
+    --coolms-designer-field-desc-fg: #6b7280;
+    --coolms-designer-field-input-border: #d1d5db;
+    --coolms-designer-field-input-focus-border: #6366f1;
+    --coolms-designer-field-input-bg: #ffffff;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--coolms-designer-field-gap);
+    margin-bottom: 12px;
+}
+
+.coolms-designer__property-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--coolms-designer-field-label-fg);
+    line-height: 1.4;
+}
+
+.coolms-designer__property-control {
+    display: block;
+}
+
+.coolms-designer__property-description {
+    margin: 0;
+    font-size: 11px;
+    color: var(--coolms-designer-field-desc-fg);
+    line-height: 1.4;
+}
+
+.coolms-designer__field-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid var(--coolms-designer-field-input-border);
+    border-radius: 4px;
+    background: var(--coolms-designer-field-input-bg);
+    font: inherit;
+    font-size: 13px;
+    color: inherit;
+    box-sizing: border-box;
+}
+
+.coolms-designer__field-input:focus {
+    outline: none;
+    border-color: var(--coolms-designer-field-input-focus-border);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.coolms-designer__field-input:disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.coolms-designer__field-textarea {
+    resize: vertical;
+    min-height: calc(1.4em * 2 + 10px);
+}
+
+.coolms-designer__field-el-expression {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+}
+
+.coolms-designer__field-checkbox-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.coolms-designer__field-checkbox-row:has(.coolms-designer__field-checkbox:disabled) {
+    cursor: not-allowed;
+    color: #9ca3af;
+}
+
+.coolms-designer__field-checkbox {
+    margin: 0;
+    cursor: inherit;
+}
+
+/*
+ * DMN decision-table editor.
+ * --------------------------------------------------------------
+ * The table surface hides the canvas SVG (since tables aren't graphs)
+ * and renders the DMN table editor in its place inside the body.
+ */
+
+.coolms-designer--dmn-table .coolms-designer__canvas {
+    display: none;
+}
+
+.coolms-designer__dmn-table {
+    --coolms-designer-dmn-bg: #ffffff;
+    --coolms-designer-dmn-border: #d1d5db;
+    --coolms-designer-dmn-header-bg: #f3f4f6;
+    --coolms-designer-dmn-input-bg: #fafafa;
+    --coolms-designer-dmn-output-bg: #f0fdf4;
+
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    padding: 12px;
+    background: var(--coolms-designer-dmn-bg);
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+}
+
+.coolms-designer__dmn-table-header {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.coolms-designer__dmn-table-header-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.coolms-designer__dmn-table-header-field > span {
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+}
+
+.coolms-designer__dmn-table-header-field > input,
+.coolms-designer__dmn-table-header-field > select {
+    padding: 4px 8px;
+    border: 1px solid var(--coolms-designer-dmn-border);
+    border-radius: 4px;
+    font: inherit;
+    min-width: 120px;
+}
+
+.coolms-designer__dmn-table-grid {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: auto;
+    width: max-content;
+    min-width: 100%;
+}
+
+.coolms-designer__dmn-table-grid th,
+.coolms-designer__dmn-table-grid td {
+    border: 1px solid var(--coolms-designer-dmn-border);
+    padding: 4px 6px;
+    background: var(--coolms-designer-dmn-bg);
+    vertical-align: top;
+    text-align: left;
+}
+
+.coolms-designer__dmn-table-corner,
+.coolms-designer__dmn-table-rule-index {
+    background: var(--coolms-designer-dmn-header-bg);
+    color: #6b7280;
+    text-align: center;
+    width: 32px;
+    min-width: 32px;
+}
+
+.coolms-designer__dmn-table-input-header {
+    background: var(--coolms-designer-dmn-input-bg);
+    min-width: 140px;
+}
+
+.coolms-designer__dmn-table-output-header {
+    background: var(--coolms-designer-dmn-output-bg);
+    min-width: 140px;
+}
+
+.coolms-designer__dmn-table-input-name,
+.coolms-designer__dmn-table-output-name {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    padding: 2px 0;
+}
+
+.coolms-designer__dmn-table-input-expr {
+    width: 100%;
+    margin-top: 4px;
+    padding: 2px 4px;
+    border: 1px dashed var(--coolms-designer-dmn-border);
+    border-radius: 2px;
+    background: transparent;
+    font: inherit;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+}
+
+.coolms-designer__dmn-table-entry {
+    padding: 0;
+}
+
+.coolms-designer__dmn-table-entry-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 4px 6px;
+    font: inherit;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+}
+
+.coolms-designer__dmn-table-entry-input:focus {
+    outline: 2px solid #6366f1;
+    outline-offset: -2px;
+}
+
+.coolms-designer__dmn-table-input-entry {
+    background: var(--coolms-designer-dmn-input-bg);
+}
+
+.coolms-designer__dmn-table-output-entry {
+    background: var(--coolms-designer-dmn-output-bg);
+}
+
+.coolms-designer__dmn-table-spacer {
+    width: 8px;
+    min-width: 8px;
+    background: var(--coolms-designer-dmn-header-bg);
+    border-left: none;
+    border-right: none;
+}
+
+.coolms-designer__dmn-table-add-input,
+.coolms-designer__dmn-table-add-output,
+.coolms-designer__dmn-table-row-actions,
+.coolms-designer__dmn-table-row-actions-header {
+    background: var(--coolms-designer-dmn-header-bg);
+    text-align: center;
+    width: 60px;
+    min-width: 60px;
+}
+
+.coolms-designer__dmn-table-add-input button,
+.coolms-designer__dmn-table-add-output button,
+.coolms-designer__dmn-table-add-rule-cell button,
+.coolms-designer__dmn-table-row-delete,
+.coolms-designer__dmn-table-col-delete {
+    border: 1px solid var(--coolms-designer-dmn-border);
+    background: #ffffff;
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+}
+
+.coolms-designer__dmn-table-row-delete,
+.coolms-designer__dmn-table-col-delete {
+    color: #ef4444;
+    border-color: #fecaca;
+}
+
+.coolms-designer__dmn-table-row-delete:hover,
+.coolms-designer__dmn-table-col-delete:hover {
+    background: #fee2e2;
+}
+
+.coolms-designer__dmn-table-col-delete {
+    display: block;
+    margin: 4px auto 0;
+}
+
+.coolms-designer__dmn-table-add-rule-cell {
+    text-align: center;
+    background: var(--coolms-designer-dmn-header-bg);
+    padding: 6px;
+}
+
+.coolms-designer__canvas {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    display: block;
+    /* Per-canvas touch behaviour: disable native pan/zoom so wheel + drag
+     * are exclusive to our PointerInput / Viewport logic. Without this,
+     * trackpad swipes scroll the page instead of the canvas. */
+    touch-action: none;
+    user-select: none;
+}
+
+/* Transparent hit-test rect. Sized via SVG width/height attributes (100%);
+ * fill is transparent so it captures pointer events across the full canvas
+ * area without painting anything visible. */
+.coolms-designer__canvas-bg {
+    fill: transparent;
+    pointer-events: all;
+}
+
+/* The viewport <g> -- the Viewport.applyTransform target. Surface renderers
+ * append their element trees into this group so the pan/zoom transform
+ * cascades naturally. No styling needed at M3.2.b. */
+.coolms-designer__viewport {
+    /* future: cursor changes per active tool */
+}
+
+.coolms-designer--read-only .coolms-designer__banner::after {
+    content: " · read-only";
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+/* ─── M3.3.a BPMN-Lite scaffold banner ──────────────────────────────────── */
+/* Mounts inside the shell body alongside the (empty) canvas SVG. M3.3.b
+ * replaces this overlay with the first real element renderer; until then,
+ * it makes the "scaffold landed but no elements yet" state observable in
+ * the visual-regression fixtures. `pointer-events: none` so the
+ * banner doesn't intercept pan/zoom gestures destined for the canvas. */
+.coolms-designer__bpmn-lite-banner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    text-align: center;
+    padding: 24px;
+    color: #6b7280;
+    font: 500 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.coolms-designer__bpmn-lite-banner-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.coolms-designer__bpmn-lite-banner-subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+/* ─── M3.3.b BPMN-Lite element renderers ────────────────────────────────── */
+/* Base styling shared by all painted elements. Each element-kind class layers
+ * its own fill/stroke per BPMN convention. Labels use a single shared style;
+ * gateway X/+ markers carry their own no-fill stroke. */
+.coolms-designer__bpmn-element {
+    /* Subgroup transform is set per-element via `transform="translate(...)"`. */
+    /* F-7.1 -- grab cursor signals draggability. The MoveElementController
+     * suppresses the gesture when ConnectMode / PanMode is active, but the
+     * cursor stays a grab even then (cheap; flipping it via a class would
+     * cost a per-mode CSS toggle for marginal payoff). */
+    cursor: grab;
+}
+
+/* F-7.1 -- live-drag affordance. The dragging element gets a CSS hook the
+ * shell can use to dim siblings or raise this one in z-order. Today we just
+ * swap the cursor to "grabbing" + lift the opacity slightly; deeper visual
+ * polish (drop shadow, snap-line ghosts) is downstream. */
+.coolms-designer__bpmn-element--dragging {
+    cursor: grabbing;
+    opacity: 0.85;
+}
+
+.coolms-designer__bpmn-label {
+    font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    fill: #111827;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Start Event -- thin green stroke, no fill. */
+.coolms-designer__bpmn-start-event > circle {
+    fill: #ffffff;
+    stroke: #16a34a;
+    stroke-width: 2;
+}
+
+/* End Event -- thick stroke (BPMN convention; thicker than start). */
+.coolms-designer__bpmn-end-event > circle {
+    fill: #ffffff;
+    stroke: #dc2626;
+    stroke-width: 4;
+}
+
+/* Task -- rounded rectangle, light grey fill. */
+.coolms-designer__bpmn-task > rect {
+    fill: #ffffff;
+    stroke: #1f2937;
+    stroke-width: 2;
+}
+
+/* Embedded subprocess -- an expanded CONTAINER, so it reads as a
+ * backdrop rather than a node: a tinted fill and a lighter, thinner
+ * border than a task, so the activities painted on top of it stay the
+ * focal elements. It MUST carry an explicit fill (a translucent one, so
+ * canvas gridlines still read through) -- an unstyled SVG rect defaults
+ * to `fill: black` and would paint the scope as a solid blob over
+ * everything the author put inside it. */
+.coolms-designer__bpmn-subprocess > rect {
+    fill: rgba(148, 163, 184, 0.1);
+    stroke: #64748b;
+    stroke-width: 1.5;
+}
+
+/* The container's own label is a quiet caption, not a title competing
+ * with the labels of the activities inside it. */
+.coolms-designer__bpmn-subprocess > text {
+    fill: #475569;
+    font-weight: 600;
+}
+
+/* Call activity -- a task with the BPMN THICK border, the spec's marker
+ * for "this activity is another process". Same white fill as a task
+ * because it IS an activity; the border weight is the whole
+ * distinction, so it has to be unmistakable at a glance. */
+.coolms-designer__bpmn-call-activity > rect {
+    fill: #ffffff;
+    stroke: #1f2937;
+    stroke-width: 4;
+}
+
+/* Gateways -- diamond body + marker. All four kinds share the amber
+ * gateway hue; the MARKER is what distinguishes them (X / + / O /
+ * double-ring-pentagon). The `> polygon` child selector deliberately
+ * matches only the diamond body: the event-gateway's pentagon marker is
+ * also a polygon, and it takes the marker rule below instead. */
+.coolms-designer__bpmn-exclusive-gateway > polygon,
+.coolms-designer__bpmn-parallel-gateway > polygon,
+.coolms-designer__bpmn-inclusive-gateway > polygon:first-of-type,
+.coolms-designer__bpmn-event-based-gateway > polygon:first-of-type {
+    fill: #ffffff;
+    stroke: #ca8a04;
+    stroke-width: 2;
+}
+
+.coolms-designer__bpmn-gateway-marker {
+    fill: none;
+    stroke: #ca8a04;
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+/* The inclusive/event markers are rings + a pentagon rather than the
+ * exclusive/parallel strokes, so they want a thinner line to stay
+ * legible inside a 50x50 diamond. */
+.coolms-designer__bpmn-inclusive-gateway > .coolms-designer__bpmn-gateway-marker,
+.coolms-designer__bpmn-event-based-gateway > .coolms-designer__bpmn-gateway-marker {
+    stroke-width: 2;
+}
+
+/* Intermediate Catch Event -- BPMN double ring + a subtype marker.
+ *
+ * Every shape here needs an EXPLICIT fill: SVG's initial `fill` is black,
+ * so an unstyled circle/path paints as a solid blob rather than an
+ * outline. The outer ring is the filled body (and the hit area); the
+ * inner ring and the marker are stroke-only. */
+.coolms-designer__bpmn-intermediate-catch-event > .coolms-designer__bpmn-event-ring-outer {
+    fill: #ffffff;
+    stroke: #2563eb;
+    stroke-width: 2;
+}
+
+.coolms-designer__bpmn-intermediate-catch-event > .coolms-designer__bpmn-event-ring-inner {
+    fill: none;
+    stroke: #2563eb;
+    stroke-width: 2;
+}
+
+.coolms-designer__bpmn-event-marker {
+    fill: none;
+    stroke: #2563eb;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Boundary Event -- same double ring, distinct hue (it interrupts an
+ * activity rather than sitting in the flow), DASHED when
+ * non-interrupting per BPMN 2.0. */
+.coolms-designer__bpmn-boundary-event > .coolms-designer__bpmn-event-ring-outer {
+    fill: #ffffff;
+    stroke: #7c3aed;
+    stroke-width: 2;
+}
+
+.coolms-designer__bpmn-boundary-event > .coolms-designer__bpmn-event-ring-inner {
+    fill: none;
+    stroke: #7c3aed;
+    stroke-width: 2;
+}
+
+.coolms-designer__bpmn-boundary-event .coolms-designer__bpmn-event-marker {
+    stroke: #7c3aed;
+}
+
+/* Non-interrupting: dash BOTH rings. The marker stays solid so the
+ * subtype glyph remains legible at 36x36. */
+.coolms-designer__bpmn-event--non-interrupting > .coolms-designer__bpmn-event-ring-outer,
+.coolms-designer__bpmn-event--non-interrupting > .coolms-designer__bpmn-event-ring-inner {
+    stroke-dasharray: 4 3;
+}
+
+/* ─── M3.3.c BPMN-Lite SequenceFlow renderer ────────────────────────────── */
+/* Edges paint into a sibling group ABOVE elements in source order but
+ * BEHIND elements in document-painter order (SVG paints later siblings
+ * on top). Default-flow markers + arrowheads ride on the same group. */
+.coolms-designer__bpmn-flow-path {
+    fill: none;
+    stroke: #374151;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.coolms-designer__bpmn-arrowhead > path {
+    fill: #374151;
+    stroke: none;
+}
+
+.coolms-designer__bpmn-flow-default-marker {
+    fill: none;
+    stroke: #374151;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+/* ─── M3.3.d BPMN-Lite palette + drag ghost ─────────────────────────────── */
+/* Buttons mount into the sidebar palette host. The ghost is a fixed
+ * positioned div the user drags from a button toward the canvas; CSS gives
+ * it `pointer-events: none` so the cursor's pointerup target is whatever
+ * sits underneath. The transform centers the ghost on the cursor. */
+/* M3.3.m polish-bundle (F-2): palette tiles match the platform's
+ * "tools panel" tile convention (Image Editor / Media tools / etc).
+ * Two-column grid of icon-on-top + label-below tiles, BPMN-shape
+ * SVG mirroring the canvas paint. Designed to align visually with
+ * the right-side Tools panel of the Image Editor host. */
+.coolms-designer__palette-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 78px;
+    padding: 10px 8px;
+    margin-bottom: 8px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    color: #4b5563;
+    font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    transition: background 0.12s, border-color 0.12s, color 0.12s,
+        box-shadow 0.12s;
+}
+
+.coolms-designer__palette-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    line-height: 0;
+    transition: color 0.12s;
+}
+
+.coolms-designer__palette-label {
+    display: block;
+    text-align: center;
+    line-height: 1.25;
+}
+
+/*
+ * F-8 redesign -- palette buttons mounted INSIDE the toolbar become
+ * compact icon-only chips matching the rest of the toolbar's 28x28
+ * footprint. The original tile shape (icon-on-top + label-below) is
+ * kept as the default for any consumer that still mounts the palette
+ * into a sidebar host, but the BPMN-Lite dialog now feeds them into
+ * `toolbar.paletteHost` so the toolbar-scoped overrides win.
+ *
+ * The label is hidden visually (kept for screen readers via the
+ * button's aria-label/title); the icon shrinks to match toolbar
+ * icon-button glyph size. Hover/active styling falls back to the
+ * standard `.coolms-designer__toolbar-button` rules so palette
+ * chips read as part of the same row.
+ */
+.coolms-designer__toolbar .coolms-designer__palette-button {
+    width: 28px;
+    min-width: 28px;
+    min-height: 28px;
+    height: 28px;
+    padding: 0;
+    margin-bottom: 0;
+    flex-direction: row;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    box-shadow: none;
+    gap: 0;
+}
+
+.coolms-designer__toolbar .coolms-designer__palette-button:hover {
+    background: var(--coolms-designer-toolbar-button-hover);
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.coolms-designer__toolbar .coolms-designer__palette-icon {
+    color: inherit;
+    width: 20px;
+    height: 20px;
+}
+
+.coolms-designer__toolbar .coolms-designer__palette-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.coolms-designer__toolbar .coolms-designer__palette-label {
+    /* Hide visually but keep accessible; the button's
+     * aria-label + title still surface the kind to AT users. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.coolms-designer__palette-button:hover {
+    background: #f9fafb;
+    border-color: #2563eb;
+    color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.coolms-designer__palette-button:hover .coolms-designer__palette-icon {
+    color: #2563eb;
+}
+
+.coolms-designer__palette-button:active {
+    cursor: grabbing;
+    background: #eef2ff;
+    border-color: #2563eb;
+}
+
+.coolms-designer__palette-ghost {
+    position: fixed;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: #ffffff;
+    border: 1.5px solid #2563eb;
+    border-radius: 6px;
+    color: #1f2937;
+    font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    opacity: 0.92;
+}
+
+.coolms-designer__palette-ghost .coolms-designer__palette-icon {
+    color: #2563eb;
+}
+
+/* ─── M3.3.e BPMN-Lite connect mode + rubber-band + waypoint handles ─── */
+/* Connect mode flips the canvas cursor to a crosshair so authors know
+ * a click will start a connection drag. The rubber-band is a dashed
+ * blue line painted in the flows group during the drag. Waypoint
+ * handles are small filled circles painted at middle waypoints --
+ * pointer cursor on hover signals draggability. */
+.coolms-designer__bpmn-connect-mode {
+    cursor: crosshair;
+}
+
+/* M3.3.m polish-bundle (F-4): hand-tool pan mode. Flips the canvas
+ * cursor to `grab` so the user has an explicit "drag to pan"
+ * affordance; `grabbing` while a pointer is held. Mirrors the
+ * Image Editor's hand-tool state styling. */
+.coolms-designer__bpmn-pan-mode {
+    cursor: grab;
+}
+
+.coolms-designer__bpmn-pan-mode:active {
+    cursor: grabbing;
+}
+
+.coolms-designer__bpmn-rubberband {
+    stroke: #2563eb;
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+    fill: none;
+    pointer-events: none;
+}
+
+/* Hover connect-handle (ConnectHandleController) -- the always-on,
+ * Camunda-style connect affordance. A small accent puck with a white
+ * arrow that appears at an element's right edge on hover; grab + drag
+ * it to another element to draw a sequence flow. `cursor: crosshair`
+ * signals "start a connection here"; the fade-in keeps it from
+ * flickering as the pointer sweeps the canvas. */
+.coolms-designer__bpmn-connect-handle {
+    cursor: crosshair;
+}
+
+.coolms-designer__bpmn-connect-handle > circle {
+    fill: #2563eb;
+    stroke: #ffffff;
+    stroke-width: 1.5;
+}
+
+.coolms-designer__bpmn-connect-handle:hover > circle {
+    fill: #1d4ed8;
+}
+
+.coolms-designer__bpmn-connect-handle-arrow {
+    fill: #ffffff;
+    stroke: none;
+    pointer-events: none;
+}
+
+.coolms-designer__bpmn-waypoint-handle {
+    fill: #ffffff;
+    stroke: #2563eb;
+    stroke-width: 2;
+    cursor: grab;
+}
+
+.coolms-designer__bpmn-waypoint-handle:hover {
+    fill: #dbeafe;
+}
+
+.coolms-designer__bpmn-waypoint-handle:active {
+    cursor: grabbing;
+    fill: #93c5fd;
+}
+
+/* ─── M3.3.f BPMN-Lite selection highlight + condition label ─────────── */
+/* The selected element / flow gets a thicker blue stroke so authors can
+ * tell at a glance which thing the property panel is editing. The
+ * condition label (inline `[<expr>]`) sits above the flow's route
+ * midpoint in a small monospace font so it doesn't dominate the
+ * diagram. Both colors match the rubberband + waypoint handle
+ * stroke for visual coherence (everything edit-focused is blue). */
+.coolms-designer__bpmn-element--selected > rect,
+.coolms-designer__bpmn-element--selected > circle,
+.coolms-designer__bpmn-element--selected > polygon {
+    stroke: #2563eb;
+    stroke-width: 3;
+}
+
+.coolms-designer__bpmn-flow--selected > .coolms-designer__bpmn-flow-path {
+    stroke: #2563eb;
+    stroke-width: 3;
+}
+
+.coolms-designer__bpmn-flow-condition {
+    font: 11px/1 "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+        monospace;
+    fill: #374151;
+    pointer-events: none;
+}
+
+/* ─── M3.5.a State Machine scaffold banner ──────────────────────────────── */
+/* Mirrors the BPMN-Lite banner: a centered "scaffold landed but no
+ * places yet" overlay the StateMachineEditor hides the moment the model is
+ * non-empty. `pointer-events: none` so it never intercepts pan/zoom. */
+.coolms-designer__sm-banner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    text-align: center;
+    padding: 24px;
+    color: #6b7280;
+    font: 500 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.coolms-designer__sm-banner-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.coolms-designer__sm-banner-subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+/* ─── M3.5.a State Machine place (state) renderer ───────────────────────── */
+/* A place is Symfony Workflow's "state": a rounded rectangle with the place
+ * name centered inside. The places group paints OVER the transitions group
+ * (document order) so arrowheads tuck behind the boxes they arrive at. */
+.coolms-designer__sm-place {
+    cursor: grab;
+}
+
+.coolms-designer__sm-place-box {
+    fill: #ffffff;
+    stroke: #1f2937;
+    stroke-width: 2;
+}
+
+.coolms-designer__sm-place-label {
+    font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    fill: #111827;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* The initial place (Symfony `initial_marking`) reads as the entry state:
+ * a heavier green border + a filled dot-and-stub "start" marker on its left
+ * edge (the conventional state-diagram entry glyph). */
+.coolms-designer__sm-place--initial > .coolms-designer__sm-place-box {
+    stroke: #16a34a;
+    stroke-width: 3;
+}
+
+.coolms-designer__sm-initial-dot {
+    fill: #16a34a;
+    stroke: none;
+}
+
+.coolms-designer__sm-initial-stub {
+    fill: none;
+    stroke: #16a34a;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+/* ─── M3.5.a State Machine transition renderer ──────────────────────────── */
+/* Transitions paint into a sibling group BEHIND places (earlier in document
+ * order). Each is a straight segment trimmed to the place borders with an
+ * arrowhead at the target; self-transitions arc as a loop above the place. */
+.coolms-designer__sm-transition-path {
+    fill: none;
+    stroke: #374151;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.coolms-designer__sm-arrowhead > path {
+    fill: #374151;
+    stroke: none;
+}
+
+.coolms-designer__sm-transition-label {
+    font: 500 11px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    fill: #374151;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* A guarded transition (a Symfony Workflow `guard` EL expression) gets a
+ * monospace tint so the ⟨guard⟩ glyph reads as "this edge is conditional". */
+.coolms-designer__sm-transition-label--guarded {
+    fill: #6d28d9;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+        monospace;
+}
+
+/* Selection styling — keyed off the selection modifier classes. */
+.coolms-designer__sm-place--selected > .coolms-designer__sm-place-box {
+    stroke: #2563eb;
+    stroke-width: 3;
+}
+
+.coolms-designer__sm-transition--selected > .coolms-designer__sm-transition-path {
+    stroke: #2563eb;
+    stroke-width: 3;
+}
+
+/* ─── M4.j DMN DRD scaffold banner ──────────────────────────────────────── */
+/* Mirrors the state-machine banner: a centered "scaffold landed but no
+ * nodes yet" overlay the DmnDrdEditor hides the moment the model is non-empty.
+ * `pointer-events: none` so it never intercepts pan/zoom. */
+.coolms-designer__drd-banner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    text-align: center;
+    padding: 24px;
+    color: #6b7280;
+    font: 500 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+.coolms-designer__drd-banner-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.coolms-designer__drd-banner-subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+/* ─── M4.j DMN DRD node renderers ───────────────────────────────────────── */
+/* A Decision is a sharp-cornered rectangle; an InputData is a stadium (rounded
+ * ends). The elements group paints OVER the requirements group (document order)
+ * so arrowheads tuck behind the boxes they arrive at. */
+.coolms-designer__drd-element {
+    cursor: grab;
+}
+
+.coolms-designer__drd-decision-box {
+    fill: #ffffff;
+    stroke: #1f2937;
+    stroke-width: 2;
+}
+
+/* InputData stadium reads as the "raw fact" — a softer fill + tint so it's
+ * visually distinct from the decision rectangles it feeds. */
+.coolms-designer__drd-input-box {
+    fill: #eef2ff;
+    stroke: #4f46e5;
+    stroke-width: 2;
+}
+
+.coolms-designer__drd-element-label {
+    font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    fill: #111827;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* ─── M4.j DMN DRD requirement renderer ─────────────────────────────────── */
+/* InformationRequirements paint into a sibling group BEHIND nodes (earlier in
+ * document order). Each is a straight segment trimmed to the node borders with
+ * a filled arrowhead at the requiring decision. */
+.coolms-designer__drd-requirement-path {
+    fill: none;
+    stroke: #374151;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.coolms-designer__drd-arrowhead > path {
+    fill: #374151;
+    stroke: none;
+}
+
+/* Selection styling — keyed off the selection modifier classes the future
+ * property panel toggles. */
+.coolms-designer__drd-element--selected > .coolms-designer__drd-decision-box,
+.coolms-designer__drd-element--selected > .coolms-designer__drd-input-box {
+    stroke: #2563eb;
+    stroke-width: 3;
+}
+
+.coolms-designer__drd-requirement--selected > .coolms-designer__drd-requirement-path {
+    stroke: #2563eb;
+    stroke-width: 3;
+}

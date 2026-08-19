@@ -1,0 +1,74 @@
+{
+    "name": "@coolms/designer",
+    "version": "0.1.0-alpha.1",
+    "description": "Framework-agnostic vanilla TypeScript visual designer for BPMN-Lite, DMN decision tables, DMN DRDs, and Symfony Workflow state machines. MIT-licensed, zero runtime dependencies.",
+    "license": "MIT",
+    "author": {
+        "name": "Dmitry Popov",
+        "email": "d.popov@coolms.com"
+    },
+    "type": "module",
+    "main": "dist/index.mjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs"
+        },
+        "./global": {
+            "default": "./dist/coolms-designer.global.js"
+        },
+        "./styles": {
+            "default": "./dist/coolms-designer.css"
+        }
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "README.md"
+    ],
+    "scripts": {
+        "build": "node esbuild.config.mjs && npm run build:types && npm run build:css",
+        "build:types": "tsc -p tsconfig.build.json",
+        "build:css": "node -e \"require('node:fs').copyFileSync('src/styles/coolms-designer.css','dist/coolms-designer.css')\"",
+        "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage",
+        "typecheck": "tsc --noEmit",
+        "build:visual": "node esbuild.visual.config.mjs",
+        "test:visual": "npm run build:visual && playwright test",
+        "test:visual:update": "npm run build:visual && playwright test --update-snapshots"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.49.1",
+        "@types/node": "^22.10.0",
+        "@vitest/coverage-v8": "^2.1.8",
+        "esbuild": "^0.24.0",
+        "jsdom": "^25.0.1",
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "keywords": [
+        "bpmn",
+        "dmn",
+        "designer",
+        "modeler",
+        "workflow",
+        "state-machine",
+        "coolms",
+        "lcap",
+        "bpm"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/coolms/designer.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

@@ -1,0 +1,137 @@
+{
+  "process": {
+    "id": "designer.subprocess"
+  },
+  "elements": [
+    {
+      "id": "start.go",
+      "type": "startEvent",
+      "out": [
+        "flow.s2sub"
+      ]
+    },
+    {
+      "id": "sub.review",
+      "type": "subProcess",
+      "label": "Review block",
+      "in": [
+        "flow.s2sub"
+      ],
+      "out": [
+        "flow.sub2e"
+      ]
+    },
+    {
+      "id": "sub.start",
+      "type": "startEvent",
+      "parent": "sub.review",
+      "out": [
+        "flow.i1"
+      ]
+    },
+    {
+      "id": "sub.work",
+      "type": "serviceTask",
+      "implementation": "noop:echo",
+      "parent": "sub.review",
+      "in": [
+        "flow.i1"
+      ],
+      "out": [
+        "flow.i2"
+      ]
+    },
+    {
+      "id": "sub.end",
+      "type": "endEvent",
+      "parent": "sub.review",
+      "in": [
+        "flow.i2"
+      ]
+    },
+    {
+      "id": "end.ok",
+      "type": "endEvent",
+      "in": [
+        "flow.sub2e"
+      ]
+    },
+    {
+      "id": "flow.s2sub",
+      "type": "sequenceFlow",
+      "source": "start.go",
+      "target": "sub.review"
+    },
+    {
+      "id": "flow.i1",
+      "type": "sequenceFlow",
+      "source": "sub.start",
+      "target": "sub.work"
+    },
+    {
+      "id": "flow.i2",
+      "type": "sequenceFlow",
+      "source": "sub.work",
+      "target": "sub.end"
+    },
+    {
+      "id": "flow.sub2e",
+      "type": "sequenceFlow",
+      "source": "sub.review",
+      "target": "end.ok"
+    }
+  ],
+  "diagram": {
+    "elements": {
+      "start.go": {
+        "bounds": {
+          "x": 60,
+          "y": 220,
+          "width": 36,
+          "height": 36
+        }
+      },
+      "sub.review": {
+        "bounds": {
+          "x": 160,
+          "y": 140,
+          "width": 340,
+          "height": 200
+        }
+      },
+      "sub.start": {
+        "bounds": {
+          "x": 190,
+          "y": 220,
+          "width": 36,
+          "height": 36
+        }
+      },
+      "sub.work": {
+        "bounds": {
+          "x": 260,
+          "y": 198,
+          "width": 100,
+          "height": 80
+        }
+      },
+      "sub.end": {
+        "bounds": {
+          "x": 420,
+          "y": 220,
+          "width": 36,
+          "height": 36
+        }
+      },
+      "end.ok": {
+        "bounds": {
+          "x": 560,
+          "y": 220,
+          "width": 36,
+          "height": 36
+        }
+      }
+    },
+    "flows": {}
+  }
+}

@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  boundary:
+    name: Zero runtime dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # The zero-dependency claim is the reason this package exists, so it is
+      # checked rather than promised -- and checked against the INSTALLED tree,
+      # not the manifest. Reading `dependencies` back out of package.json only
+      # proves the file says what it says; resolving the production tree proves
+      # what a consumer would actually download.
+      - name: The production dependency tree must be empty
+        run: |
+          tree=$(npm ls --omit=dev --all --parseable | tail -n +2)
+          if [ -n "$tree" ]; then
+              echo "This package must ship with no runtime dependencies. Found:"
+              echo "$tree"
+              exit 1
+          fi
+          echo "Production tree is empty."
+
+      # A bundler that silently starts resolving outside src/ would ship a
+      # dependency the manifest never declares -- invisible to the check above.
+      - name: The built bundle must not import anything external
+        run: |
+          npm run build
+          if grep -nE 'from *"[^.]' dist/index.mjs; then
+              echo "dist/index.mjs imports a module outside the package."
+              exit 1
+          fi
+          echo "Bundle resolves entirely within src/."
