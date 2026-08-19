@@ -1,10 +1,17 @@
 import type { CommandStack } from '../../canvas/CommandStack.js';
+import type { Translator } from '../../i18n.js';
 import { DmnTableModel } from './DmnTableModel.js';
 import { DmnTableView } from './DmnTableView.js';
 import type { DecisionTableModel } from './types.js';
 import { readDmnXml, writeDmnXml } from './xml.js';
 
 export interface DmnTableEditorOptions {
+    /**
+     * Resolves the field text of the DEFAULT schema provider. Ignored when
+     * `schemas` is supplied -- that provider brings its own.
+     */
+    readonly t?: Translator;
+
     /** Host element -- typically `editor.body` for full-canvas-replacement DMN editing. */
     readonly host: HTMLElement;
     /** Command stack -- typically `editor.commands` for unified undo/redo with the toolbar. */
@@ -37,7 +44,7 @@ export class DmnTableEditor {
 
     constructor(options: DmnTableEditorOptions) {
         this.model = new DmnTableModel(options.initialModel);
-        this.view = new DmnTableView(options.host, this.model, options.commands);
+        this.view = new DmnTableView(options.host, this.model, options.commands, options.t);
     }
 
     /** Current model snapshot. */
