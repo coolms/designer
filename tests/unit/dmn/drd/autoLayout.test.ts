@@ -13,7 +13,7 @@ import type {
 } from '../../../../src/dmn/drd/index.js';
 
 /**
- * M4.j auto-layout tests — columnar topological layering following the
+ * Auto-layout tests — columnar topological layering following the
  * information-requirement direction (from → to), the all-or-nothing
  * bail, cycle-aware back-edge skipping, converging-dependency
  * alignment, dangling/self-reference tolerance, and the DmnDrdEditor

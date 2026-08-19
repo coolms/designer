@@ -11,7 +11,7 @@ import {
 /**
  * Authoring a state machine FROM SCRATCH.
  *
- * The M3.5 editor shipped rename / set-initial / property-edit / remove
+ * The editor shipped rename / set-initial / property-edit / remove
  * but **no create path at all** — no `AddPlace`, no `AddTransition`, and
  * a single `click` listener for selection. So a machine could be pruned
  * and re-pointed but never BUILT, while the blank canvas told the author

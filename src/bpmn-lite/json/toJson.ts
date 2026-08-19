@@ -12,7 +12,7 @@ import type {
 export interface ToJsonOptions {
     /**
      * Number of spaces for pretty-printing. `0` produces compact
-     * JSON. Defaults to `2` -- matches the M2.c parser's input
+     * JSON. Defaults to `2` -- matches the engine parser's input
      * convention (BPMN-Lite definitions are hand-readable + tracked
      * in Git, so pretty-printed by default).
      */
@@ -20,10 +20,10 @@ export interface ToJsonOptions {
 }
 
 /**
- * the BPMN-Lite editor's wire-format serializer. Projects
- * the editor's internal {@link BpmnLiteModel} onto the M2.c BPMN-Lite
- * parser's JSON shape so the round-trip
- *   editor → VFS draft → M2.d WorkflowDeployer → M2.c parser → engine
+ * The BPMN-Lite editor's wire-format serializer. Projects the
+ * editor's internal {@link BpmnLiteModel} onto the engine's
+ * BPMN-Lite parser JSON shape, so the round-trip
+ *   editor → draft storage → deployer → parser → engine
  * has no translation layer at any seam.
  *
  * **Wire shape**:
@@ -74,7 +74,7 @@ export interface ToJsonOptions {
  *     BOTH elements + sequence flows tagged by `type`. The editor
  *     keeps them in separate `elements` + `flows` arrays for clean
  *     mutators + paint loops. `toJson` interleaves elements first,
- *     then flows (M2.c parser is order-agnostic on the wire).
+ *     then flows (the engine parser is order-agnostic on the wire).
  *     `fromJson` buckets them back out.
  *  2. **`isDefault` ⇄ `default` migration** -- the editor's flow
  *     model carries `isDefault: true` on the flow itself. The wire
@@ -82,7 +82,7 @@ export interface ToJsonOptions {
  *     gateway). `toJson` scans flows with `isDefault === true` +
  *     stamps `default` on their sources + drops the flag from the
  *     wire flow. `fromJson` reads `default` off elements + stamps
- *     `isDefault` on the matching flow. This matches M2.c's
+ *     `isDefault` on the matching flow. This matches the engine's
  *     `WF.GATEWAY_DEFAULT_*` validator rules (default lives on the
  *     gateway in the wire format).
  *  3. **`condition` shape adapter** -- the editor's flow model
@@ -94,7 +94,7 @@ export interface ToJsonOptions {
  *     introduce non-EL flavours will need to preserve the tag.
  *
  * **`in`/`out` synthesis**: the wire shape carries each element's
- * incoming + outgoing flow ids explicitly (the M2.c parser uses
+ * incoming + outgoing flow ids explicitly (the engine parser uses
  * these as the adjacency model). `toJson` derives them from the
  * flows array + emits `in: [...]`/`out: [...]` on each element.
  * `fromJson` IGNORES them (the separate sequenceFlow rows are
@@ -168,7 +168,7 @@ export function bpmnLiteModelToWire(
         /**
          * **Task-variant ⇄ wire-type encoding**.
          *
-         * The M2.c BPMN-Lite parser dispatches the task family on
+         * The engine's BPMN-Lite parser dispatches the task family on
          * the full wire `type` string (`userTask`, `serviceTask`,
          * `task`), not on a top-level `variant` slot -- see the
          * docblock on `WIRE_TASK_TYPE_TO_VARIANT` in `fromJson.ts`.
@@ -176,9 +176,9 @@ export function bpmnLiteModelToWire(
          * `{type: 'task', variant: 'userTask'|'serviceTask'}`, the
          * wire body must emit `type: <variant>` and NOT a separate
          * `variant` slot. Emitting the pre-fix shape
-         * `{type: 'task', variant: 'userTask'}` would have M2.c read
+         * `{type: 'task', variant: 'userTask'}` would have the engine read
          * a plain `TaskAst`, silently losing the user-task runtime
-         * semantics (no Inbox task creation on engine park).
+         * semantics (no task-inbox entry when the engine parks).
          *
          * `wireType` defaults to the editor kind; for tasks with a
          * recognised variant we substitute the variant name as the
@@ -211,7 +211,7 @@ export function bpmnLiteModelToWire(
          *
          * Suppress the `variant` slot when it was encoded into the
          * wire type above -- emitting both would be redundant + the
-         * M2.c parser ignores `variant` on tasks anyway, but the
+         * engine parser ignores `variant` on tasks anyway, but the
          * extra noise would clutter hand-edited bodies.
          */
         if (element.variant !== undefined && !suppressVariantSlot) {
@@ -225,8 +225,8 @@ export function bpmnLiteModelToWire(
         }
         /**
          * Typed-event slots. `subtype` is a REAL wire field (unlike the
-         * task `variant`, which encodes into the wire type) -- the M2.c
-         * parser's `buildIntermediateCatchEvent` dispatches solely on
+         * task `variant`, which encodes into the wire type) -- the
+         * engine parser's `buildIntermediateCatchEvent` dispatches solely on
          * it, so it must survive verbatim.
          *
          * Blank definition blocks are OMITTED: a freshly-dropped, not-

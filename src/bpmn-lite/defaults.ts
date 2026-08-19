@@ -111,7 +111,7 @@ export const PALETTE_KINDS: readonly BpmnElementKind[] = [
  *
  * **Why per-subtype tiles instead of one "Catch Event" tile the author
  * then re-types in the property panel**: this epic exists because
- * post-M2.f constructs were unauthorable, and a generic tile just
+ * newer constructs were unauthorable, and a generic tile just
  * relocates the discovery problem into a dropdown. bpmn.io's
  * create-anything popup lists the typed variants for the same reason.
  * The cost is one optional `subtype` argument threaded through
@@ -255,9 +255,9 @@ export function defaultDirectionFor(
  * the property panel always has a bound object to edit rather than
  * having to materialise one on first keystroke.
  *
- * These blanks are deliberately NOT emitted on the wire -- the M3.3.g
+ * These blanks are deliberately NOT emitted on the wire -- the
  * serializer omits an all-blank block, so a dropped-but-unconfigured
- * timer serialises as `{type, subtype:"timer"}`. The M2.c parser
+ * timer serialises as `{type, subtype:"timer"}`. The engine parser
  * tolerates that (`buildTimerDefinition` returns null and the AST gets
  * an empty-valued definition); the deploy-time validators are what
  * tell the author the timer needs a value. Emitting `{"duration": ""}`

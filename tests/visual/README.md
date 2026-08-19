@@ -1,6 +1,6 @@
 # Visual regression suite
 
-M3.2.i scaffold for catching unintended UI drift in the `@coolms/designer`
+A scaffold for catching unintended UI drift in the `@coolms/designer`
 canvas substrate, shell composition, property-panel
 layout, and DMN table editor via per-scenario PNG
 snapshots.
@@ -51,7 +51,7 @@ This is necessary because:
 The first developer / CI runner on a given platform produces the
 golden; subsequent runs on the same platform compare against it.
 Cross-platform consistency would require a heavyweight font-pack
-(`fontconfig` overrides + bundled fonts) which is out of M3.2 scope.
+(`fontconfig` overrides + bundled fonts) which is out of scope.
 
 ## Why goldens are not committed up-front
 

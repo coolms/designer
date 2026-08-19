@@ -41,13 +41,12 @@ interface DmnDrdEvents extends Record<string, unknown> {
 }
 
 /**
- * M4.j DMN DRD editor — the fourth surface on the `@coolms/designer`
- * substrate (after the DMN table, M3.3 BPMN-Lite, M3.5
- * state-machine). This phase ships the **render half**: it holds an
- * immutable {@link DmnDrdModel} and paints it onto the shared canvas —
- * Decision/InputData nodes joined by InformationRequirement arrows.
- * Palette + connect-mode + property panel + the DMN-XML serializer +
- * the Angular wrapper land in later slices (each its own ship).
+ * DMN DRD editor — the fourth surface on the `@coolms/designer`
+ * substrate, after the DMN table, BPMN-Lite and the state machine.
+ * It owns the render half: an immutable {@link DmnDrdModel} painted
+ * onto the shared canvas — Decision/InputData nodes joined by
+ * InformationRequirement arrows. The palette, connect mode, property
+ * panel and the DMN-XML serializer compose around it.
  *
  * **Two paint groups inside `svgGroup`, in document order** (mirroring
  * the state-machine editor): a `…__drd-requirements` group (edges + the

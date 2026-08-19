@@ -7,10 +7,10 @@ import type {
 } from './types.js';
 
 /**
- * M4.j (slice 4) DMN 1.3 DRD XML round-trip serializer for the
+ * DMN 1.3 DRD XML round-trip serializer for the
  * {@link DmnDrdModel}.
  *
- * Parallels the state-machine YAML serializer + the M3.2.g
+ * Parallels the state-machine config serializer + the
  * decision-table {@link writeDmnXml} — but for the *graph* (Decision +
  * InputData nodes joined by InformationRequirement edges) rather than a
  * single table body.

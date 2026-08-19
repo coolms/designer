@@ -21,7 +21,7 @@ import type { BpmnElement, BpmnElementKind } from '../../../src/bpmn-lite/index.
  * Inclusive (OR) + event-based gateways, and the `direction` field they
  * share with the parallel gateway.
  *
- * `direction` is the load-bearing bit. The M2.c parser reads it on
+ * `direction` is the load-bearing bit. The engine parser reads it on
  * parallel + inclusive gateways and DEFAULTS a missing value to
  * `diverging` -- its own comment calls that "a safe lie", leaving
  * `GatewayDegreeRule` to report the real problem at deploy. So a join

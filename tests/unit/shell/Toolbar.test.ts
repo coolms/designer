@@ -126,7 +126,7 @@ describe('Toolbar', () => {
             expect(button('zoom-in')).not.toBeNull();
         });
 
-        it('mounts bi-* icon spans on undo/redo/zoom-in/zoom-out (M3.3.m F-3)', () => {
+        it('mounts bi-* icon spans on undo/redo/zoom-in/zoom-out', () => {
             // Pins the platform-icon contract: undo/redo/zoom-in/zoom-out
             // each render a `<i class="bi bi-{glyph}" aria-hidden="true">`
             // matching the Image Editor top-toolbar so the BPMN designer

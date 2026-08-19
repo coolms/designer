@@ -27,7 +27,7 @@ import { WaypointDragController } from './WaypointDragController.js';
 import type { BpmnElement, BpmnSequenceFlow } from './types.js';
 
 /**
- * Options for constructing the M3.3.f {@link BpmnLitePropertyPanel}.
+ * Options for constructing a {@link BpmnLitePropertyPanel}.
  */
 export interface BpmnLitePropertyPanelOptions {
     /**
@@ -47,7 +47,7 @@ export interface BpmnLitePropertyPanelOptions {
      * Override the field registry. Defaults to a fresh registry
      * pre-populated with the built-in field renderers via
      * {@link registerBuiltinFields}. Surface authors that want
-     * additional field types (e.g. M3.3.i decisionKey picker) pass
+     * additional field types (e.g. a decisionKey picker) pass
      * a custom registry with the extras registered.
      */
     readonly registry?: FieldRegistry;
@@ -59,9 +59,8 @@ export interface BpmnLitePropertyPanelOptions {
     readonly readOnly?: boolean;
     /**
      * Cross-reference registry handed to each field renderer's
-     * context. Defaults to a fresh empty XRefs -- M3.3.f doesn't
-     * ship a field that consults xrefs (the decisionKey +
-     * handler-key autocomplete is the first real consumer).
+     * context. Defaults to a fresh empty XRefs -- the decisionKey
+     * and handler-key autocompletes are the fields that consult it.
      */
     readonly xrefs?: XRefs;
 }
@@ -79,16 +78,16 @@ interface MountedField {
  * dispatches single-property commands through the editor's command
  * stack on every field change.
  *
- * **Why a BPMN-Lite-specific panel, not the generic M3.2.e
+ * **Why a BPMN-Lite-specific panel, not the generic
  * PropertyPanel**: the generic panel drives a {@link Graph} model
- * via {@link Graph.updateElement}. The M3.3 BPMN-Lite editor holds
+ * via {@link Graph.updateElement}. The BPMN-Lite editor holds
  * its own {@link BpmnLiteModel} directly, NOT a Graph. Building a
  * Graph adapter would require mirroring `BpmnElement`/`BpmnSequenceFlow`
  * onto Graph's `Element` shape both ways -- a lot of bridge code
- * for no behaviour benefit at M3.3.f. The parallel panel reuses the
- * field renderers + descriptor types verbatim; only the
- * Graph-binding seam is rewritten. M3.3.g+ may decide to bridge to
- * Graph if surface code converges; until then, parallel is cleaner.
+ * for no behaviour benefit. The parallel panel reuses the field
+ * renderers + descriptor types verbatim; only the Graph-binding
+ * seam is rewritten. Bridging to Graph makes sense if the surfaces
+ * converge; until then, parallel is cleaner.
  *
  * **Lifecycle**:
  *  1. On construction: subscribes to `selection.onChange` +
@@ -108,9 +107,8 @@ interface MountedField {
  *     mid-edit).
  *
  * **Empty / no-schema render**: the panel leaves the host empty
- * when no target is selected OR when the schema is empty. M3.3.h's
- * Angular wrapper can overlay its own "Select something to edit"
- * hint above the host.
+ * when no target is selected OR when the schema is empty. A host
+ * can overlay its own "Select something to edit" hint above it.
  *
  * **Dispose contract**: tears down fields + WaypointDragController
  * + unsubscribes from selection + editor. Idempotent. The panel
@@ -360,8 +358,8 @@ export class BpmnLitePropertyPanel {
         }
         // If THIS panel sourced the change (echo), don't reset the
         // field the user is mid-edit on. Other panels in a
-        // multi-panel future may still want the refresh; M3.3.f
-        // ships a single-panel model so we skip the whole refresh.
+        // multi-panel future may still want the refresh; the
+        // single-panel model lets us skip it entirely.
         if (this.inFlightCommandTargetId === target.id) return;
         for (const field of this.mountedFields) {
             const v = readFieldValue(values, field.descriptor.key);

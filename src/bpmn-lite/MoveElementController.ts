@@ -108,16 +108,16 @@ interface DragState {
  * dialog component alongside Selection + Connect + Pan + Waypoint
  * controllers.
  *
- * **Why drag-to-move did not ship at M3.3.d/e**: M3.3.d delivered
- * palette drag-to-CREATE (elements appear from the palette), M3.3.e
- * delivered drag-to-CONNECT (sequence-flow edges between existing
+ * **Why drag-to-move arrived after the other drags**: the palette
+ * delivered drag-to-CREATE (elements appear from the palette) and
+ * connect mode delivered drag-to-CONNECT (sequence-flow edges between existing
  * elements) + waypoint-drag-to-REROUTE (flow path waypoints). The
  * obvious-in-hindsight gap was drag-to-MOVE -- once an element was
  * placed, it was immovable except by editing its x/y via the property
  * panel. F-7.1 closes the gap.
  *
  * **Behaviour**:
- *  - Pointerdown on an element `<g>` (matched via the M3.3.f
+ *  - Pointerdown on an element `<g>` (matched via the
  *    `data-element-id` attribute) captures the element's pre-drag
  *    position + cursor world coords. The drag starts as a "candidate"
  *    -- the controller doesn't begin painting transient transforms
@@ -132,7 +132,7 @@ interface DragState {
  *    pre- + post-positions through the editor's command stack so
  *    undo/redo work atomically. The repaint triggered by the command's
  *    apply() also redraws the connected flows at the new geometry --
- *    the M3.3.c {@link computeOrthogonalRoute} re-routes each
+ *    {@link computeOrthogonalRoute} re-routes each
  *    connected flow based on the element's NEW source/target box.
  *    Manual waypoints (user-rerouted) are preserved as-is.
  *  - Pointerup BEFORE arming (no drag past dead-zone) is treated as
@@ -155,17 +155,16 @@ interface DragState {
  * (renderers rebuild the `<g>` tree from scratch). Per-element
  * listeners would need re-binding on every repaint. Listening at the
  * canvas root + walking `closest('[data-element-id]')` is robust
- * across repaints + matches the M3.3.f {@link BpmnLiteSelectionController}
+ * across repaints + matches the {@link BpmnLiteSelectionController}
  * pattern.
  *
  * **What this controller does NOT do** (deferred):
- *  - **Snap-to-grid** -- raw cursor world coords. M3.2.b `Snap` utility
+ *  - **Snap-to-grid** -- raw cursor world coords. The `Snap` utility
  *    can wire up later if the property panel surfaces grid affordances.
- *  - **Multi-select drag** -- single-element only. F-7.x or M3.4 will
- *    add marquee + multi-target drag.
+ *  - **Multi-select drag** -- single-element only. Marquee +
+ *    multi-target drag land later.
  *  - **Drop-onto-container reparenting** -- elements have no parent
- *    concept yet at the BPMN-Lite level (subProcess containment is
- *    M3.4+).
+ *    concept yet at the BPMN-Lite level.
  *  - **Auto-scroll** -- drag near a viewport edge doesn't scroll the
  *    canvas. The F-5 wheel-pan + arrow-key pan already give the user
  *    that affordance via parallel pointer paths.
@@ -404,7 +403,7 @@ export class MoveElementController {
         // re-route the flows continuously during drag; deferred.)
         //
         // **The element's own transform carries its POSITION**, not
-        // just a drag offset. The M3.3.b nodeRenderers set this to
+        // just a drag offset. The nodeRenderers set this to
         // `translate(position.x, position.y)` on every repaint. If we
         // overwrite it with just the delta, the element teleports to
         // world (delta.x, delta.y) -- effectively to the upper-left

@@ -33,7 +33,7 @@ export interface BpmnLiteKeyboardControllerOptions {
      */
     readonly zoomStep?: number;
     /**
-     * Read-only mode (M3.3.m.F-5). When true, Delete / Backspace
+     * Read-only mode. When true, Delete / Backspace
      * become no-ops; arrow-key pan + +/-/0 zoom hotkeys still work
      * (viewing a read-only diagram still benefits from navigation).
      * Mirrors the shell Toolbar's `readOnly` flag — same intent.
@@ -51,7 +51,7 @@ export interface BpmnLiteKeyboardControllerOptions {
  * events and dispatches the matching command for the current
  * selection.
  *
- * **Bindings** (M3.3 minimum viable set; future ships extend):
+ * **Bindings** (the minimum viable set; future ships extend):
  *  - `Delete` / `Backspace` → if a flow is selected, dispatch a
  *    {@link DeleteFlowCommand}; if an element is selected, dispatch
  *    a {@link DeleteElementCommand} (which cascades incident flows).

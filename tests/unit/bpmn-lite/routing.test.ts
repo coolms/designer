@@ -40,8 +40,8 @@ describe('computeOrthogonalRoute', () => {
 
             // F-7.3: leftward edges are routed via the row's bottom so they
             // don't overlap the forward flow that almost certainly runs
-            // between source and target in the same row (the M2.n
-            // verify-spine's `gw → task.enter_otp` retry-loop case). The
+            // between source and target in the same row (a
+            // verification spine's `gw → task.enter_otp` retry-loop case). The
             // straight-through Z-route the pre-F-7.3 router emitted made the
             // retry edge visually disappear under the forward `task → gw`
             // edge. The U-route lifts it out of the conflict.

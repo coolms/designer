@@ -13,8 +13,7 @@ import type { BpmnElement } from './types.js';
  *
  * **Symmetry with the table commands**: the DMN table
  * editor's 14 commands followed the same pattern -- thin Command
- * wrappers over editor-side mutators that emit `change`. M3.3.d
- * picks up the convention.
+ * wrappers over editor-side mutators that emit `change`.
  *
  * **Why the command holds the full element + its id**: the user
  * may add the element, undo, then add a different element -- the

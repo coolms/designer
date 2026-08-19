@@ -14,7 +14,7 @@ import type { BpmnElement } from '../../../src/bpmn-lite/types.js';
  * mutator. The companion {@link MoveElementController} tests live
  * separately (they need the SVG + pointer-event plumbing).
  */
-describe('MoveElementCommand (M3.3.m F-7.1)', () => {
+describe('MoveElementCommand', () => {
     let editor: BpmnLiteEditor;
     let stack: CommandStack;
     let host: HTMLElement;

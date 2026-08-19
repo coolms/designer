@@ -15,16 +15,16 @@ import { autoLayoutBpmnLite } from './autoLayout.js';
 /**
  * Errors thrown by {@link bpmnLiteJsonToModel} when the input
  * structure cannot be parsed into a {@link BpmnLiteModel}. The
- * editor's M3.3.h Angular wrapper catches these + surfaces them in
+ * editor's host application catches these + surfaces them in
  * a banner so the user can hand-edit the JSON back into shape.
  *
- * The M2.c parser is the AUTHORITATIVE validator -- it produces
+ * The engine parser is the AUTHORITATIVE validator -- it produces
  * structured `WF.*` violation codes for engine-level issues. This
  * client-side parser only catches shape errors that would prevent
  * the editor from MOUNTING the model at all (e.g. missing required
  * keys, wrong types on required fields). Engine-semantic violations
  * (orphan elements, missing start event, gateway condition errors)
- * are M2.c's job at deploy time.
+ * are the engine's job at deploy time.
  */
 export class BpmnLiteParseError extends Error {
     override readonly name = 'BpmnLiteParseError';
@@ -38,16 +38,16 @@ export class BpmnLiteParseError extends Error {
  * the wire `elements` array tagged with one of these become
  * {@link BpmnElement} entries; items tagged `sequenceFlow` become
  * {@link BpmnSequenceFlow} entries. Items tagged with anything else
- * (the M2.c parser supports a wider taxonomy: `userTask`,
+ * (the engine parser supports a wider taxonomy: `userTask`,
  * `serviceTask`, `messageEvent` variants, etc.) are TOLERATED but
  * dropped from the editor model -- the wire shape is preserved
  * verbatim in `processExtras.unsupportedElements` so a re-save
  * round-trips them losslessly.
  *
  * The choice to NOT mount unsupported elements (vs e.g. drawing
- * them as "?" boxes) keeps the editor's invariants clean -- M3.3.b
- * renderers + M3.3.f schemas only handle the closed set. M3.3.h-i
- * will widen this set as variant pickers land.
+ * them as "?" boxes) keeps the editor's invariants clean -- the
+ * renderers and the schemas only handle the closed set. The set
+ * widens as variant pickers land.
  */
 const SUPPORTED_ELEMENT_KINDS: ReadonlySet<BpmnElementKind> = new Set<
     BpmnElementKind
@@ -110,7 +110,7 @@ function readInterrupting(item: Record<string, unknown>): boolean | null {
  * whose `subtype` is outside this set (or missing) is NOT promoted into
  * the model -- it falls through to `unsupportedElements` and round-trips
  * verbatim, exactly as it did before this kind was supported. That
- * matters because the M2.c parser hard-fails an
+ * matters because the engine parser hard-fails an
  * `intermediateCatchEvent` with an unknown/missing `subtype`
  * (`WF.UNKNOWN_CONSTRUCT_TYPE`); silently coercing it to a default
  * subtype here would rewrite the author's body into something that
@@ -151,18 +151,18 @@ function readTimerDefinition(raw: unknown): BpmnTimerDefinition | null {
  *   - `type: "userTask"`    → `UserTaskAst`    (engine parks token, mints
  *                             a TaskInstance, awaits Inbox claim/complete)
  *   - `type: "serviceTask"` → `ServiceTaskAst` (engine invokes the
- *                             registered handler via M2.j ServiceTaskInvoker)
+ *                             registered service-task handler)
  *   - `type: "task"`        → `TaskAst`        (plain pass-through, no
  *                             engine-side side effect)
  *
- * The M2.c parser does NOT consult a `variant` field on task elements
+ * The engine parser does NOT consult a `variant` field on task elements
  * to disambiguate them -- `variant` on the wire is reserved for
  * sub-flavours of start/end events (`message`, `timer`, `none`).
  * Trying to emit `{type: "task", variant: "userTask"}` from the
- * editor (the pre-fix shape) makes M2.c read a plain TaskAst,
+ * editor (the pre-fix shape) makes the engine read a plain TaskAst,
  * silently losing the user-task runtime semantics.
  *
- * The M3.3.j architectural decision keeps {@link BpmnElementKind} a
+ * The design decision here keeps {@link BpmnElementKind} a
  * closed 5-kind set + pivots task subtypes on a top-level `variant`
  * slot in the EDITOR model. This map is the translation layer at the
  * serializer seam that bridges the two shapes:
@@ -174,7 +174,7 @@ function readTimerDefinition(raw: unknown): BpmnTimerDefinition | null {
  * Both `fromJson` (this file) + `toJson` (the inverse path) consult
  * this map. Adding a new task subtype (e.g. `manualTask`,
  * `scriptTask`, `sendTask`, `receiveTask`, `businessRuleTask` when
- * M2.c's `ElementKind` enum widens to support them) = (1) add the
+ * the engine's `ElementKind` enum widens to support them) = (1) add the
  * entry here + (2) widen the {@link BpmnElement.variant} string union
  * docblock + (3) extend the {@link BpmnLiteSchemaProvider} variant
  * schemas.
@@ -234,7 +234,7 @@ const WIRE_TASK_TYPE_TO_VARIANT: Readonly<Record<string, string>> = {
  * is preserved on the element's extras (via the implicit
  * pass-through of unrecognised wire fields -- BUT `default` itself
  * is recognised, so it's consumed; orphan defaults effectively
- * drop). M2.c validation will catch the deeper structural issue on
+ * drop). Engine validation catches the deeper structural issue on
  * deploy.
  */
 export function bpmnLiteJsonToModel(text: string): BpmnLiteModel {
@@ -252,7 +252,7 @@ export function bpmnLiteJsonToModel(text: string): BpmnLiteModel {
 /**
  * Lower-level entry point -- accepts a pre-parsed object (e.g. the
  * output of a JSONC stripper) without re-parsing. Useful for tests
- * + future M3.3.h+ shipping that consumes JSON from a fetch
+ * + hosts that consume JSON from a fetch
  * response where the body is already an object.
  */
 export function bpmnLiteWireToModel(input: unknown): BpmnLiteModel {
@@ -409,7 +409,7 @@ export function bpmnLiteWireToModel(input: unknown): BpmnLiteModel {
     // diagram sidecar. `autoLayoutBpmnLite` no-ops when ANY element
     // already has non-default position (i.e. the wire body had a
     // diagram), so this is safe to call unconditionally. Bodies
-    // hand-authored at M2.n for engine-only execution finally get
+    // hand-authored for engine-only execution finally get
     // a sensible left-to-right cascade instead of stacking at the
     // canvas origin.
     const laidOut = autoLayoutBpmnLite(elements, flows);
@@ -507,8 +507,8 @@ function readElement(
     const label =
         typeof item['label'] === 'string' ? item['label'] : undefined;
     /**
-     * promote `variant`, `implementation`, `formKey` to
-     * top-level slots on {@link BpmnElement}. The M2.c BPMN-Lite
+     * Promote `variant`, `implementation` and `formKey` to
+     * top-level slots on {@link BpmnElement}. The engine's BPMN-Lite
      * parser already places them at the top level on the wire; the
      * editor used to leak them into `extras` because the property
      * panel didn't surface them. Now the schema provider's
@@ -781,7 +781,7 @@ function readSequenceFlow(
 
 /**
  * Read the wire-format condition shape `{language, expression}` +
- * project to the editor's bare string. M3.3.g drops the language
+ * project to the editor's bare string. The serializer drops the language
  * tag on the floor -- the engine speaks only the workflow EL
  * flavour. Future ships that introduce additional flavours will
  * need to preserve the tag (probably as an `extras.conditionLanguage`

@@ -12,11 +12,11 @@ import {
 import type { DmnDrdModel } from '../../../../src/dmn/drd/index.js';
 
 /**
- * M4.j slice-2 interaction-layer tests — the three property-panel scopes
+ * Interaction-layer tests — the three property-panel scopes
  * (element / requirement / diagram), the kind-dependent element schema,
  * the editing commands (element name + decision-logic ref, requirement
  * endpoints, diagram key) with undo, and the panel→command end-to-end
- * wiring through real field-change events. Mirrors the M3.5.c
+ * wiring through real field-change events. Mirrors the
  * state-machine interaction coverage.
  */
 describe('DmnDrdEditor interaction layer', () => {

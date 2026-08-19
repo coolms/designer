@@ -8,7 +8,7 @@ import {
 import type { BpmnElementKind, BpmnEventSubtype } from './types.js';
 
 /**
- * Options for constructing the M3.3.d {@link Palette}.
+ * Options for constructing a {@link Palette}.
  */
 export interface PaletteOptions {
     /**
@@ -70,16 +70,15 @@ interface DragState {
  * with `pointer-events: none` so the cursor still triggers
  * pointerup on whatever's underneath.
  *
- * **What M3.3.d does NOT do** (deferred):
- *  - **Snap-to-grid on drop** -- M3.3.d drops at the raw cursor
- *    position. The M3.2.b `Snap` utility wires up at M3.3.e+ once
- *    drag-to-move exists.
+ * **What the palette does NOT do**:
+ *  - **Snap-to-grid on drop** -- it drops at the raw cursor
+ *    position. The `Snap` utility wires up once drag-to-move
+ *    exists.
  *  - **Pre-validate the drop point** (e.g. "can't drop a start
- *    event inside a subprocess that already has one") -- M2.c
- *    validates on deploy; the editor lets the user mid-edit
- *    freely.
- *  - **Element preview on hover** -- the ghost is text-only at
- *    M3.3.d. the polish ship adds shape previews.
+ *    event inside a subprocess that already has one") -- the
+ *    engine validates on deploy; the editor lets the author work
+ *    freely mid-edit.
+ *  - **Element preview on hover** -- the drag ghost is text-only.
  *  - **Keyboard-driven element add** -- click-to-arm + click-to-
  *    place is a future affordance.
  *
@@ -272,8 +271,8 @@ export class Palette {
 }
 
 /**
- * polish-bundle (F-2) -- inline SVG icons that mirror each
- * kind's canvas paint (M3.3.b renderers). The author sees the same
+ * Inline SVG icons that mirror each kind's canvas paint. The
+ * author sees the same
  * shape on the palette tile + the drag ghost + the dropped element.
  *
  * **Why hand-authored SVG strings, not a sprite sheet or external

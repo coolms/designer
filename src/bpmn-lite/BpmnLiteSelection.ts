@@ -29,7 +29,7 @@ interface BpmnLiteSelectionEvents extends Record<string, unknown> {
  * for "what's the user currently focused on" within a single
  * editor instance.
  *
- * **Why per-editor, not global**: matches the M3.2.e
+ * **Why per-editor, not global**: matches the
  * {@link Selection} pattern -- each editor instance carries its
  * own selection so multi-editor pages (e.g. a side-by-side
  * compare view) don't fight over a global focus.
@@ -40,14 +40,14 @@ interface BpmnLiteSelectionEvents extends Record<string, unknown> {
  * model doesn't keep stale references.
  *
  * **What this class does NOT do** (deferred):
- *  - **Multi-select** -- M3.3.f ships single-target only. Multi-
+ *  - **Multi-select** -- single-target only for now. Multi-
  *    select on Shift+click + the property-panel "common fields"
  *    merge land in a later ship.
  *  - **Selection history** -- no back/forward navigation through
  *    prior selections. The {@link CommandStack} is the source of
  *    truth for what-was-selected-at-this-undo-step (each command
- *    can capture + restore selection if it wants -- M3.3.f's
- *    commands don't, but they're free to in the future).
+ *    can capture + restore selection if it wants -- today's
+ *    commands don't, but they're free to).
  */
 export class BpmnLiteSelection {
     private current: BpmnLiteSelectionTarget | null = null;

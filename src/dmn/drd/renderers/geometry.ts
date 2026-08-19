@@ -1,11 +1,11 @@
 import type { DmnDrdElement, DmnDrdPosition } from '../types.js';
 
 /**
- * Geometry helpers for the M4.j DRD requirement-edge renderer.
+ * Geometry helpers for the DRD requirement-edge renderer.
  *
  * A DRD renders as a directed graph of node boxes joined by
  * information-requirement arrows. Mirroring the state-machine
- * geometry, M4.j draws requirements as **straight segments trimmed to
+ * geometry, requirements draw as **straight segments trimmed to
  * the node borders** — simple, decoupled from the bpmn-lite orthogonal
  * router, and the right baseline for a requirements diagram. Orthogonal
  * routing can layer on later without changing the renderer contract.

@@ -243,7 +243,7 @@ export class Graph {
     /**
      * Find the top-most node whose bounding rect contains `point` in
      * world coordinates, or `null` if none. "Top-most" = last-inserted
-     * (insertion order is the implicit z-order at M3.2.c; explicit
+     * (insertion order is the implicit z-order; explicit
      * z-ordering lands when a surface needs it).
      *
      * Edges are NOT hit-tested here -- they need polyline proximity

@@ -17,12 +17,12 @@ import type { BpmnElement, BpmnPosition } from '../types.js';
  *
  * **What this algorithm does NOT do**:
  *  - Avoid obstacles (other elements that sit between source and
- *    target). M3.3.c routes straight through; the connect
+ *    target). The router goes straight through; the connect
  *    mode + a future obstacle-aware routing ship will replace this.
  *  - Hop over crossing edges (the BPMN convention for crossings).
  *  - Snap to a grid (the `Snap` utility lives on the
  *    palette / drag path, not the auto-route).
- *  - Edge labels (M3.3.f when the property panel surfaces flow
+ *  - Edge labels (the property panel surfaces flow
  *    conditions; the route is unaware of label placement).
  *
  * **Why Z-route over straight diagonal**: matches BPMN modeler
@@ -33,7 +33,7 @@ import type { BpmnElement, BpmnPosition } from '../types.js';
  *
  * **Why a single bend, not Z-with-two-bends**: a single midpoint
  * bend handles the common case (left-to-right + top-to-bottom
- * adjacency) without overengineering. M3.3.e connect mode + the
+ * adjacency) without overengineering. Connect mode + the
  * obstacle-aware ship will introduce multi-bend routes when
  * required.
  */
@@ -90,13 +90,13 @@ const BACKWARD_EDGE_DROP_PADDING_PX = 40;
  * climb back up into target-bottom. The waypoint chain becomes a
  * U-shape rather than a straight-through Z. This avoids overlapping
  * the forward flow that almost certainly lives between source and
- * target in the same row (the M2.n verify-spine's `gw →
+ * target in the same row (a verification spine's `gw →
  * task.enter_otp` retry loop was the surfacing case: the auto-router's
  * pre-F-7.3 straight-Z route ran the retry edge directly through the
  * forward `task → gw` flow, making the loop visually unreadable). The
  * heuristic is "leftward edge = feedback loop"; legitimate left-arrow
  * flows (rare in BPMN; usually a cancellation or compensation pattern)
- * can opt out by setting manual waypoints via the M3.3.e
+ * can opt out by setting manual waypoints via the
  * `WaypointDragController`.
  *
  * **What this fix does NOT do**: detect crossing edges between

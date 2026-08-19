@@ -1,7 +1,7 @@
 /**
  * Model module -- the generic graph layer (Element + Graph + change
- * events). Surface-specific renderers (BPMN-Lite in M3.3, DMN DRD in
- * M4, State Machine in M3.5) build on this. The DMN table editor
+ * events). The surface-specific renderers (BPMN-Lite, DMN DRD,
+ * State Machine) build on this. The DMN table editor
  * uses a different shape and lives in its own module.
  *
  * Public package surface: nothing here is re-exported from

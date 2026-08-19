@@ -1,7 +1,7 @@
 import type { BpmnLiteEditor } from './BpmnLiteEditor.js';
 
 /**
- * Options for constructing the M3.3.f {@link BpmnLiteSelectionController}.
+ * Options for constructing a {@link BpmnLiteSelectionController}.
  */
 export interface BpmnLiteSelectionControllerOptions {
     readonly editor: BpmnLiteEditor;
@@ -22,7 +22,7 @@ export interface BpmnLiteSelectionControllerOptions {
  *    above the cursor first).
  *  - Pointerdown on empty canvas (no data attribute matched) clears
  *    the selection.
- *  - Coexistence with M3.3.e {@link ConnectMode}: the controller
+ *  - Coexistence with {@link ConnectMode}: the controller
  *    skips its own work when an event was handled at the SVG-root
  *    level by ConnectMode (left-button pointerdowns on elements
  *    are already consumed by ConnectMode + start a connection
@@ -33,14 +33,14 @@ export interface BpmnLiteSelectionControllerOptions {
  *    (so the user sees the element light up + the property panel
  *    opens), AND ConnectMode starts its drag in parallel -- the
  *    user gets both affordances at once, no conflict.
- *  - Coexistence with M3.3.e {@link WaypointDragController}: the
+ *  - Coexistence with {@link WaypointDragController}: the
  *    waypoint handles call `ev.stopPropagation()` on pointerdown
  *    so the canvas-level listener never sees the down -- a click
  *    on a handle does NOT change selection.
  *
  * **What this controller does NOT do** (deferred):
- *  - Multi-select on Shift+click (M3.3.f ships single-target).
- *  - Marquee selection (M3.3.h+).
+ *  - Multi-select on Shift+click (single-target only for now).
+ *  - Marquee selection.
  *  - Keyboard navigation (arrow keys between selected elements).
  *  - Right-click context menu surfacing.
  *

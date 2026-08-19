@@ -15,7 +15,7 @@ import type {
  * polish-bundle (F-4) — pins the cascade semantics + undo
  * roundtrip for {@link DeleteElementCommand}.
  */
-describe('DeleteElementCommand (M3.3.m F-4)', () => {
+describe('DeleteElementCommand', () => {
     let editor: BpmnLiteEditor;
     let stack: CommandStack;
     let host: HTMLElement;

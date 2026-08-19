@@ -10,7 +10,7 @@
  * interact via {@link Editor} only.
  *
  * That separation is deliberate: it lets us evolve the canvas API
- * aggressively through M3.2.b-j without breaking npm consumers.
+ * aggressively without breaking npm consumers.
  */
 
 export { Canvas, type CanvasOptions } from './Canvas.js';

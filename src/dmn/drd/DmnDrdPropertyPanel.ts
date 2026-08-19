@@ -22,7 +22,7 @@ export interface DmnDrdPropertyPanelOptions {
     /** Host element to mount field controls into (typically the shell sidebar's property host). */
     readonly host: HTMLElement;
     readonly editor: DmnDrdEditor;
-    /** Override the schema provider (defaults to the M4.j built-in). */
+    /** Override the schema provider (defaults to the built-in). */
     readonly schemas?: DrdSchemaProvider;
     /** Override the field registry (defaults to a fresh one with the built-in field renderers). */
     readonly registry?: FieldRegistry;
@@ -40,7 +40,7 @@ interface MountedField {
 }
 
 /**
- * M4.j (slice 2) DMN DRD property panel — the editing surface. Mounts
+ * DMN DRD property panel — the editing surface. Mounts
  * field renderers based on the current {@link DrdSelection} and dispatches
  * single-property commands through the editor's {@link CommandStack} on
  * every field change. Three scopes:

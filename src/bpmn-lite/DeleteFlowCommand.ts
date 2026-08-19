@@ -16,7 +16,7 @@ import type { BpmnSequenceFlow } from './types.js';
  *
  * **Label format**: simply "Delete Flow" — flows don't carry a
  * human-readable kind label (they're all sequence flows in
- * BPMN-Lite). A future M3.3.f.2 ship that adds named flow kinds
+ * BPMN-Lite). A future ship that adds named flow kinds
  * (message flow, association) can extend this with a label arg.
  */
 export class DeleteFlowCommand implements Command {

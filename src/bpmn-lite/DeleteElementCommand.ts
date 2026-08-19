@@ -7,8 +7,8 @@ import type { BpmnElement, BpmnSequenceFlow } from './types.js';
  * polish-bundle (F-4) -- delete a BPMN-Lite element + every
  * flow incident to it (cascade) as a single undoable step. The
  * docblock on {@link BpmnLiteEditor.removeElement} called this out
- * as deferred to M3.3.e: "DeleteElementCommand will handle the
- * cascade + emit a single coalesced change". F-4 lands it.
+ * as deferred: "DeleteElementCommand will handle the cascade +
+ * emit a single coalesced change". This is that command.
  *
  * **Cascade semantics**: `apply()` captures every flow whose
  * `source === element.id || target === element.id`, removes those

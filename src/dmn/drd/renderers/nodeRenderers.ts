@@ -2,7 +2,7 @@ import type { DmnDrdElement } from '../types.js';
 import { svgEl, SVG_NS } from './svg.js';
 
 /**
- * M4.j DRD node renderers — one pure function per {@link
+ * DRD node renderers — one pure function per {@link
  * DmnDrdElement} kind. Same contract as the place renderer: take a
  * node + the document the SVG is created in, return the root `<g>` the
  * editor appends into the elements paint group. No state; geometry +

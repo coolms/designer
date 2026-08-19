@@ -5,11 +5,11 @@
  * the {@link FieldRegistry} and mounts the resulting field instances.
  *
  * Field descriptors are JSON-friendly so future ships can persist
- * them via tenant config or fetch them from the backend (M3.2.h
- * Angular wrapper anticipates the latter for tenant-extensible
+ * them via tenant config or fetch them from the backend (a
+ * framework wrapper anticipates the latter for tenant-extensible
  * schemas).
  *
- * Built-in `type` values at M3.2.e: `text`, `textarea`, `select`,
+ * Built-in `type` values: `text`, `textarea`, `select`,
  * `el-expression`, `boolean`. Surface authors can register additional
  * types via {@link FieldRegistry.register} -- the registry's lookup
  * fails fast at panel-mount time if the schema references an
@@ -77,8 +77,8 @@ export interface ElExpressionFieldDescriptor extends FieldDescriptorBase {
     readonly placeholder?: string;
     /**
      * Expression-language flavour hint. Currently informational only
-     * (the renderer is plain monospace input). M3.3+ can add
-     * real EL syntax highlighting via a future plugin point.
+     * (the renderer is plain monospace input). Real EL syntax
+     * highlighting can arrive via a future plugin point.
      */
     readonly elFlavour?: 'common' | 'workflow';
 }

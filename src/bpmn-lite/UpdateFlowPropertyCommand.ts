@@ -7,7 +7,7 @@ import type { BpmnSequenceFlow } from './types.js';
  * for editing. Locked at compile time to keep `id` / `source` /
  * `target` / `waypoints` off-limits to the panel:
  *  - `id` mutations break command + cross-reference identity.
- *  - `source` / `target` mutations are reattach operations -- M3.3.h+.
+ *  - `source` / `target` mutations are reattach operations.
  *  - `waypoints` mutations belong to {@link UpdateFlowWaypointsCommand}
  *    which captures + restores the full chain.
  *
@@ -29,8 +29,8 @@ export type EditableFlowPropertyKey = 'condition' | 'isDefault';
  * handles scalar conditions / boolean flags / future strings.
  *
  * **Label format**: `Edit flow <propertyKey>` -- there's no element-
- * kind dispatch (sequence flows are all the same kind at M3.3.f;
- * M3.3.i+ may introduce messageFlow / association).
+ * kind dispatch (sequence flows are all the same kind today;
+ * messageFlow / association may arrive later).
  */
 export class UpdateFlowPropertyCommand implements Command {
     readonly label: string;
