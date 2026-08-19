@@ -1,4 +1,6 @@
 import { CommandStack } from '../../canvas/CommandStack.js';
+import { defaultTranslator } from '../../i18n.js';
+import type { Translator } from '../../i18n.js';
 import { Emitter } from '../../internal/Emitter.js';
 import { autoLayoutDmnDrd } from './autoLayout.js';
 import { DrdSelection } from './DrdSelection.js';
@@ -23,6 +25,12 @@ let dmnDrdEditorInstanceCounter = 0;
 
 /** Construction options for {@link DmnDrdEditor}. */
 export interface DmnDrdEditorOptions {
+    /**
+     * Resolves this component's user-visible text. Defaults to the English
+     * written at each call site, so nothing needs configuring to work.
+     */
+    readonly t?: Translator;
+
     readonly host: HTMLElement;
     /** The canvas root `<g>` (under the viewport transform) the editor paints into. */
     readonly svgGroup: SVGGElement;
@@ -58,6 +66,12 @@ interface DmnDrdEvents extends Record<string, unknown> {
  * backend DMN parser surface those on deploy.
  */
 export class DmnDrdEditor {
+    /**
+     * The translator this editor renders with. Public so the commands and
+     * surface controllers built around it share one, rather than each
+     * defaulting to English independently.
+     */
+    readonly t: Translator;
     private state_: DmnDrdModel;
     private bannerEl: HTMLElement | null;
     private paintedRequirements: SVGGElement | null = null;
@@ -74,6 +88,7 @@ export class DmnDrdEditor {
     private readonly ownsCommandStack: boolean;
 
     constructor(options: DmnDrdEditorOptions) {
+        this.t = options.t ?? defaultTranslator;
         this.instanceId = ++dmnDrdEditorInstanceCounter;
         this.svgGroup = options.svgGroup;
         this.ownsCommandStack = options.commands === undefined;
@@ -503,12 +518,15 @@ export class DmnDrdEditor {
 
         const title = doc.createElement('div');
         title.classList.add('coolms-designer__drd-banner-title');
-        title.textContent = 'Decision Requirements editor';
+        title.textContent = this.t('designer.drd.banner.title', 'Decision Requirements editor');
         banner.appendChild(title);
 
         const subtitle = doc.createElement('div');
         subtitle.classList.add('coolms-designer__drd-banner-subtitle');
-        subtitle.textContent = 'Add a decision or input to start modelling your DRD';
+        subtitle.textContent = this.t(
+            'designer.drd.banner.subtitle',
+            'Add a decision or input to start modelling your DRD',
+        );
         banner.appendChild(subtitle);
 
         host.appendChild(banner);

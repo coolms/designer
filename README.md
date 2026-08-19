@@ -66,6 +66,38 @@ Keeping it to one entry point is not just API taste. The editors share module-le
 
 `XRefs` is the cross-reference registry: register a named scope of items (deployed decisions, form definitions, service-task handlers) and property-panel fields bound to that scope render live autocomplete against it.
 
+## Translation
+
+The package carries **message keys and an English fallback at every call site**, and owns no catalogue, no loader and no locale state. Pass nothing and the editor speaks English — that is the fallback doing its job, not a missing feature. Pass a translator and every label, description, placeholder, `aria-label` and undo tooltip comes from wherever you keep your strings.
+
+```ts
+import { createEditor, createCatalogTranslator } from '@coolms/designer';
+import uk from './locale/uk.json';
+
+createEditor(host, { surface: 'bpmn-lite', t: createCatalogTranslator(uk) });
+```
+
+`t` is `(key, fallback, params?) => string`, so a server-driven host supplies its own instead:
+
+```ts
+createEditor(host, {
+    surface: 'bpmn-lite',
+    t: (key, fallback, params) => myCatalogue.get(key, fallback, params),
+});
+```
+
+Three properties worth knowing:
+
+- **A missing entry reads as English, never as a key.** A partially translated catalogue degrades one message at a time; it never shows `designer.toolbar.undo` to a user.
+- **Placeholders are `%name%`**, the spelling XLIFF catalogues already use, so a message moves between a bundled JSON file and a server catalogue without being rewritten.
+- **Composed labels are one message, not a concatenation.** `'%subtype% Event'` is a single entry precisely so a translation can put the noun first — which most languages do.
+
+Keys are namespaced under `designer.` (`designer.toolbar.undo`, `designer.bpmn.field.label.label`, `designer.command.connect`) so they can live inside a host application's own catalogue without colliding. The editor exposes the resolved translator as `editor.t`, so surface code you construct yourself shares one rather than defaulting to English independently.
+
+## Module federation
+
+If you load this package as a federated remote, declare it **shared and singleton**. The editors keep module-level registries — the renderer registry, the field registry, the cross-reference scopes — so two copies means two registries, and a lookup that should resolve quietly returns nothing. It fails as a blank property panel rather than a build error, which is the worst way for it to fail. The same reasoning is why the package has one entry point.
+
 ## Build outputs
 
 | File | Format | Use |

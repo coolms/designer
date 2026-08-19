@@ -1,4 +1,6 @@
 import { paletteItemLabel } from '../defaults.js';
+import { defaultTranslator } from '../../i18n.js';
+import type { Translator } from '../../i18n.js';
 import type { BpmnElement } from '../types.js';
 import {
     ElementRendererRegistry,
@@ -194,7 +196,10 @@ function appendLabel(
  * element -- including unlabeled events/gateways, whose on-canvas `<text>`
  * label is empty by default -- shows a title on mouse-over.
  */
-export function elementHoverTitle(element: BpmnElement): string {
+export function elementHoverTitle(
+    element: BpmnElement,
+    t: Translator = defaultTranslator,
+): string {
     if (element.label !== undefined && element.label !== '') {
         return element.label;
     }
@@ -202,7 +207,7 @@ export function elementHoverTitle(element: BpmnElement): string {
     // "Intermediate Catch Event" is the structural name and tells the
     // author nothing about which of the four they are looking at.
     if (element.subtype !== undefined) {
-        return paletteItemLabel(element.type, element.subtype);
+        return paletteItemLabel(element.type, element.subtype, undefined, t);
     }
     // `startEvent` -> `Start Event`, `exclusiveGateway` -> `Exclusive Gateway`.
     const humanised = element.type
@@ -227,6 +232,7 @@ function makeWrapper(
     doc: Document,
     element: BpmnElement,
     extraClass: string,
+    t: Translator = defaultTranslator,
 ): SVGGElement {
     const g = doc.createElementNS(SVG_NS, 'g') as SVGGElement;
     g.classList.add('coolms-designer__bpmn-element', extraClass);
@@ -237,7 +243,7 @@ function makeWrapper(
         `translate(${element.position.x}, ${element.position.y})`,
     );
 
-    const title = elementHoverTitle(element);
+    const title = elementHoverTitle(element, t);
     const titleEl = doc.createElementNS(SVG_NS, 'title');
     titleEl.textContent = title;
     g.appendChild(titleEl);
@@ -247,8 +253,8 @@ function makeWrapper(
 }
 
 /** Start Event -- thin-stroked circle. */
-export const renderStartEvent: ElementRenderer = (element, doc) => {
-    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-start-event');
+export const renderStartEvent: ElementRenderer = (element, doc, t) => {
+    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-start-event', t);
     const cx = element.size.width / 2;
     const cy = element.size.height / 2;
     const r = Math.min(element.size.width, element.size.height) / 2;
@@ -260,8 +266,8 @@ export const renderStartEvent: ElementRenderer = (element, doc) => {
 };
 
 /** End Event -- thick-stroked circle (BPMN convention). */
-export const renderEndEvent: ElementRenderer = (element, doc) => {
-    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-end-event');
+export const renderEndEvent: ElementRenderer = (element, doc, t) => {
+    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-end-event', t);
     const cx = element.size.width / 2;
     const cy = element.size.height / 2;
     const r = Math.min(element.size.width, element.size.height) / 2;
@@ -273,8 +279,8 @@ export const renderEndEvent: ElementRenderer = (element, doc) => {
 };
 
 /** Task -- rounded rectangle (BPMN convention, ~6 px corner radius). */
-export const renderTask: ElementRenderer = (element, doc) => {
-    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-task');
+export const renderTask: ElementRenderer = (element, doc, t) => {
+    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-task', t);
     g.appendChild(
         svgEl(doc, 'rect', {
             x: '0',
@@ -305,8 +311,8 @@ export const renderTask: ElementRenderer = (element, doc) => {
  * underneath whatever the author drops in the middle of the scope —
  * which is exactly where a start event lands.
  */
-export const renderSubProcess: ElementRenderer = (element, doc) => {
-    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-subprocess');
+export const renderSubProcess: ElementRenderer = (element, doc, t) => {
+    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-subprocess', t);
     g.appendChild(
         svgEl(doc, 'rect', {
             x: '0',
@@ -331,8 +337,8 @@ export const renderSubProcess: ElementRenderer = (element, doc) => {
  * invite the author to drop elements into a scope that does not exist
  * here.
  */
-export const renderCallActivity: ElementRenderer = (element, doc) => {
-    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-call-activity');
+export const renderCallActivity: ElementRenderer = (element, doc, t) => {
+    const g = makeWrapper(doc, element, 'coolms-designer__bpmn-call-activity', t);
     g.appendChild(
         svgEl(doc, 'rect', {
             x: '0',
@@ -348,7 +354,7 @@ export const renderCallActivity: ElementRenderer = (element, doc) => {
 };
 
 /** Exclusive Gateway -- diamond with an X marker (BPMN convention). */
-export const renderExclusiveGateway: ElementRenderer = (element, doc) => {
+export const renderExclusiveGateway: ElementRenderer = (element, doc, t) => {
     const g = makeWrapper(
         doc,
         element,
@@ -375,7 +381,7 @@ export const renderExclusiveGateway: ElementRenderer = (element, doc) => {
 };
 
 /** Parallel Gateway -- diamond with a + marker (BPMN convention). */
-export const renderParallelGateway: ElementRenderer = (element, doc) => {
+export const renderParallelGateway: ElementRenderer = (element, doc, t) => {
     const g = makeWrapper(
         doc,
         element,
@@ -408,7 +414,7 @@ export const renderParallelGateway: ElementRenderer = (element, doc) => {
  * branches that were actually ACTIVATED (its expected count is the
  * number of forked children, not the number of incoming flows).
  */
-export const renderInclusiveGateway: ElementRenderer = (element, doc) => {
+export const renderInclusiveGateway: ElementRenderer = (element, doc, t) => {
     const g = makeWrapper(
         doc,
         element,
@@ -439,7 +445,7 @@ export const renderInclusiveGateway: ElementRenderer = (element, doc) => {
  * event (timer / message / signal per `EventGatewayTargetsRule`), and
  * the first to fire cancels its siblings.
  */
-export const renderEventBasedGateway: ElementRenderer = (element, doc) => {
+export const renderEventBasedGateway: ElementRenderer = (element, doc, t) => {
     const g = makeWrapper(
         doc,
         element,
@@ -570,7 +576,7 @@ function appendEventMarker(
  * thin rings. The inner ring sits at 0.78·r so the band reads clearly
  * at the default 36×36 without the two circles merging.
  */
-export const renderIntermediateCatchEvent: ElementRenderer = (element, doc) =>
+export const renderIntermediateCatchEvent: ElementRenderer = (element, doc, t) =>
     renderDoubleRingEvent(
         element,
         doc,
@@ -592,7 +598,7 @@ export const renderIntermediateCatchEvent: ElementRenderer = (element, doc) =>
  * owns -- see `dockPositionOnHost`; by paint time the boundary already
  * carries an absolute position like any other element.
  */
-export const renderBoundaryEvent: ElementRenderer = (element, doc) =>
+export const renderBoundaryEvent: ElementRenderer = (element, doc, t) =>
     renderDoubleRingEvent(
         element,
         doc,

@@ -37,6 +37,8 @@ import { Selection } from '../property-panel/Selection.js';
 import { Sidebar } from './Sidebar.js';
 import { Toolbar } from './Toolbar.js';
 import { XRefs } from './XRefs.js';
+import { defaultTranslator } from '../i18n.js';
+import type { Translator } from '../i18n.js';
 
 /**
  * The editor surfaces the package ships. Each surface is a distinct
@@ -97,6 +99,20 @@ export interface EditorOptions {
      * Default: `false`.
      */
     readonly readOnly?: boolean;
+
+    /**
+     * Resolves the editor's user-visible text.
+     *
+     * Omit it and every string is the English written at its call site,
+     * which is what keeps the package usable with no configuration. Supply
+     * one and the strings come from wherever you keep them -- a bundled
+     * catalogue via {@link createCatalogTranslator}, or a server.
+     *
+     * It is handed to the chrome this factory builds AND exposed on the
+     * returned handle, so surface code a host constructs itself can pass
+     * the same translator on rather than inventing a second one.
+     */
+    readonly t?: Translator;
 
     /**
      * Notified on every model mutation. Cheap and synchronous — heavy
@@ -182,6 +198,13 @@ export interface Editor {
 
     /** The host element passed to the factory; immutable. */
     readonly host: HTMLElement;
+
+    /**
+     * The resolved translator -- the one passed in `options.t`, or the
+     * English-fallback default. Always defined, so surface code can use it
+     * without re-deriving the default and drifting from the shell.
+     */
+    readonly t: Translator;
 
     /** Monotonic revision counter — increments on every change event. */
     readonly revision: number;
@@ -344,6 +367,11 @@ export function createEditor(host: HTMLElement, options: EditorOptions): Editor 
 
     const doc = host.ownerDocument;
 
+    // Resolved ONCE, here, and handed to everything the factory builds as
+    // well as exposed on the handle -- so the chrome and any surface code a
+    // host wires up afterwards cannot end up on different translators.
+    const t = options.t ?? defaultTranslator;
+
     // Root wrapper — one element to remove on destroy.
     const root = doc.createElement('div');
     root.classList.add('coolms-designer', `coolms-designer--${options.surface}`);
@@ -378,6 +406,7 @@ export function createEditor(host: HTMLElement, options: EditorOptions): Editor 
         toolbar = new Toolbar(root, {
             commands: canvas.commands,
             viewport: canvas.viewport,
+            t,
             ...(options.readOnly !== undefined ? { readOnly: options.readOnly } : {}),
             ...(options.onSave !== undefined ? { onSave: options.onSave } : {}),
             ...(options.onDeploy !== undefined ? { onDeploy: options.onDeploy } : {}),
@@ -423,6 +452,7 @@ export function createEditor(host: HTMLElement, options: EditorOptions): Editor 
     const handle: Editor = {
         surface: options.surface,
         host,
+        t,
         xrefs,
         selection,
         body,

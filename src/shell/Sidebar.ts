@@ -1,6 +1,14 @@
 import { Emitter } from '../internal/Emitter.js';
+import { defaultTranslator } from '../i18n.js';
+import type { Translator } from '../i18n.js';
 
 export interface SidebarOptions {
+    /**
+     * Resolves this component's user-visible text. Defaults to the English
+     * written at each call site, so nothing needs configuring to work.
+     */
+    readonly t?: Translator;
+
     /**
      * Which side of the canvas the sidebar attaches to. Default 'right'
      * (matches Figma, Sketch, dmn-js convention). 'left' is exposed for
@@ -55,6 +63,7 @@ interface SidebarEvents extends Record<string, unknown> {
  * along).
  */
 export class Sidebar {
+    private readonly t: Translator;
     private readonly host: HTMLElement;
     private readonly toggle: HTMLButtonElement;
     private readonly body: HTMLElement;
@@ -68,6 +77,7 @@ export class Sidebar {
     private readonly onToggleClick: () => void;
 
     constructor(parent: Element, options: SidebarOptions = {}) {
+        this.t = options.t ?? defaultTranslator;
         const doc = parent.ownerDocument;
         this.position = options.position ?? 'right';
         this.expandedWidth = Math.max(120, options.width ?? 280);
@@ -86,7 +96,7 @@ export class Sidebar {
         this.toggle = doc.createElement('button');
         this.toggle.type = 'button';
         this.toggle.classList.add('coolms-designer__sidebar-toggle');
-        this.toggle.setAttribute('aria-label', 'Toggle sidebar');
+        this.toggle.setAttribute('aria-label', this.t('designer.sidebar.toggle', 'Toggle sidebar'));
         this.host.appendChild(this.toggle);
 
         this.body = doc.createElement('div');

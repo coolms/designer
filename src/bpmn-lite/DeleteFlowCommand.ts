@@ -20,12 +20,14 @@ import type { BpmnSequenceFlow } from './types.js';
  * (message flow, association) can extend this with a label arg.
  */
 export class DeleteFlowCommand implements Command {
-    readonly label = 'Delete Flow';
+    readonly label: string;
 
     constructor(
         private readonly editor: BpmnLiteEditor,
         private readonly flow: BpmnSequenceFlow,
-    ) {}
+    ) {
+        this.label = editor.t('designer.command.deleteFlow', 'Delete Flow');
+    }
 
     apply(): void {
         this.editor.removeFlow(this.flow.id);

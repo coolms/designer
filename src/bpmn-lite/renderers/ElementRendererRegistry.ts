@@ -1,4 +1,5 @@
 import type { BpmnElement, BpmnElementKind } from '../types.js';
+import type { Translator } from '../../i18n.js';
 
 /**
  * The renderer signature -- a pure function that takes an element +
@@ -21,6 +22,12 @@ import type { BpmnElement, BpmnElementKind } from '../types.js';
 export type ElementRenderer<E extends BpmnElement = BpmnElement> = (
     element: E,
     doc: Document,
+    /**
+     * Resolves any text the renderer paints (today: the hover title).
+     * Optional, so a renderer written against the two-argument shape still
+     * satisfies this type.
+     */
+    t?: Translator,
 ) => SVGGElement;
 
 /**
