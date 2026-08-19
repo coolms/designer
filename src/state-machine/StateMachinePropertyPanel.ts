@@ -1,4 +1,5 @@
 import { FieldRegistry } from '../property-panel/FieldRegistry.js';
+import type { Translator } from '../i18n.js';
 import { registerBuiltinFields } from '../property-panel/PropertyPanel.js';
 import { XRefs } from '../shell/XRefs.js';
 import type { FieldDescriptor } from '../property-panel/FieldDescriptor.js';
@@ -20,6 +21,12 @@ import type { StateMachineEditor } from './StateMachineEditor.js';
 
 /** Construction options for {@link StateMachinePropertyPanel}. */
 export interface StateMachinePropertyPanelOptions {
+    /**
+     * Resolves the field text of the DEFAULT schema provider. Ignored when
+     * `schemas` is supplied -- that provider brings its own.
+     */
+    readonly t?: Translator;
+
     /** Host element to mount field controls into (typically the shell sidebar's property host). */
     readonly host: HTMLElement;
     readonly editor: StateMachineEditor;
@@ -80,7 +87,7 @@ export class StateMachinePropertyPanel {
     constructor(options: StateMachinePropertyPanelOptions) {
         this.host = options.host;
         this.editor = options.editor;
-        this.schemas = options.schemas ?? new SmSchemaProvider();
+        this.schemas = options.schemas ?? new SmSchemaProvider(options.t);
         this.registry = options.registry ?? this.defaultRegistry();
         this.xrefs = options.xrefs ?? new XRefs();
 
