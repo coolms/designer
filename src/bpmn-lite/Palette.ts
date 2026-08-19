@@ -142,7 +142,7 @@ export class Palette {
     private mountButtons(): void {
         const doc = this.host.ownerDocument;
         for (const { kind, subtype, variant } of this.items) {
-            const label = paletteItemLabel(kind, subtype, variant);
+            const label = paletteItemLabel(kind, subtype, variant, this.editor.t);
             const btn = doc.createElement('button');
             btn.classList.add('coolms-designer__palette-button');
             // `data-palette-kind` stays the bare kind (existing tests +
@@ -212,7 +212,7 @@ export class Palette {
         // the palette tile so the drop preview matches the source.
         ghost.innerHTML =
             `<span class="coolms-designer__palette-icon" aria-hidden="true">${iconSvgForKind(kind, subtype, variant)}</span>` +
-            `<span>${paletteItemLabel(kind, subtype, variant)}</span>`;
+            `<span>${paletteItemLabel(kind, subtype, variant, this.editor.t)}</span>`;
         ghost.style.left = `${ev.clientX}px`;
         ghost.style.top = `${ev.clientY}px`;
         doc.body.appendChild(ghost);

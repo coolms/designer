@@ -1,4 +1,6 @@
 import { CommandStack } from '../canvas/CommandStack.js';
+import { defaultTranslator } from '../i18n.js';
+import type { Translator } from '../i18n.js';
 import { Emitter } from '../internal/Emitter.js';
 import { autoLayoutStateMachine } from './autoLayout.js';
 import { renderPlace } from './renderers/placeRenderer.js';
@@ -22,6 +24,12 @@ let stateMachineEditorInstanceCounter = 0;
 
 /** Construction options for {@link StateMachineEditor}. */
 export interface StateMachineEditorOptions {
+    /**
+     * Resolves this component's user-visible text. Defaults to the English
+     * written at each call site, so nothing needs configuring to work.
+     */
+    readonly t?: Translator;
+
     readonly host: HTMLElement;
     /** The canvas root `<g>` (under the viewport transform) the editor paints into. */
     readonly svgGroup: SVGGElement;
@@ -55,6 +63,12 @@ interface StateMachineEvents extends Record<string, unknown> {
  * compiler surface that on deploy.
  */
 export class StateMachineEditor {
+    /**
+     * The translator this editor renders with. Public so the commands and
+     * surface controllers built around it share one, rather than each
+     * defaulting to English independently.
+     */
+    readonly t: Translator;
     private state_: StateMachineModel;
     private bannerEl: HTMLElement | null;
     private paintedTransitions: SVGGElement | null = null;
@@ -71,6 +85,7 @@ export class StateMachineEditor {
     private readonly ownsCommandStack: boolean;
 
     constructor(options: StateMachineEditorOptions) {
+        this.t = options.t ?? defaultTranslator;
         this.instanceId = ++stateMachineEditorInstanceCounter;
         this.svgGroup = options.svgGroup;
         this.ownsCommandStack = options.commands === undefined;
@@ -545,12 +560,15 @@ export class StateMachineEditor {
 
         const title = doc.createElement('div');
         title.classList.add('coolms-designer__sm-banner-title');
-        title.textContent = 'State Machine editor';
+        title.textContent = this.t('designer.sm.banner.title', 'State Machine editor');
         banner.appendChild(title);
 
         const subtitle = doc.createElement('div');
         subtitle.classList.add('coolms-designer__sm-banner-subtitle');
-        subtitle.textContent = 'Add a place to start modelling your state machine';
+        subtitle.textContent = this.t(
+            'designer.sm.banner.subtitle',
+            'Add a place to start modelling your state machine',
+        );
         banner.appendChild(subtitle);
 
         host.appendChild(banner);

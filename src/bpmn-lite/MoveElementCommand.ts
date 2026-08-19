@@ -34,7 +34,7 @@ export class MoveElementCommand implements Command {
         const tag = elementLabel !== undefined && elementLabel.length > 0
             ? elementLabel
             : elementId;
-        this.label = `Move ${tag}`;
+        this.label = editor.t('designer.command.moveElement', 'Move %element%', { element: tag });
     }
 
     apply(): void {

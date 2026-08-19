@@ -1,4 +1,6 @@
 import type { FieldDescriptor } from '../property-panel/FieldDescriptor.js';
+import { defaultTranslator } from '../i18n.js';
+import type { Translator } from '../i18n.js';
 import type { BpmnElement, BpmnElementKind } from './types.js';
 
 /**
@@ -54,9 +56,9 @@ export type BpmnLiteSchemaKey =
  * when `allowEmpty: true`) maps to the plain-task schema; the named
  * options switch to the variant schemas.
  */
-const TASK_VARIANT_OPTIONS = [
-    { value: 'userTask', label: 'User task' },
-    { value: 'serviceTask', label: 'Service task' },
+const taskVariantOptions = (t: Translator) => [
+    { value: 'userTask', label: t('designer.option.userTask', 'User task') },
+    { value: 'serviceTask', label: t('designer.option.serviceTask', 'Service task') },
 ] as const;
 
 /**
@@ -69,11 +71,11 @@ const TASK_VARIANT_OPTIONS = [
  * (`WF.UNKNOWN_CONSTRUCT_TYPE`), so offering "none" would let the
  * author build a body that cannot deploy.
  */
-const EVENT_SUBTYPE_OPTIONS = [
-    { value: 'timer', label: 'Timer' },
-    { value: 'message', label: 'Message' },
-    { value: 'signal', label: 'Signal' },
-    { value: 'condition', label: 'Conditional' },
+const eventSubtypeOptions = (t: Translator) => [
+    { value: 'timer', label: t('designer.option.timer', 'Timer') },
+    { value: 'message', label: t('designer.option.message', 'Message') },
+    { value: 'signal', label: t('designer.option.signal', 'Signal') },
+    { value: 'condition', label: t('designer.option.condition', 'Conditional') },
 ] as const;
 
 /**
@@ -83,28 +85,30 @@ const EVENT_SUBTYPE_OPTIONS = [
  * report the consequences, so offering "unset" would let an author
  * build a join that reads as a fork.
  */
-const GATEWAY_DIRECTION_FIELD: FieldDescriptor = {
+const gatewayDirectionField = (t: Translator): FieldDescriptor => ({
     type: 'select',
     key: 'direction',
-    label: 'Direction',
-    description:
+    label: t('designer.bpmn.field.direction.label', 'Direction'),
+    description: t(
+        'designer.bpmn.field.direction.description',
         'Diverging forks the flow into its outgoing branches; Converging joins incoming branches back together.',
+    ),
     options: [
-        { value: 'diverging', label: 'Diverging (fork)' },
-        { value: 'converging', label: 'Converging (join)' },
+        { value: 'diverging', label: t('designer.option.diverging', 'Diverging (fork)') },
+        { value: 'converging', label: t('designer.option.converging', 'Converging (join)') },
     ],
     // ⚠️ `allowEmpty` DEFAULTS TO TRUE in SelectField -- it must be
     // switched off explicitly or the control offers a blank option.
     allowEmpty: false,
-};
+});
 
 /** Subtypes a BOUNDARY event may carry (no `condition`; plus error + compensation). */
-const BOUNDARY_SUBTYPE_OPTIONS = [
-    { value: 'timer', label: 'Timer' },
-    { value: 'message', label: 'Message' },
-    { value: 'signal', label: 'Signal' },
-    { value: 'error', label: 'Error' },
-    { value: 'compensation', label: 'Compensation' },
+const boundarySubtypeOptions = (t: Translator) => [
+    { value: 'timer', label: t('designer.option.timer', 'Timer') },
+    { value: 'message', label: t('designer.option.message', 'Message') },
+    { value: 'signal', label: t('designer.option.signal', 'Signal') },
+    { value: 'error', label: t('designer.option.error', 'Error') },
+    { value: 'compensation', label: t('designer.option.compensation', 'Compensation') },
 ] as const;
 
 /**
@@ -118,51 +122,57 @@ const BOUNDARY_SUBTYPE_OPTIONS = [
  * the panel would drift from the engine and silently disagree. The
  * descriptions say what the engine will enforce instead.
  */
-const BOUNDARY_COMMON: FieldDescriptor[] = [
+const boundaryCommon = (t: Translator): FieldDescriptor[] => [
     {
         type: 'text',
         key: 'label',
-        label: 'Label',
-        description: 'Optional human-readable name displayed below the event.',
-        placeholder: 'On timeout',
+        label: t('designer.bpmn.common.label.label', 'Label'),
+        description: t('designer.bpmn.common.label.description', 'Optional human-readable name displayed below the event.'),
+        placeholder: t('designer.bpmn.common.label.placeholder', 'On timeout'),
         maxLength: 80,
     },
     {
         type: 'select',
         key: 'subtype',
-        label: 'Event type',
-        description:
+        label: t('designer.bpmn.field.subtype.label', 'Event type'),
+        description: t(
+            'designer.bpmn.common.subtype.description',
             'What interrupts the host activity. Changing this re-types the event in place.',
-        options: BOUNDARY_SUBTYPE_OPTIONS,
+        ),
+        options: boundarySubtypeOptions(t),
         allowEmpty: false,
     },
     {
         type: 'boolean',
         key: 'interrupting',
-        label: 'Interrupting',
-        checkboxLabel: 'Cancels the host activity when it fires',
-        description:
+        label: t('designer.bpmn.field.interrupting.label', 'Interrupting'),
+        checkboxLabel: t('designer.bpmn.field.interrupting.checkboxLabel', 'Cancels the host activity when it fires'),
+        description: t(
+            'designer.bpmn.field.interrupting.description',
             'On: firing cancels the host activity (solid ring). Off: the host keeps running (dashed ring). The engine requires message boundaries to be non-interrupting and error boundaries to be interrupting.',
+        ),
     },
 ];
 
 /** The label + subtype picker every typed catch event opens with. */
-const CATCH_EVENT_COMMON: FieldDescriptor[] = [
+const catchEventCommon = (t: Translator): FieldDescriptor[] => [
     {
         type: 'text',
         key: 'label',
-        label: 'Label',
-        description: 'Optional human-readable name displayed below the event.',
-        placeholder: 'Wait',
+        label: t('designer.bpmn.common.label.label', 'Label'),
+        description: t('designer.bpmn.common.label.description', 'Optional human-readable name displayed below the event.'),
+        placeholder: t('designer.bpmn.common.label.placeholder', 'Wait'),
         maxLength: 80,
     },
     {
         type: 'select',
         key: 'subtype',
-        label: 'Event type',
-        description:
+        label: t('designer.bpmn.field.subtype.label', 'Event type'),
+        description: t(
+            'designer.bpmn.common.subtype.description',
             'What the token waits for. Changing this re-types the event in place.',
-        options: EVENT_SUBTYPE_OPTIONS,
+        ),
+        options: eventSubtypeOptions(t),
         allowEmpty: false,
     },
 ];
@@ -211,44 +221,50 @@ const CATCH_EVENT_COMMON: FieldDescriptor[] = [
  * Leaving the collection blank turns the activity back into a plain
  * one; the serializer keys the whole block off that field.
  */
-const MULTI_INSTANCE_FIELDS: FieldDescriptor[] = [
+const multiInstanceFields = (t: Translator): FieldDescriptor[] => [
     {
         type: 'text',
         key: 'loopCollection',
-        label: 'Repeat over (collection)',
-        description:
+        label: t('designer.bpmn.field.loopCollection.label', 'Repeat over (collection)'),
+        description: t(
+            'designer.bpmn.field.loopCollection.description',
             'Optional. EL yielding a list; the activity then runs once per item, in order. Leave blank for a normal single run. An empty list at runtime skips the activity entirely.',
-        placeholder: 'variables["lineItems"]',
+        ),
+        placeholder: t('designer.bpmn.field.loopCollection.placeholder', 'variables["lineItems"]'),
         maxLength: 255,
     },
     {
         type: 'text',
         key: 'loopElementVariable',
-        label: 'Item variable',
-        description:
+        label: t('designer.bpmn.field.loopElementVariable.label', 'Item variable'),
+        description: t(
+            'designer.bpmn.field.loopElementVariable.description',
             'Process-variable name the current item is written to before each iteration. Defaults to "item".',
-        placeholder: 'item',
+        ),
+        placeholder: t('designer.bpmn.field.loopElementVariable.placeholder', 'item'),
         maxLength: 80,
     },
     {
         type: 'text',
         key: 'loopCompletionCondition',
-        label: 'Stop early when',
-        description:
+        label: t('designer.bpmn.field.loopCompletionCondition.label', 'Stop early when'),
+        description: t(
+            'designer.bpmn.field.loopCompletionCondition.description',
             'Optional EL re-checked after each iteration; when true the loop stops before the collection is exhausted (e.g. "two approvals are enough").',
-        placeholder: 'variables["approvals"] >= 2',
+        ),
+        placeholder: t('designer.bpmn.field.loopCompletionCondition.placeholder', 'variables["approvals"] >= 2'),
         maxLength: 255,
     },
 ];
 
-const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
+const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescriptor[]> => ({
     startEvent: [
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description: 'Optional human-readable name displayed below the event.',
-            placeholder: 'Start',
+            label: t('designer.bpmn.startEvent.label.label', 'Label'),
+            description: t('designer.bpmn.startEvent.label.description', 'Optional human-readable name displayed below the event.'),
+            placeholder: t('designer.bpmn.startEvent.label.placeholder', 'Start'),
             maxLength: 80,
         },
     ],
@@ -256,9 +272,9 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description: 'Optional human-readable name displayed below the event.',
-            placeholder: 'End',
+            label: t('designer.bpmn.endEvent.label.label', 'Label'),
+            description: t('designer.bpmn.endEvent.label.description', 'Optional human-readable name displayed below the event.'),
+            placeholder: t('designer.bpmn.endEvent.label.placeholder', 'End'),
             maxLength: 80,
         },
     ],
@@ -266,19 +282,21 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
     // somehow unset (hand-authored bodies with an unknown subtype are
     // kept out of the model entirely, so in practice the `:subtype`
     // keys below are what render).
-    intermediateCatchEvent: CATCH_EVENT_COMMON,
+    intermediateCatchEvent: catchEventCommon(t),
     'intermediateCatchEvent:timer': [
-        ...CATCH_EVENT_COMMON,
+        ...catchEventCommon(t),
         {
             type: 'select',
             key: 'timer.kind',
-            label: 'Timer type',
-            description:
+            label: t('designer.bpmn.field.timer.kind.label', 'Timer type'),
+            description: t(
+                'designer.bpmn.field.timer.kind.description',
                 'Duration waits a relative span; Date waits until an instant; Cycle repeats.',
+            ),
             options: [
-                { value: 'duration', label: 'Duration' },
-                { value: 'date', label: 'Date' },
-                { value: 'cycle', label: 'Cycle' },
+                { value: 'duration', label: t('designer.option.duration', 'Duration') },
+                { value: 'date', label: t('designer.option.date', 'Date') },
+                { value: 'cycle', label: t('designer.option.cycle', 'Cycle') },
             ],
             // Clearing the kind would leave `toJson` emitting a timer
             // block keyed by the literal string "undefined".
@@ -287,55 +305,65 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
         {
             type: 'text',
             key: 'timer.value',
-            label: 'Timer expression',
-            description:
+            label: t('designer.bpmn.field.timer.value.label', 'Timer expression'),
+            description: t(
+                'designer.bpmn.intermediateCatchEvent.timer.timer.value.description',
                 'ISO-8601 literal (PT15M, 2026-01-01T00:00:00Z, R3/PT10M) or an EL expression resolved when the token arrives.',
-            placeholder: 'PT15M',
+            ),
+            placeholder: t('designer.bpmn.field.timer.value.placeholder', 'PT15M'),
             maxLength: 255,
         },
     ],
     'intermediateCatchEvent:message': [
-        ...CATCH_EVENT_COMMON,
+        ...catchEventCommon(t),
         {
             type: 'text',
             key: 'message.name',
-            label: 'Message name',
-            description:
+            label: t('designer.bpmn.field.message.name.label', 'Message name'),
+            description: t(
+                'designer.bpmn.intermediateCatchEvent.message.message.name.description',
                 'Name the inbound message must carry to wake this token.',
-            placeholder: 'OrderApproved',
+            ),
+            placeholder: t('designer.bpmn.intermediateCatchEvent.message.message.name.placeholder', 'OrderApproved'),
             maxLength: 255,
         },
         {
             type: 'text',
             key: 'message.correlation',
-            label: 'Correlation key',
-            description:
+            label: t('designer.bpmn.field.message.correlation.label', 'Correlation key'),
+            description: t(
+                'designer.bpmn.field.message.correlation.description',
                 'Process variable matched against the message payload to pick the right instance.',
-            placeholder: 'orderId',
+            ),
+            placeholder: t('designer.bpmn.field.message.correlation.placeholder', 'orderId'),
             maxLength: 255,
         },
     ],
     'intermediateCatchEvent:signal': [
-        ...CATCH_EVENT_COMMON,
+        ...catchEventCommon(t),
         {
             type: 'text',
             key: 'signal.name',
-            label: 'Signal name',
-            description:
+            label: t('designer.bpmn.field.signal.name.label', 'Signal name'),
+            description: t(
+                'designer.bpmn.intermediateCatchEvent.signal.signal.name.description',
                 'Broadcast name. Signals carry no correlation key -- every waiting token with this name resumes.',
-            placeholder: 'ShipmentDelayed',
+            ),
+            placeholder: t('designer.bpmn.field.signal.name.placeholder', 'ShipmentDelayed'),
             maxLength: 255,
         },
     ],
     'intermediateCatchEvent:condition': [
-        ...CATCH_EVENT_COMMON,
+        ...catchEventCommon(t),
         {
             type: 'text',
             key: 'condition.expression',
-            label: 'Condition',
-            description:
+            label: t('designer.bpmn.field.condition.expression.label', 'Condition'),
+            description: t(
+                'designer.bpmn.field.condition.expression.description',
                 'EL expression re-evaluated when process variables change; the token resumes when it becomes true.',
-            placeholder: 'order.total > 1000',
+            ),
+            placeholder: t('designer.bpmn.field.condition.expression.placeholder', 'order.total > 1000'),
             maxLength: 500,
         },
     ],
@@ -343,19 +371,21 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
     // field: the attachment is expressed by the docking gesture on the
     // canvas, and a free-text host id would let the author point it at
     // a non-existent element.
-    boundaryEvent: BOUNDARY_COMMON,
+    boundaryEvent: boundaryCommon(t),
     'boundaryEvent:timer': [
-        ...BOUNDARY_COMMON,
+        ...boundaryCommon(t),
         {
             type: 'select',
             key: 'timer.kind',
-            label: 'Timer type',
-            description:
+            label: t('designer.bpmn.field.timer.kind.label', 'Timer type'),
+            description: t(
+                'designer.bpmn.field.timer.kind.description',
                 'Duration waits a relative span; Date waits until an instant; Cycle repeats.',
+            ),
             options: [
-                { value: 'duration', label: 'Duration' },
-                { value: 'date', label: 'Date' },
-                { value: 'cycle', label: 'Cycle' },
+                { value: 'duration', label: t('designer.option.duration', 'Duration') },
+                { value: 'date', label: t('designer.option.date', 'Date') },
+                { value: 'cycle', label: t('designer.option.cycle', 'Cycle') },
             ],
             // Clearing the kind would leave `toJson` emitting a timer
             // block keyed by the literal string "undefined".
@@ -364,75 +394,87 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
         {
             type: 'text',
             key: 'timer.value',
-            label: 'Timer expression',
-            description:
+            label: t('designer.bpmn.field.timer.value.label', 'Timer expression'),
+            description: t(
+                'designer.bpmn.boundaryEvent.timer.timer.value.description',
                 'ISO-8601 literal (PT15M, R3/PT10M) or an EL expression. The clock starts when the host activity begins.',
-            placeholder: 'PT15M',
+            ),
+            placeholder: t('designer.bpmn.field.timer.value.placeholder', 'PT15M'),
             maxLength: 255,
         },
     ],
     'boundaryEvent:message': [
-        ...BOUNDARY_COMMON,
+        ...boundaryCommon(t),
         {
             type: 'text',
             key: 'message.name',
-            label: 'Message name',
-            description:
+            label: t('designer.bpmn.field.message.name.label', 'Message name'),
+            description: t(
+                'designer.bpmn.boundaryEvent.message.message.name.description',
                 'Name the inbound message must carry to fire this boundary while the host is live.',
-            placeholder: 'OrderCancelled',
+            ),
+            placeholder: t('designer.bpmn.boundaryEvent.message.message.name.placeholder', 'OrderCancelled'),
             maxLength: 255,
         },
         {
             type: 'text',
             key: 'message.correlation',
-            label: 'Correlation key',
-            description:
+            label: t('designer.bpmn.field.message.correlation.label', 'Correlation key'),
+            description: t(
+                'designer.bpmn.field.message.correlation.description',
                 'Process variable matched against the message payload to pick the right instance.',
-            placeholder: 'orderId',
+            ),
+            placeholder: t('designer.bpmn.field.message.correlation.placeholder', 'orderId'),
             maxLength: 255,
         },
     ],
     'boundaryEvent:signal': [
-        ...BOUNDARY_COMMON,
+        ...boundaryCommon(t),
         {
             type: 'text',
             key: 'signal.name',
-            label: 'Signal name',
-            description:
+            label: t('designer.bpmn.field.signal.name.label', 'Signal name'),
+            description: t(
+                'designer.bpmn.boundaryEvent.signal.signal.name.description',
                 'Broadcast name. Fires whenever a matching signal is broadcast while the host is live.',
-            placeholder: 'ShipmentDelayed',
+            ),
+            placeholder: t('designer.bpmn.field.signal.name.placeholder', 'ShipmentDelayed'),
             maxLength: 255,
         },
     ],
     'boundaryEvent:error': [
-        ...BOUNDARY_COMMON,
+        ...boundaryCommon(t),
         {
             type: 'text',
             key: 'errorCode',
-            label: 'Error code',
-            description:
+            label: t('designer.bpmn.field.errorCode.label', 'Error code'),
+            description: t(
+                'designer.bpmn.field.errorCode.description',
                 'BPMN errorRef to catch. Leave blank to catch ANY error from the host. The engine allows error boundaries on service tasks only.',
-            placeholder: 'PAYMENT_DECLINED',
+            ),
+            placeholder: t('designer.bpmn.field.errorCode.placeholder', 'PAYMENT_DECLINED'),
             maxLength: 255,
         },
     ],
-    'boundaryEvent:compensation': BOUNDARY_COMMON,
+    'boundaryEvent:compensation': boundaryCommon(t),
     task: [
         {
             type: 'text',
             key: 'label',
-            label: 'Name',
-            description: 'Name displayed inside the task box.',
-            placeholder: 'Task',
+            label: t('designer.bpmn.task.label.label', 'Name'),
+            description: t('designer.bpmn.task.label.description', 'Name displayed inside the task box.'),
+            placeholder: t('designer.bpmn.task.label.placeholder', 'Task'),
             maxLength: 80,
         },
         {
             type: 'select',
             key: 'variant',
-            label: 'Task type',
-            description:
+            label: t('designer.bpmn.field.variant.label', 'Task type'),
+            description: t(
+                'designer.bpmn.task.variant.description',
                 'User task surfaces a form key; service task surfaces an implementation key. Plain task is a placeholder for hand-tuned definitions.',
-            options: TASK_VARIANT_OPTIONS,
+            ),
+            options: taskVariantOptions(t),
             /**
              * `allowEmpty` stays TRUE here, unlike the other pickers --
              * NOT because an untyped task is a legitimate choice, but so
@@ -446,25 +488,27 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
              * left this way.
              */
             allowEmpty: true,
-            placeholder: 'Not set — will not deploy',
+            placeholder: t('designer.bpmn.field.variant.placeholder', 'Not set — will not deploy'),
         },
     ],
     userTask: [
         {
             type: 'text',
             key: 'label',
-            label: 'Name',
-            description: 'Name displayed inside the task box.',
-            placeholder: 'User task',
+            label: t('designer.bpmn.userTask.label.label', 'Name'),
+            description: t('designer.bpmn.userTask.label.description', 'Name displayed inside the task box.'),
+            placeholder: t('designer.bpmn.userTask.label.placeholder', 'User task'),
             maxLength: 80,
         },
         {
             type: 'select',
             key: 'variant',
-            label: 'Task type',
-            description:
+            label: t('designer.bpmn.field.variant.label', 'Task type'),
+            description: t(
+                'designer.bpmn.userTask.variant.description',
                 'Pick "User task" to surface a form key; "Service task" to surface an implementation key.',
-            options: TASK_VARIANT_OPTIONS,
+            ),
+            options: taskVariantOptions(t),
             /**
              * `allowEmpty` stays TRUE here, unlike the other pickers --
              * NOT because an untyped task is a legitimate choice, but so
@@ -478,35 +522,39 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
              * left this way.
              */
             allowEmpty: true,
-            placeholder: 'Not set — will not deploy',
+            placeholder: t('designer.bpmn.field.variant.placeholder', 'Not set — will not deploy'),
         },
         {
             type: 'select',
             key: 'formKey',
-            label: 'Form key',
-            description:
+            label: t('designer.bpmn.field.formKey.label', 'Form key'),
+            description: t(
+                'designer.bpmn.field.formKey.description',
                 'FormModule definition id rendered by the Inbox when the user opens the task.',
+            ),
             xrefScope: 'workflow.forms',
             allowEmpty: true,
         },
-        ...MULTI_INSTANCE_FIELDS,
+        ...multiInstanceFields(t),
     ],
     serviceTask: [
         {
             type: 'text',
             key: 'label',
-            label: 'Name',
-            description: 'Name displayed inside the task box.',
-            placeholder: 'Service task',
+            label: t('designer.bpmn.serviceTask.label.label', 'Name'),
+            description: t('designer.bpmn.serviceTask.label.description', 'Name displayed inside the task box.'),
+            placeholder: t('designer.bpmn.serviceTask.label.placeholder', 'Service task'),
             maxLength: 80,
         },
         {
             type: 'select',
             key: 'variant',
-            label: 'Task type',
-            description:
+            label: t('designer.bpmn.field.variant.label', 'Task type'),
+            description: t(
+                'designer.bpmn.serviceTask.variant.description',
                 'Pick "User task" to surface a form key; "Service task" to surface an implementation key.',
-            options: TASK_VARIANT_OPTIONS,
+            ),
+            options: taskVariantOptions(t),
             /**
              * `allowEmpty` stays TRUE here, unlike the other pickers --
              * NOT because an untyped task is a legitimate choice, but so
@@ -520,39 +568,45 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
              * left this way.
              */
             allowEmpty: true,
-            placeholder: 'Not set — will not deploy',
+            placeholder: t('designer.bpmn.field.variant.placeholder', 'Not set — will not deploy'),
         },
         {
             type: 'select',
             key: 'implementation',
-            label: 'Implementation',
-            description:
+            label: t('designer.bpmn.field.implementation.label', 'Implementation'),
+            description: t(
+                'designer.bpmn.field.implementation.description',
                 'Service-task handler key dispatched by the engine. Picks from the live `coolms.workflow.handler` registry.',
+            ),
             xrefScope: 'workflow.handlers',
             allowEmpty: true,
         },
-        ...MULTI_INSTANCE_FIELDS,
+        ...multiInstanceFields(t),
     ],
     inclusiveGateway: [
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description:
+            label: t('designer.bpmn.inclusiveGateway.label.label', 'Label'),
+            description: t(
+                'designer.bpmn.inclusiveGateway.label.description',
                 'Optional human-readable name displayed below the gateway.',
-            placeholder: 'Which channels?',
+            ),
+            placeholder: t('designer.bpmn.inclusiveGateway.label.placeholder', 'Which channels?'),
             maxLength: 80,
         },
-        GATEWAY_DIRECTION_FIELD,
+        gatewayDirectionField(t),
     ],
     eventBasedGateway: [
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description:
+            label: t('designer.bpmn.eventBasedGateway.label.label', 'Label'),
+            description: t(
+                'designer.bpmn.eventBasedGateway.label.description',
                 'Optional human-readable name displayed below the gateway. Each outgoing branch must target an intermediate timer, message or signal catch event; the first to fire cancels its siblings.',
-            placeholder: 'Await reply',
+            ),
+            placeholder: t('designer.bpmn.eventBasedGateway.label.placeholder', 'Await reply'),
             maxLength: 80,
         },
     ],
@@ -567,13 +621,15 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description:
+            label: t('designer.bpmn.subProcess.label.label', 'Label'),
+            description: t(
+                'designer.bpmn.subProcess.label.description',
                 'Optional name for this block of work, shown at the top-left of the container. Drop elements inside the box to put them in the scope; the token entering the subprocess waits until everything inside it finishes.',
-            placeholder: 'Review block',
+            ),
+            placeholder: t('designer.bpmn.subProcess.label.placeholder', 'Review block'),
             maxLength: 80,
         },
-        ...MULTI_INSTANCE_FIELDS,
+        ...multiInstanceFields(t),
     ],
     /**
      * `calledElement` is the ONE field that makes a call activity work,
@@ -587,31 +643,37 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description:
+            label: t('designer.bpmn.callActivity.label.label', 'Label'),
+            description: t(
+                'designer.bpmn.callActivity.label.description',
                 'Optional human-readable name shown inside the activity.',
-            placeholder: 'Run credit check',
+            ),
+            placeholder: t('designer.bpmn.callActivity.label.placeholder', 'Run credit check'),
             maxLength: 80,
         },
         {
             type: 'text',
             key: 'calledElement',
-            label: 'Called definition',
-            description:
+            label: t('designer.bpmn.field.calledElement.label', 'Called definition'),
+            description: t(
+                'designer.bpmn.field.calledElement.description',
                 'Definition key of the workflow to run as a child process. Resolved against its CURRENTLY-DEPLOYED version each time the call runs, so redeploying the callee changes what later calls execute. The caller waits until the child instance finishes; data crosses only through declared input/output mappings.',
-            placeholder: 'billing.credit_check',
+            ),
+            placeholder: t('designer.bpmn.field.calledElement.placeholder', 'billing.credit_check'),
             maxLength: 255,
         },
-        ...MULTI_INSTANCE_FIELDS,
+        ...multiInstanceFields(t),
     ],
     exclusiveGateway: [
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description:
+            label: t('designer.bpmn.exclusiveGateway.label.label', 'Label'),
+            description: t(
+                'designer.bpmn.exclusiveGateway.label.description',
                 'Optional human-readable name (e.g. the decision question).',
-            placeholder: 'Decision?',
+            ),
+            placeholder: t('designer.bpmn.exclusiveGateway.label.placeholder', 'Decision?'),
             maxLength: 80,
         },
     ],
@@ -619,36 +681,40 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
         {
             type: 'text',
             key: 'label',
-            label: 'Label',
-            description: 'Optional human-readable name.',
+            label: t('designer.bpmn.parallelGateway.label.label', 'Label'),
+            description: t('designer.bpmn.parallelGateway.label.description', 'Optional human-readable name.'),
             maxLength: 80,
         },
         // Pre-existing authorability gap closed alongside the inclusive
         // gateway: the wire has always carried `direction` on parallel
         // gateways, but nothing surfaced it, so a converging JOIN could
         // be hand-authored yet never created or edited on the canvas.
-        GATEWAY_DIRECTION_FIELD,
+        gatewayDirectionField(t),
     ],
     flow: [
         {
             type: 'el-expression',
             key: 'condition',
-            label: 'Condition',
-            description:
+            label: t('designer.bpmn.field.condition.label', 'Condition'),
+            description: t(
+                'designer.bpmn.field.condition.description',
                 'Expression evaluated when the source is an exclusive gateway. The flow is taken when truthy.',
-            placeholder: 'variables.status == "approved"',
+            ),
+            placeholder: t('designer.bpmn.field.condition.placeholder', 'variables.status == "approved"'),
             elFlavour: 'workflow',
         },
         {
             type: 'boolean',
             key: 'isDefault',
-            label: 'Default flow',
-            description:
+            label: t('designer.bpmn.field.isDefault.label', 'Default flow'),
+            description: t(
+                'designer.bpmn.field.isDefault.description',
                 'When the source is an exclusive gateway and no other outgoing condition matches, this flow is taken.',
-            checkboxLabel: 'Mark as default outgoing flow',
+            ),
+            checkboxLabel: t('designer.bpmn.field.isDefault.checkboxLabel', 'Mark as default outgoing flow'),
         },
     ],
-};
+});
 
 /**
  * Schema provider for the BPMN-Lite property panel. Its lookup is
@@ -677,13 +743,20 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
 export class BpmnLiteSchemaProvider {
     private readonly schemas: Record<string, FieldDescriptor[]>;
 
+    /**
+     * @param schemas Overrides merged over the defaults.
+     * @param t       Resolves the field text. Note the order: overrides come
+     *                first because they are the commoner customisation, and
+     *                an override brings its own strings anyway.
+     */
     constructor(
         schemas: Partial<Record<BpmnLiteSchemaKey, FieldDescriptor[]>> = {},
+        t: Translator = defaultTranslator,
     ) {
         // Merge caller overrides over defaults so partial customisation
         // (e.g. "swap the task label field for a richer renderer") works
         // without replicating the whole table.
-        this.schemas = { ...DEFAULT_SCHEMAS, ...schemas };
+        this.schemas = { ...defaultSchemas(t), ...schemas };
     }
 
     /**
@@ -745,6 +818,8 @@ export class BpmnLiteSchemaProvider {
 }
 
 /** Factory that returns the default schema set. */
-export function defaultBpmnLiteSchemaProvider(): BpmnLiteSchemaProvider {
-    return new BpmnLiteSchemaProvider();
+export function defaultBpmnLiteSchemaProvider(
+    t: Translator = defaultTranslator,
+): BpmnLiteSchemaProvider {
+    return new BpmnLiteSchemaProvider({}, t);
 }

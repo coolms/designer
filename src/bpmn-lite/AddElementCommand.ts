@@ -38,8 +38,11 @@ export class AddElementCommand implements Command {
             element.type,
             element.subtype,
             element.variant,
+            editor.t,
         );
-        this.label = `Add ${kindLabel}`;
+        this.label = editor.t('designer.command.addElement', 'Add %kind%', {
+            kind: kindLabel,
+        });
     }
 
     apply(): void {

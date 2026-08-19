@@ -1,5 +1,7 @@
 import type { Command } from '../../canvas/CommandStack.js';
 import type { DmnTableModel } from './DmnTableModel.js';
+import { defaultTranslator } from '../../i18n.js';
+import type { Translator } from '../../i18n.js';
 import type {
     Aggregator,
     DataType,
@@ -23,9 +25,15 @@ import type {
  */
 
 export class RenameDecisionCommand implements Command {
-    readonly label = 'Rename decision';
+    readonly label: string;
     private previous = '';
-    constructor(private readonly model: DmnTableModel, private readonly next: string) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly next: string,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.renameDecision', 'Rename decision');
+    }
     apply(): void {
         this.previous = this.model.setName(this.next);
     }
@@ -35,9 +43,15 @@ export class RenameDecisionCommand implements Command {
 }
 
 export class SetHitPolicyCommand implements Command {
-    readonly label = 'Change hit policy';
+    readonly label: string;
     private previous: HitPolicy = 'UNIQUE';
-    constructor(private readonly model: DmnTableModel, private readonly next: HitPolicy) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly next: HitPolicy,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.changeHitPolicy', 'Change hit policy');
+    }
     apply(): void {
         this.previous = this.model.setHitPolicy(this.next);
     }
@@ -47,9 +61,15 @@ export class SetHitPolicyCommand implements Command {
 }
 
 export class SetAggregatorCommand implements Command {
-    readonly label = 'Change aggregator';
+    readonly label: string;
     private previous: Aggregator | null = null;
-    constructor(private readonly model: DmnTableModel, private readonly next: Aggregator | null) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly next: Aggregator | null,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.changeAggregator', 'Change aggregator');
+    }
     apply(): void {
         this.previous = this.model.setAggregator(this.next);
     }
@@ -59,10 +79,16 @@ export class SetAggregatorCommand implements Command {
 }
 
 export class AddRuleCommand implements Command {
-    readonly label = 'Add rule';
+    readonly label: string;
     private addedRule: Rule | null = null;
     private addedIndex = 0;
-    constructor(private readonly model: DmnTableModel, private readonly atIndex?: number) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly atIndex?: number,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.addRule', 'Add rule');
+    }
     apply(): void {
         const state = this.model.state;
         const ruleIndex = this.atIndex ?? state.rules.length;
@@ -81,9 +107,15 @@ export class AddRuleCommand implements Command {
 }
 
 export class DeleteRuleCommand implements Command {
-    readonly label = 'Delete rule';
+    readonly label: string;
     private removedRule: Rule | null = null;
-    constructor(private readonly model: DmnTableModel, private readonly atIndex: number) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly atIndex: number,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.deleteRule', 'Delete rule');
+    }
     apply(): void {
         this.removedRule = this.model.removeRuleAt(this.atIndex);
     }
@@ -93,10 +125,16 @@ export class DeleteRuleCommand implements Command {
 }
 
 export class AddInputClauseCommand implements Command {
-    readonly label = 'Add input column';
+    readonly label: string;
     private addedClause: InputClause | null = null;
     private addedIndex = 0;
-    constructor(private readonly model: DmnTableModel, private readonly atIndex?: number) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly atIndex?: number,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.addInputColumn', 'Add input column');
+    }
     apply(): void {
         const state = this.model.state;
         const idx = this.atIndex ?? state.inputs.length;
@@ -116,9 +154,15 @@ export class AddInputClauseCommand implements Command {
 }
 
 export class DeleteInputClauseCommand implements Command {
-    readonly label = 'Delete input column';
+    readonly label: string;
     private removed: { clause: InputClause; ruleEntries: string[] } | null = null;
-    constructor(private readonly model: DmnTableModel, private readonly atIndex: number) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly atIndex: number,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.deleteInputColumn', 'Delete input column');
+    }
     apply(): void {
         this.removed = this.model.removeInputClauseAt(this.atIndex);
     }
@@ -135,10 +179,16 @@ export class DeleteInputClauseCommand implements Command {
 }
 
 export class AddOutputClauseCommand implements Command {
-    readonly label = 'Add output column';
+    readonly label: string;
     private addedClause: OutputClause | null = null;
     private addedIndex = 0;
-    constructor(private readonly model: DmnTableModel, private readonly atIndex?: number) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly atIndex?: number,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.addOutputColumn', 'Add output column');
+    }
     apply(): void {
         const state = this.model.state;
         const idx = this.atIndex ?? state.outputs.length;
@@ -157,9 +207,15 @@ export class AddOutputClauseCommand implements Command {
 }
 
 export class DeleteOutputClauseCommand implements Command {
-    readonly label = 'Delete output column';
+    readonly label: string;
     private removed: { clause: OutputClause; ruleEntries: string[] } | null = null;
-    constructor(private readonly model: DmnTableModel, private readonly atIndex: number) {}
+    constructor(
+        private readonly model: DmnTableModel,
+        private readonly atIndex: number,
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.deleteOutputColumn', 'Delete output column');
+    }
     apply(): void {
         this.removed = this.model.removeOutputClauseAt(this.atIndex);
     }
@@ -175,13 +231,16 @@ export class DeleteOutputClauseCommand implements Command {
 }
 
 export class SetInputNameCommand implements Command {
-    readonly label = 'Rename input column';
+    readonly label: string;
     private previous = '';
     constructor(
         private readonly model: DmnTableModel,
         private readonly index: number,
         private readonly next: string,
-    ) {}
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.renameInputColumn', 'Rename input column');
+    }
     apply(): void {
         this.previous = this.model.setInputClauseName(this.index, this.next);
     }
@@ -191,13 +250,16 @@ export class SetInputNameCommand implements Command {
 }
 
 export class SetInputExpressionCommand implements Command {
-    readonly label = 'Edit input expression';
+    readonly label: string;
     private previous = '';
     constructor(
         private readonly model: DmnTableModel,
         private readonly index: number,
         private readonly next: string,
-    ) {}
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.editInputExpression', 'Edit input expression');
+    }
     apply(): void {
         this.previous = this.model.setInputClauseExpression(this.index, this.next);
     }
@@ -207,13 +269,16 @@ export class SetInputExpressionCommand implements Command {
 }
 
 export class SetInputTypeCommand implements Command {
-    readonly label = 'Change input type';
+    readonly label: string;
     private previous: DataType = 'string';
     constructor(
         private readonly model: DmnTableModel,
         private readonly index: number,
         private readonly next: DataType,
-    ) {}
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.changeInputType', 'Change input type');
+    }
     apply(): void {
         this.previous = this.model.setInputClauseType(this.index, this.next);
     }
@@ -223,13 +288,16 @@ export class SetInputTypeCommand implements Command {
 }
 
 export class SetOutputNameCommand implements Command {
-    readonly label = 'Rename output column';
+    readonly label: string;
     private previous = '';
     constructor(
         private readonly model: DmnTableModel,
         private readonly index: number,
         private readonly next: string,
-    ) {}
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.renameOutputColumn', 'Rename output column');
+    }
     apply(): void {
         this.previous = this.model.setOutputClauseName(this.index, this.next);
     }
@@ -239,13 +307,16 @@ export class SetOutputNameCommand implements Command {
 }
 
 export class SetOutputTypeCommand implements Command {
-    readonly label = 'Change output type';
+    readonly label: string;
     private previous: DataType = 'string';
     constructor(
         private readonly model: DmnTableModel,
         private readonly index: number,
         private readonly next: DataType,
-    ) {}
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.changeOutputType', 'Change output type');
+    }
     apply(): void {
         this.previous = this.model.setOutputClauseType(this.index, this.next);
     }
@@ -255,14 +326,17 @@ export class SetOutputTypeCommand implements Command {
 }
 
 export class SetInputEntryCommand implements Command {
-    readonly label = 'Edit input entry';
+    readonly label: string;
     private previous = '';
     constructor(
         private readonly model: DmnTableModel,
         private readonly ruleIndex: number,
         private readonly columnIndex: number,
         private readonly next: string,
-    ) {}
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.editInputEntry', 'Edit input entry');
+    }
     apply(): void {
         this.previous = this.model.setInputEntry(this.ruleIndex, this.columnIndex, this.next);
     }
@@ -272,14 +346,17 @@ export class SetInputEntryCommand implements Command {
 }
 
 export class SetOutputEntryCommand implements Command {
-    readonly label = 'Edit output entry';
+    readonly label: string;
     private previous = '';
     constructor(
         private readonly model: DmnTableModel,
         private readonly ruleIndex: number,
         private readonly columnIndex: number,
         private readonly next: string,
-    ) {}
+        t: Translator = defaultTranslator,
+    ) {
+        this.label = t('designer.command.dmn.editOutputEntry', 'Edit output entry');
+    }
     apply(): void {
         this.previous = this.model.setOutputEntry(this.ruleIndex, this.columnIndex, this.next);
     }

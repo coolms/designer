@@ -36,7 +36,10 @@ export class AddFlowCommand implements Command {
         private readonly editor: BpmnLiteEditor,
         private readonly flow: BpmnSequenceFlow,
     ) {
-        this.label = `Connect ${flow.source} → ${flow.target}`;
+        this.label = editor.t('designer.command.connect', 'Connect %source% → %target%', {
+            source: flow.source,
+            target: flow.target,
+        });
     }
 
     apply(): void {
