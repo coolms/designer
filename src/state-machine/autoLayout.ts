@@ -5,7 +5,7 @@ import type { SmPlace, SmTransition } from './types.js';
  * topological auto-layout for state machines that arrive
  * without diagram geometry.
  *
- * **The problem (mirrors M3.3.l for BPMN-Lite).** A Symfony Workflow
+ * **The problem (the BPMN-Lite layout solves the same one).** A Symfony Workflow
  * `state_machine` config carries only semantics — `places: [...]` +
  * `transitions: {name: {from, to}}`. There is no diagram sidecar, so a
  * model deserialized from a hand-authored / module-shipped workflow YAML

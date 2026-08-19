@@ -10,7 +10,7 @@ import {
 } from '../../../src/bpmn-lite/index.js';
 import type { BpmnElement } from '../../../src/bpmn-lite/types.js';
 
-describe('BpmnLiteKeyboardController (M3.3.m F-4)', () => {
+describe('BpmnLiteKeyboardController', () => {
     let editor: BpmnLiteEditor;
     let stack: CommandStack;
     let host: HTMLElement;
@@ -224,7 +224,7 @@ describe('BpmnLiteKeyboardController F-5 navigation', () => {
     });
 });
 
-describe('BpmnLiteKeyboardController readOnly mode (M3.3.m F-5)', () => {
+describe('BpmnLiteKeyboardController readOnly mode', () => {
     let editor: BpmnLiteEditor;
     let stack: CommandStack;
     let viewport: Viewport;
@@ -290,7 +290,7 @@ describe('BpmnLiteKeyboardController readOnly mode (M3.3.m F-5)', () => {
     });
 });
 
-describe('isEditableTarget (M3.3.m F-4)', () => {
+describe('isEditableTarget', () => {
     it('detects HTMLInputElement', () => {
         expect(isEditableTarget(document.createElement('input'))).toBe(true);
     });

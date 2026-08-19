@@ -1,5 +1,5 @@
 /**
- * SVG namespace constant + the one micro-helper the M4.j DRD renderers
+ * SVG namespace constant + the one micro-helper the DRD renderers
  * use. A self-contained copy of the state-machine svg helper so the
  * `dmn/drd` editor module stays decoupled from the other surfaces (each
  * editor owns its renderer layer; only the canvas/model/shell substrate

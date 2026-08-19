@@ -5,7 +5,7 @@ import type { SmPlace, SmPosition } from '../types.js';
  *
  * State machines render as a directed graph of place rectangles joined
  * by transition arrows. Unlike the BPMN editor (which uses an
- * orthogonal Z-router), M3.5.a draws transitions as **straight
+ * orthogonal Z-router), transitions draw as **straight
  * segments trimmed to the place borders** — simple, decoupled from
  * bpmn-lite's router, and the right baseline for a state diagram.
  * Orthogonal / self-loop routing can layer on later without changing

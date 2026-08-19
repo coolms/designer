@@ -27,17 +27,17 @@ import { SVG_NS, svgEl } from './svg.js';
  *  - Empty / undefined labels: no `<text>` element appended
  *
  * **Why no per-variant fields yet** (timer / message events,
- * user / service tasks, sub-processes): M3.3.b ships the geometry +
- * generic shapes. Variant decorations (clock icon for timer events,
- * envelope for message events, user-stick-figure for user tasks)
- * land in M3.3.f when the property panel surfaces the variant
+ * user / service tasks, sub-processes): these renderers ship the
+ * geometry + generic shapes. Variant decorations (clock icon for
+ * timer events, envelope for message events, user-stick-figure for
+ * user tasks) land when the property panel surfaces the variant
  * picker. The shape underneath stays the same; renderers grow to
  * read the variant tag + paint the inner decoration.
  *
- * **Why no event handlers wired here**: M3.3.b is paint-only. Click,
- * hover, drag-to-move all land in M3.3.d (palette + drop-to-create)
- * and M3.3.e (connect mode). The renderers DO add CSS classes the
- * later phases hook event listeners onto, so wiring is localised.
+ * **Why no event handlers wired here**: the renderers are
+ * paint-only. Click, hover and drag-to-move belong to the palette
+ * and connect mode. The renderers DO add the CSS classes those
+ * controllers hook listeners onto, so the wiring stays localised.
  */
 
 /**
@@ -246,7 +246,7 @@ function makeWrapper(
     return g;
 }
 
-/** Start Event -- thin-stroked circle. M3.3.b core renderer. */
+/** Start Event -- thin-stroked circle. */
 export const renderStartEvent: ElementRenderer = (element, doc) => {
     const g = makeWrapper(doc, element, 'coolms-designer__bpmn-start-event');
     const cx = element.size.width / 2;

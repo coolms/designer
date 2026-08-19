@@ -17,7 +17,7 @@ import type {
 } from '../../../../src/dmn/drd/index.js';
 
 /**
- * M4.j slice-3 structural-editing tests — the add/remove/move element +
+ * Structural-editing tests — the add/remove/move element +
  * add/remove requirement mutators, their commands with undo (incl. the
  * cascade-restore on element removal), the deterministic id suggesters,
  * and the selection-clear-on-delete behaviour. These back the future

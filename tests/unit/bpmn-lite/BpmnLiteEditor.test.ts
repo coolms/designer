@@ -15,9 +15,9 @@ import type {
 /**
  * b BpmnLiteEditor tests.
  *
- * pinned the lifecycle scaffold; M3.3.b extends that with the
- * paint-on-construct + paint-on-load + banner-toggle behaviour. The
- * lifecycle assertions from M3.3.a still hold verbatim; the new
+ * The earlier tests pinned the lifecycle scaffold; these extend it
+ * with paint-on-construct + paint-on-load + banner-toggle behaviour.
+ * The lifecycle assertions still hold verbatim; the new
  * `svgGroup` constructor arg + the paint cases land here.
  */
 describe('BpmnLiteEditor', () => {
@@ -61,9 +61,9 @@ describe('BpmnLiteEditor', () => {
         svgGroup.ownerSVGElement?.remove();
     });
 
-    /* ─────────────────────── M3.3.a lifecycle pins ─────────────────────── */
+    /* ──────────────────────── lifecycle pins ───────────────────────────── */
 
-    describe('lifecycle (M3.3.a invariants)', () => {
+    describe('lifecycle invariants', () => {
         it('constructs with default empty model when no initialModel supplied', () => {
             const editor = new BpmnLiteEditor({ host, commands, svgGroup });
 
@@ -205,7 +205,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ─────────────────────── M3.3.b paint surface ─────────────────────── */
+    /* ──────────────────────── paint surface ────────────────────────────── */
 
     describe('paint', () => {
         it('mounts a painted root group inside svgGroup on construct', () => {
@@ -374,7 +374,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ─────────────────────── M3.3.c flow surface ─────────────────────── */
+    /* ──────────────────────── flow surface ─────────────────────────────── */
 
     describe('flow paint', () => {
         it('mounts the flows group inside svgGroup on construct', () => {
@@ -561,7 +561,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ─────────────────────── M3.3.d mutators + drop ─────────────────────── */
+    /* ──────────────────────── mutators + drop ──────────────────────────── */
 
     describe('mutators + dropElementAt', () => {
         function stubCanvasRect(
@@ -795,7 +795,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ─────────────────── M3.3.e flow mutators + helpers ─────────────────── */
+    /* ─────────────────── flow mutators + helpers ───────────────────────── */
 
     describe('flow mutators + helpers', () => {
         function modelWithFlow(): BpmnLiteModel {
@@ -1054,7 +1054,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ─────── M3.3.f property mutators + selection + condition paint ─────── */
+    /* ─────── property mutators + selection + condition paint ───────────── */
 
     describe('property mutators + selection', () => {
         it('updateElementProperty replaces value + emits change + returns true', () => {

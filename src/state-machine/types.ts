@@ -25,11 +25,11 @@
  * block. Keeping one edge per arrow keeps the canvas model simple
  * (drag, route, select all operate on a single edge).
  *
- * **M3.5.a scope (this ship):** the fields the renderers + paint loop
- * need — places (id/position/size/initial) + transitions
+ * The fields the renderers + paint loop need — places
+ * (id/position/size/initial) + transitions
  * (id/name/from/to/guard) + the workflow-level metadata slots
  * (`workflowName`, `supports`, `markingProperty`) the property
- * panel + M3.5.d serializer fill in. Lossless `*Extras` passthrough
+ * panel + the serializer fill in. Lossless `*Extras` passthrough
  * mirrors the bpmn-lite pattern.
  */
 
@@ -50,7 +50,8 @@ export interface SmSize {
  * — serialized into `places:` verbatim and referenced by transitions.
  * `initial === true` marks the place Symfony emits as `initial_marking`
  * (a `state_machine` has exactly one; the panel enforces single-
- * initial, M3.5.d falls back to the first place when none is flagged).
+ * initial, and the serializer falls back to the first place when
+ * none is flagged).
  */
 export interface SmPlace {
     readonly id: string;
@@ -65,7 +66,7 @@ export interface SmPlace {
  * One transition edge: a named arrow from `from` → `to`. Multiple
  * edges may share `name` (multi-`from` transitions, coalesced by the
  * serializer). `guard` is an optional Symfony EL expression
- * (`subject.totalAmount > 0`, `is_granted('ROLE_MANAGER')`) the M3.5.c
+ * (`subject.totalAmount > 0`, `is_granted('ROLE_MANAGER')`) the
  * panel surfaces as an expression field.
  */
 export interface SmTransition {

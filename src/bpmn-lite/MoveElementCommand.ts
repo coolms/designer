@@ -6,7 +6,7 @@ import type { BpmnPosition } from './types.js';
  * F-7.1 -- move an element to a new world-space position, with
  * apply/revert symmetry so undo/redo restore the prior position
  * exactly. Thin wrapper over {@link BpmnLiteEditor.updateElementPosition},
- * matching the command pattern + the M3.3.e
+ * matching the command pattern + the
  * {@link UpdateFlowWaypointsCommand} shape.
  *
  * **Why the command holds both positions**: the controller captures

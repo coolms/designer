@@ -15,7 +15,7 @@ import { svgEl, SVG_NS } from './svg.js';
  * arrowhead at the target, plus the transition `name` painted at the
  * midpoint and a small "guard" marker `[ ]` glyph when a guard
  * expression is set. Self-transitions (from === to) draw a loop above
- * the node. M3.5.a keeps routing straight; orthogonal/waypoint routing
+ * the node. Routing stays straight; orthogonal/waypoint routing
  * is a later enhancement (the renderer contract won't change).
  */
 export type TransitionRenderer = (

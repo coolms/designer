@@ -7,7 +7,7 @@ import type {
 } from './types.js';
 
 /**
- * M4.j (slice 2) DMN DRD editing commands. Each is a reversible mutation
+ * DMN DRD editing commands. Each is a reversible mutation
  * the property panel dispatches through the editor's {@link CommandStack}
  * so every edit is a single undo step. They call the editor's mutator
  * seam (the editor owns the immutable-model swap + repaint + `change`
@@ -127,7 +127,7 @@ export class UpdateDiagramPropertyCommand implements Command {
 }
 
 /**
- * M4.j (slice 3) structural editing commands — add / remove / move a
+ * Structural editing commands — add / remove / move a
  * node, add / remove a requirement edge. These back the (future) palette,
  * connect-mode, drag, and delete-key affordances; each is a single undo
  * step. A {@link RemoveElementCommand} snapshots the node's incident

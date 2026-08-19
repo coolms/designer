@@ -8,7 +8,7 @@ import type { BooleanFieldDescriptor, FieldDescriptor } from '../FieldDescriptor
 /**
  * Single checkbox. Reads + writes `boolean`. `undefined` / non-boolean
  * values coerce to `false` for display (the field never displays an
- * indeterminate state at M3.2.e -- a tri-state checkbox would land as
+ * indeterminate state -- a tri-state checkbox would land as
  * a separate field type if a surface needs it).
  *
  * The DOM layout is `<label class="coolms-designer__field-checkbox-row">

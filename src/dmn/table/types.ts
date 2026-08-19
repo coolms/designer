@@ -1,6 +1,6 @@
 /**
- * Types for the DMN decision-table editor. Mirrors the M3.1
- * backend AST shape (DecisionTableAst, RuleAst, InputClauseAst,
+ * Types for the DMN decision-table editor. Mirrors the backend
+ * AST shape (DecisionTableAst, RuleAst, InputClauseAst,
  * OutputClauseAst) so the XML serializer can round-trip cleanly
  * with no impedance mismatch between FE state and BE parse.
  *
@@ -10,9 +10,9 @@
 
 /**
  * DMN hit policies -- match the strategies (UNIQUE / FIRST /
- * PRIORITY / ANY / COLLECT). PRIORITY at M3.2.f degrades to FIRST per
- * the backend's M3.1.f-level scope; the full priority-list editor
- * lands in M3.2 polish if a tenant needs it.
+ * PRIORITY / ANY / COLLECT). PRIORITY degrades to FIRST, matching
+ * the backend's current scope; a full priority-list editor lands if
+ * a tenant needs it.
  */
 export type HitPolicy = 'UNIQUE' | 'FIRST' | 'PRIORITY' | 'ANY' | 'COLLECT';
 
@@ -24,7 +24,7 @@ export type HitPolicy = 'UNIQUE' | 'FIRST' | 'PRIORITY' | 'ANY' | 'COLLECT';
 export type Aggregator = 'SUM' | 'MIN' | 'MAX' | 'COUNT';
 
 /**
- * DMN 1.3 typeRef values. M3.2.f uses 'string' for every clause
+ * DMN 1.3 typeRef values. The editor uses 'string' for every clause
  * (typeRef editor is deferred); the field is carried in the model
  * for round-trip stability with the XML serializer.
  */

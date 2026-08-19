@@ -133,7 +133,7 @@ describe('Canvas', () => {
         });
     });
 
-    describe('built-in wheel zoom + pan (M3.3.m F-5)', () => {
+    describe('built-in wheel zoom + pan', () => {
         // F-5 split the wheel handler: Ctrl/Cmd + wheel = zoom (matches
         // Figma / Miro / draw.io convention + the trackpad pinch-as-
         // ctrl-wheel browser behaviour); plain wheel = pan. The

@@ -248,7 +248,7 @@ export class PropertyPanel {
 }
 
 /**
- * Convenience helper -- registers the 5 M3.2.e built-in field renderers
+ * Convenience helper -- registers the 5 built-in field renderers
  * (text / textarea / select / el-expression / boolean) onto an empty
  * {@link FieldRegistry}. Surface code typically calls this once at
  * editor-construction time before registering its own custom field

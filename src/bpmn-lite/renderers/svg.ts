@@ -1,5 +1,5 @@
 /**
- * SVG namespace constant + microscopic helpers used by the M3.3.b
+ * SVG namespace constant + microscopic helpers used by the
  * node renderers.
  *
  * The renderers always use `createElementNS(SVG_NS, ...)` rather than

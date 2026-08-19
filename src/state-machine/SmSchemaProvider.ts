@@ -12,7 +12,7 @@ import type { FieldDescriptor } from '../property-panel/FieldDescriptor.js';
  *    `supports` (entity FQCNs), and the `auditTrail` toggle.
  *
  * The transition `from`/`to` selects are computed from the current place
- * list, so that schema is a method (not a constant). Reuses the M3.2.e
+ * list, so that schema is a method (not a constant). Reuses the
  * built-in field types verbatim (text / textarea / select / el-expression
  * / boolean) — no custom field renderer needed.
  */

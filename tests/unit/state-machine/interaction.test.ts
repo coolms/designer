@@ -174,7 +174,7 @@ describe('StateMachineEditor interaction layer', () => {
         expect(editor.state.workflowExtras).toBeUndefined();
     });
 
-    // ─── remove (M3.5 delete) + undo ──────────────────────────────────────
+    // ─── remove (delete) + undo ───────────────────────────────────────────
 
     it('removes a place + cascades its incident transitions, and undoes', () => {
         editor.commandStack.execute(new RemovePlaceCommand(editor, 'draft'));

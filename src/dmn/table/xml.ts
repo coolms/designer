@@ -12,8 +12,8 @@ import type {
  * DMN 1.3 XML round-trip serializer for the {@link DecisionTableModel}.
  *
  * The output target is exactly what the backend `DmnXmlParser`
- * + M3.1.e `DecisionDeployer` consume -- so the Angular wrapper at
- * can `POST writeDmnXml(model)` to `/decision-definitions/
+ * + the decision deployer consume -- so a host can
+ * `POST writeDmnXml(model)` to `/decision-definitions/
  * {key}/draft.dmn` and the backend round-trips it through evaluate
  * without translation.
  *
@@ -51,8 +51,8 @@ import type {
  *    (id values are preserved verbatim).
  *  - The single-decision wrapper is the canonical shape; multi-
  *    decision DMN files use the FIRST decision in document order
- *    and ignore the rest at M3.2.g (multi-decision read lands when
- *    DMN DRD ships in M4).
+ *    and ignore the rest (multi-decision read lands with the DRD
+ *    surface).
  */
 
 const DMN_NAMESPACE = 'https://www.omg.org/spec/DMN/20191111/MODEL/';
@@ -206,8 +206,8 @@ export function writeDmnXml(model: DecisionTableModel): string {
  *  - Whitespace in `<text>` content (leading/trailing trimmed).
  *  - Optional attributes (typeRef defaults to 'string'; missing label
  *    falls back to empty string).
- *  - Multi-decision files (FIRST decision wins at M3.2.g; full DRD
- *    reads land in M4).
+ *  - Multi-decision files (FIRST decision wins; full DRD reads land
+ *    with the DRD surface).
  *
  * Throws {@link DmnXmlParseError} on:
  *  - Malformed XML (DOMParser failure).

@@ -60,8 +60,7 @@ export type EditorSurface = 'dmn-table' | 'bpmn-lite' | 'dmn-drd' | 'state-machi
 
 /**
  * Change event emitted whenever the underlying model mutates. The exact
- * payload shape stabilises at M3.2.c (model layer); the kind variants
- * are:
+ * payload shape is owned by the model layer; the kind variants are:
  *  - 'init'     — fired synchronously on mount (revision=1)
  *  - 'mutation' — fired on Graph.onChange for ordinary mutations
  *  - 'reset'    — fired when Graph.clear() runs (load a different file)
@@ -83,9 +82,9 @@ export interface EditorOptions {
     readonly surface: EditorSurface;
 
     /**
-     * Initial model payload, opaque to M3.2.d. The model layer
+     * Initial model payload, opaque to the shell. The model layer
      * accepts this via the consumer's own hydration step; surface
-     * renderers (M3.3+) will narrow this to per-surface unions.
+     * renderers narrow it to per-surface unions.
      */
     readonly initialModel?: unknown;
 
@@ -209,7 +208,7 @@ export interface Editor {
 
     /**
      * Container element holding the canvas + sidebar (flex row layout).
-     * Surface-specific renderers that aren't canvas-based (M3.2.f DMN
+     * Surface-specific renderers that aren't canvas-based (the DMN
      * table) mount their own DOM into this element alongside the
      * canvas and sidebar.
      *
@@ -220,28 +219,28 @@ export interface Editor {
     /**
      * The shared {@link CommandStack} powering toolbar undo/redo +
      * surface-renderer mutations. Surface editors constructed
-     * alongside this shell (M3.2.f DMN table editor, future M3.3
-     * BPMN-Lite element commands) MUST dispatch through this stack
+     * alongside this shell (the DMN table editor, the BPMN-Lite
+     * element commands) MUST dispatch through this stack
      * so the toolbar's undo/redo buttons stay coherent with their
      * mutations.
      *
      * **Internal-package API** -- same stability caveat as `xrefs` /
-     * `selection`. The Angular wrapper at M3.2.h passes this through
-     * to {@link DmnTableEditor} unchanged.
+     * `selection`. A framework wrapper passes this through to
+     * {@link DmnTableEditor} unchanged.
      */
     readonly commands: CommandStack;
 
     /**
      * The viewport-transformed `<g>` group inside the canvas SVG --
      * the {@link Canvas.group} reference. Surface renderers that DO
-     * paint to the canvas (M3.3.b BPMN-Lite element renderers, M3.5
+     * paint to the canvas (the BPMN-Lite element renderers, the
      * state-machine editor) append their element trees here so the
      * pan/zoom transform cascades naturally; surface editors that
-     * don't (M3.2.f DMN table, which mounts HTML siblings to the
+     * don't (the DMN table, which mounts HTML siblings to the
      * hidden canvas) ignore this reference.
      *
      * **Internal-package API** -- same stability caveat as `commands`
-     * / `xrefs` / `selection`. The M3.3.h Angular wrapper passes this
+     * / `xrefs` / `selection`. A framework wrapper passes this
      * through to {@link BpmnLiteEditor} unchanged.
      */
     readonly canvasGroup: SVGGElement;

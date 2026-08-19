@@ -13,7 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
  * **Browser scope**: Chromium only. The package targets evergreen
  * Chromium-based runtimes (the Angular wrapper runs in Chrome
  * via the admin SPA). Cross-engine regressions would be useful
- * eventually but are out of M3.2 scope.
+ * eventually but are out of scope for now.
  *
  * **Goldens are NOT committed** by default. Per-platform font
  * rendering and GPU-rasterizer differences mean the binary PNGs

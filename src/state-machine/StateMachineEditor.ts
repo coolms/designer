@@ -40,11 +40,10 @@ interface StateMachineEvents extends Record<string, unknown> {
 
 /**
  * State Machine editor — the third editor on the `@coolms/designer`
- * substrate (after M3.2 DMN + M3.3 BPMN-Lite). This phase ships the
- * **render half**: it holds an immutable {@link StateMachineModel} and
- * paints it onto the shared canvas. Palette + commands + selection +
- * property panel land in M3.5.c; auto-layout in M3.5.b; the YAML
- * serializer in M3.5.d; the Angular wrapper + deploy in M3.5.e.
+ * substrate, after the DMN table and BPMN-Lite. It owns the render
+ * half: an immutable {@link StateMachineModel} painted onto the
+ * shared canvas. The palette, commands, selection, property panel,
+ * auto-layout and the config serializer all compose around it.
  *
  * **Two paint groups inside `svgGroup`, in document order** (mirroring
  * the bpmn-lite editor): a `…__sm-transitions` group (edges + the
@@ -64,9 +63,9 @@ export class StateMachineEditor {
     private disposed = false;
     private readonly svgGroup: SVGGElement;
     private readonly instanceId: number;
-    /** M3.5.c — selection state for the property-panel binding. */
+    /** Selection state for the property-panel binding. */
     private readonly selection_ = new SmSelection();
-    /** M3.5.c — undo/redo stack the property panel dispatches edits through. */
+    /** Undo/redo stack the property panel dispatches edits through. */
     private readonly commandStack_: CommandStack;
     /** Whether this editor owns (and must dispose) its command stack, vs sharing the shell's. */
     private readonly ownsCommandStack: boolean;
@@ -88,20 +87,21 @@ export class StateMachineEditor {
         return this.state_;
     }
 
-    /** M3.5.c selection state (the property panel binds to this). */
+    /** Selection state (the property panel binds to this). */
     get selection(): SmSelection {
         return this.selection_;
     }
 
-    /** M3.5.c undo/redo stack (the property panel dispatches commands here). */
+    /** Undo/redo stack (the property panel dispatches commands here). */
     get commandStack(): CommandStack {
         return this.commandStack_;
     }
 
     /**
-     * Replace the model + repaint + emit `change`. Used by the M3.5.e
-     * load flow. A model that arrives fully at the origin (the M3.5.d
-     * deserialize case — workflow YAML carries no diagram geometry) is
+     * Replace the model + repaint + emit `change`. Used by the
+     * host's load flow. A model that arrives fully at the origin
+     * (the deserialize case — workflow YAML carries no diagram
+     * geometry) is
      * auto-laid-out into columns; a model that already carries positions
      * is respected verbatim.
      */
@@ -229,7 +229,7 @@ export class StateMachineEditor {
         return { left: left - 24, top: top - 8, right: right + 8, bottom: bottom + 8 };
     }
 
-    // ─── M3.5.c mutator seam (the commands call these) ────────────────────
+    // ─── Mutator seam (the commands call these) ───────────────────────────
 
     /**
      * Rename a place — its id IS the Symfony place name — and cascade the

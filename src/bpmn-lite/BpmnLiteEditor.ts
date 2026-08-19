@@ -38,11 +38,10 @@ let bpmnLiteEditorInstanceCounter = 0;
 /**
  * Construction options for {@link BpmnLiteEditor}.
  *
- * **M3.3.c additions** over M3.3.b:
- *  - `flowRenderer` (optional, defaults to {@link renderSequenceFlow})
- *    -- the renderer used for every flow in `model.flows`.
- *    Consumers swap this when they need a different sequence-flow
- *    visual (e.g. dashed for cancellation flows).
+ * `flowRenderer` is the seam worth knowing about: it defaults to
+ * {@link renderSequenceFlow} and is swapped when a consumer needs a
+ * different sequence-flow visual (e.g. dashed for cancellation
+ * flows).
  */
 export interface BpmnLiteEditorOptions {
     readonly host: HTMLElement;
@@ -63,8 +62,8 @@ interface BpmnLiteEvents extends Record<string, unknown> {
 }
 
 /**
- * BPMN-Lite editor -- builds on the element paint with
- * SequenceFlow edge rendering layered underneath.
+ * BPMN-Lite editor -- node elements plus SequenceFlow edge
+ * rendering layered underneath them.
  *
  * **Two paint groups inside `svgGroup`, in document order**:
  *  1. `<g class="coolms-designer__bpmn-lite-flows">` -- edges +
@@ -78,29 +77,17 @@ interface BpmnLiteEvents extends Record<string, unknown> {
  * the arrowhead tips that arrive at them -- matching BPMN modeler
  * convention.
  *
- * **What lands at M3.3.c**:
- *  - `BpmnSequenceFlow.{waypoints, condition, isDefault}` type
- *    extensions.
- *  - Orthogonal Z-route auto-router with manual-waypoint override.
- *  - `<defs>` arrowhead marker minted per editor instance (id
- *    suffixed with the instance counter so two editors don't
- *    collide on the marker URL).
- *  - Default-flow "/" marker per BPMN convention.
- *  - Dangling source/target refs are skipped silently (the editor
- *    may legitimately hold draft state with broken refs mid-edit;
- *    the deploy pipeline catches these as `WF.UNKNOWN_FLOW_ENDPOINT`
- *    via the M2.c validator).
- *
- * **What's still deferred to M3.3.d-j**:
- *  - **M3.3.d** -- Palette + drop-to-create + element-add commands.
- *  - **M3.3.e** -- Connect mode + drag-to-create-edge + waypoint
- *    drag-to-reroute. The connect mode dispatches `AddFlowCommand`
- *    through {@link CommandStack}.
- *  - **M3.3.f** -- Property panel + condition / default editing
- *    via the PropertyPanel framework. The `[condition]`
- *    inline label paints between the middle waypoints once the
- *    property panel surfaces the field.
- *  - **M3.3.g-j** -- as in M3.3.b.
+ * **Flow rendering details worth knowing**:
+ *  - An orthogonal Z-route auto-router, overridden by manual
+ *    waypoints when the flow carries them.
+ *  - The `<defs>` arrowhead marker is minted PER EDITOR INSTANCE --
+ *    its id carries the instance counter, so two editors on one
+ *    page cannot collide on the marker URL.
+ *  - A default-flow "/" marker, per BPMN convention.
+ *  - Dangling source/target refs are skipped SILENTLY. The editor
+ *    legitimately holds draft state with broken refs mid-edit; the
+ *    deploy pipeline is what catches them, as
+ *    `WF.UNKNOWN_FLOW_ENDPOINT` from the engine validator.
  */
 export class BpmnLiteEditor {
     private state_: BpmnLiteModel;
@@ -170,9 +157,8 @@ export class BpmnLiteEditor {
      * trusts the supplied id is fresh. {@link nextElementId} is the
      * canonical way to mint one. Appending an element whose id
      * already exists in `state.elements` produces a model with
-     * duplicate ids -- downstream paint succeeds but the M3.3.g
-     * serializer + M2.c parser will reject on deploy. M3.3.f's
-     * property panel will surface a "duplicate id" inline error.
+     * duplicate ids -- downstream paint succeeds, but the
+     * serializer and the engine parser reject it on deploy.
      */
     addElement(element: BpmnElement): void {
         if (this.disposed) return;
@@ -185,18 +171,15 @@ export class BpmnLiteEditor {
     }
 
     /**
-     * remove the element with the given id from the model
-     * + repaint + emit `change`. Returns the removed element, or
-     * `null` if no element matched the id. Mutator API used by
+     * Remove the element with the given id from the model, repaint
+     * and emit `change`. Returns the removed element, or `null` if
+     * no element matched the id. Mutator API used by
      * {@link AddElementCommand.revert} (the undo path).
      *
-     * **What this does NOT do** (deferred to M3.3.e):
-     *  - Cascade-delete the element's incident flows. M3.3.e's
-     *    `DeleteElementCommand` will handle the cascade + emit
-     *    a single coalesced change. At M3.3.d, removing an element
-     *    leaves dangling flows -- the editor renders them as
-     *    "skipped" (the paint loop silently drops dangling-ref
-     *    flows per M3.3.c semantics).
+     * **It does NOT cascade-delete the element's incident flows** --
+     * {@link DeleteElementCommand} owns that, so the cascade and the
+     * removal coalesce into a single change. Calling this directly
+     * leaves dangling flows, which the paint loop silently drops.
      */
     removeElement(id: string): BpmnElement | null {
         if (this.disposed) return null;
@@ -443,9 +426,9 @@ export class BpmnLiteEditor {
     }
 
     /**
-     * append a new flow to the model + repaint + emit
-     * `change`. Mutator API used by {@link AddFlowCommand}; external
-     * callers (the M3.3.e {@link ConnectMode}) typically construct
+     * Append a new flow to the model, repaint and emit `change`.
+     * Mutator API used by {@link AddFlowCommand}; external callers
+     * (notably {@link ConnectMode}) typically construct
      * the command + dispatch through {@link commandStack} so
      * undo/redo wires automatically.
      *
@@ -456,7 +439,7 @@ export class BpmnLiteEditor {
      * **Dangling source/target refs are accepted**: the paint
      * loop already skips flows whose endpoints don't resolve, and
      * the editor may legitimately hold draft state with broken refs
-     * mid-edit. The M2.c validator catches them on deploy as
+     * mid-edit. The engine validator catches them on deploy as
      * `WF.UNKNOWN_FLOW_ENDPOINT`.
      */
     addFlow(flow: BpmnSequenceFlow): void {
@@ -510,16 +493,16 @@ export class BpmnLiteEditor {
     }
 
     /**
-     * replace the waypoints slot on the flow with the
-     * given id + repaint + emit `change`. Passing `undefined`
-     * reverts the flow to auto-routing (the M3.3.c
-     * {@link computeOrthogonalRoute} Z-route kicks in on next
-     * paint). Returns true if the flow existed + was updated.
+     * Replace the waypoints slot on the flow with the given id,
+     * repaint and emit `change`. Passing `undefined` reverts the
+     * flow to auto-routing -- the {@link computeOrthogonalRoute}
+     * Z-route kicks in on the next paint. Returns true if the flow
+     * existed and was updated.
      *
      * **Used by**: {@link UpdateFlowWaypointsCommand} (the
-     * canonical reroute path); the M3.3.e
-     * {@link WaypointDragController} dispatches one command per
-     * drag-release so undo/redo restore the prior routing exactly.
+     * canonical reroute path); {@link WaypointDragController}
+     * dispatches one command per drag-release so undo/redo restore
+     * the prior routing exactly.
      */
     updateFlowWaypoints(
         flowId: string,
@@ -543,13 +526,13 @@ export class BpmnLiteEditor {
 
     /**
      * Build a clone of the flow with the `waypoints` slot stripped
-     * entirely (not just set to `undefined`). The M3.3.c renderer's
+     * entirely (not just set to `undefined`). The renderer's
      * `flow.waypoints !== undefined` check treats explicit-undefined
      * the same as absent + auto-routes, but stripping keeps the
      * model's serialisation pristine: the JSON round-trip
      * will emit `{...}` with no `waypoints` key for auto-routed
-     * flows, matching what the M2.c parser produces on the inverse
-     * trip.
+     * flows, matching what the engine parser produces on the
+     * inverse trip.
      */
     private flowWithoutWaypoints(flow: BpmnSequenceFlow): BpmnSequenceFlow {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -561,8 +544,8 @@ export class BpmnLiteEditor {
      * F-7.1 -- replace the position slot on the element with the given
      * id + repaint + emit `change`. Returns true if the element existed
      * + was updated. Position is the top-left corner of the element's
-     * bounding box in world coordinates (same frame as the M3.3.b
-     * geometry pipeline).
+     * bounding box in world coordinates (the same frame as the
+     * element geometry pipeline).
      *
      * **Used by**: {@link MoveElementCommand} (the canonical drag-to-
      * move path); the F-7.1 `MoveElementController` dispatches one
@@ -683,9 +666,9 @@ export class BpmnLiteEditor {
     /**
      * Build a clone of the element with a single property replaced.
      * **Strip-vs-set semantics**: when `value` is `undefined` AND
-     * the key is optional in the type (label is the only such key
-     * at M3.3.f), the clone omits the key entirely so the M3.3.g
-     * JSON round-trip stays pristine -- the M2.c parser produces
+     * the key is optional in the type (`label` is the only such
+     * key), the clone omits the key entirely so the JSON round-trip
+     * stays pristine -- the engine parser produces
      * elements with NO `label` key for unlabelled elements, not
      * `label: undefined`. Empty-string labels are persisted as
      * empty strings (the user typed an empty input + tabbed away;
@@ -772,12 +755,12 @@ export class BpmnLiteEditor {
     ): BpmnElement {
         /**
          * Strip-vs-set for the optional top-level slots. The wire
-         * shape distinguishes "no field" from "empty string" (M2.c
-         * parser produces elements with no `variant` / `implementation`
-         * / `formKey` key for unset ones, not those with empty-string
-         * values). The set was `{'label'}` at M3.3.f; M3.3.i extended
-         * it with the variant + variant-specific fields surfaced by
-         * the property panel.
+         * shape distinguishes "no field" from "empty string": the
+         * engine parser produces elements with no `variant` /
+         * `implementation` / `formKey` key for unset ones, not ones
+         * with empty-string values. The set started as `{'label'}`
+         * and grew to cover the variant and the variant-specific
+         * fields the property panel surfaces.
          *
          * The SELECT field renderer emits `null` on the "empty" option
          * (it's the JSON-friendly equivalent of "no value"); strip on
@@ -985,7 +968,7 @@ export class BpmnLiteEditor {
     /**
      * Internal helper -- read the canvas group's `transform`
      * attribute, parse the `translate(panX panY) scale(zoom)` form
-     * the M3.2.b {@link Viewport} sets, return the inverse mapping
+     * the {@link Viewport} sets, return the inverse mapping
      * from DOM-local point to world point. Missing transform =
      * identity (no pan/zoom applied).
      */
@@ -1058,10 +1041,9 @@ export class BpmnLiteEditor {
     }
 
     /**
-     * Test affordance -- the painted SVG root group holding
-     * the element shapes. Held for backward-compat with M3.3.b
-     * tests; M3.3.c added {@link paintedFlowsElement} for the new
-     * flows group.
+     * Test affordance -- the painted SVG root group holding the
+     * element shapes. Kept for backward compatibility with older
+     * tests; {@link paintedFlowsElement} exposes the flows group.
      */
     get paintedRootElement(): SVGGElement | null {
         return this.paintedElements;
@@ -1091,7 +1073,7 @@ export class BpmnLiteEditor {
         const subtitle = doc.createElement('div');
         subtitle.classList.add('coolms-designer__bpmn-lite-banner-subtitle');
         subtitle.textContent =
-            'M3.3.c scaffold — drag elements from the palette in M3.3.d';
+            'Drag an element from the palette to begin.';
         banner.appendChild(subtitle);
 
         host.appendChild(banner);
@@ -1192,7 +1174,7 @@ export class BpmnLiteEditor {
             const target = elementsById.get(flow.target);
             if (source === undefined || target === undefined) {
                 // Dangling source/target -- the model is in an
-                // intermediate state. Skip silently; the M2.c
+                // intermediate state. Skip silently; the engine
                 // validator will surface this as
                 // `WF.UNKNOWN_FLOW_ENDPOINT` on deploy.
                 continue;

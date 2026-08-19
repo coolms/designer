@@ -7,7 +7,7 @@ import type { BpmnElement, BpmnElementKind } from './types.js';
  * stands in for sequence flows so the lookup table is a single
  * Record<string, FieldDescriptor[]>.
  *
- * **M3.3.i additions** layered on top of M3.3.f's 5-kind set:
+ * **Task variants**, layered on top of the 5-kind set:
  *  - `'userTask'` -- task variant; surfaces a `formKey` autocomplete
  *    driven by the XRefs scope `'workflow.forms'`.
  *  - `'serviceTask'` -- task variant; surfaces an `implementation`
@@ -19,7 +19,7 @@ import type { BpmnElement, BpmnElementKind } from './types.js';
  * **In the EDITOR model**, `BpmnElement.type` stays `'task'` for all
  * three variants -- the variant tag in {@link BpmnElement.variant} is
  * the pivot per the closed-set decision. **On the WIRE**, the
- * M2.c BPMN-Lite parser dispatches on the full type string (`userTask`,
+ * engine's BPMN-Lite parser dispatches on the full type string (`userTask`,
  * `serviceTask`, `task`) -- it doesn't consult `variant` on tasks --
  * so the {@link bpmnLiteModelToJson} serializer encodes the editor
  * variant into the wire `type` field (see the docblock on
@@ -46,9 +46,9 @@ export type BpmnLiteSchemaKey =
     | 'boundaryEvent:compensation';
 
 /**
- * Static option list that pivots a `task` element's schema. M3.3.i
- * ships three variants; later phases can expand without touching the
- * lookup mechanism.
+ * Static option list that pivots a `task` element's schema. Three
+ * variants ship; more can be added without touching the lookup
+ * mechanism.
  *
  * The empty-value option (rendered by the SELECT field renderer
  * when `allowEmpty: true`) maps to the plain-task schema; the named
@@ -64,7 +64,7 @@ const TASK_VARIANT_OPTIONS = [
  * author who dropped the wrong tile can pivot without deleting +
  * re-connecting the element.
  *
- * NOT `allowEmpty` -- the M2.c parser hard-fails an
+ * NOT `allowEmpty` -- the engine parser hard-fails an
  * `intermediateCatchEvent` with no `subtype`
  * (`WF.UNKNOWN_CONSTRUCT_TYPE`), so offering "none" would let the
  * author build a body that cannot deploy.
@@ -168,7 +168,7 @@ const CATCH_EVENT_COMMON: FieldDescriptor[] = [
 ];
 
 /**
- * Default schema table -- the per-kind field set + M3.3.i's
+ * Default schema table -- the per-kind field set + the task
  * variant schemas + a `variant` picker on the `task` schema so the
  * author can pivot the task subkind without re-creating the element.
  *
@@ -176,11 +176,11 @@ const CATCH_EVENT_COMMON: FieldDescriptor[] = [
  * renderers paint inside (task) or below (events + gateways) per
  * BPMN convention. **Sequence flows get a `condition`** EL field
  * (evaluated by the engine when the source is an exclusive gateway,
- * per M2.c's `WF.GATEWAY_CONDITION_*` validator rules) and an
+ * per the engine's `WF.GATEWAY_CONDITION_*` validator rules) and an
  * **`isDefault`** boolean (marks the default outgoing flow per
  * `WF.GATEWAY_DEFAULT_*`).
  *
- * **Tasks** get a variant SELECT after the label; the M3.3.i
+ * **Tasks** get a variant SELECT after the label; the
  * variant-aware lookup picks `userTask` / `serviceTask` schemas
  * when the user selects a variant + falls back to the plain `task`
  * schema otherwise.
@@ -651,8 +651,8 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
 };
 
 /**
- * schema provider for the BPMN-Lite property panel, extended
- * by M3.3.i with variant-aware lookup so a `task` element carrying
+ * Schema provider for the BPMN-Lite property panel. Its lookup is
+ * variant-aware, so a `task` element carrying
  * `variant: 'userTask'` / `'serviceTask'` resolves to the variant
  * schema instead of the plain task schema.
  *
@@ -664,14 +664,14 @@ const DEFAULT_SCHEMAS: Record<BpmnLiteSchemaKey, FieldDescriptor[]> = {
  * changing the consumer interface.
  *
  * **What this provider does NOT do** (deferred):
- *  - **Per-element overrides** -- the M2.c BPMN-Lite JSON shape
+ *  - **Per-element overrides** -- the engine's BPMN-Lite JSON shape
  *    can carry `extensionElements` on individual elements; later
  *    ships can layer those as instance-level extra fields on top
  *    of the kind / variant schema.
  *  - **Non-task variants** -- timer / message event variants
  *    (startEvent + timerEventDefinition, intermediateThrowEvent +
  *    messageEventDefinition, ...) follow the same variant pivot
- *    pattern but aren't shipped at M3.3.i. The mechanism is here;
+ *    pattern but are not shipped yet. The mechanism is here;
  *    those variants land when their renderers + palette tiles do.
  */
 export class BpmnLiteSchemaProvider {
@@ -714,7 +714,7 @@ export class BpmnLiteSchemaProvider {
      * The variant pivot is intentionally permissive: an unknown
      * variant value (e.g. `'workflowTask'` from a custom tenant
      * extension) falls back to the plain task schema. The schema
-     * provider is a UI affordance, not a validator -- M2.c is the
+     * provider is a UI affordance, not a validator -- the engine is the
      * authoritative validator at deploy time.
      */
     getSchemaForElement(
@@ -744,7 +744,7 @@ export class BpmnLiteSchemaProvider {
     }
 }
 
-/** Factory that returns the default M3.3.f + M3.3.i schema set. */
+/** Factory that returns the default schema set. */
 export function defaultBpmnLiteSchemaProvider(): BpmnLiteSchemaProvider {
     return new BpmnLiteSchemaProvider();
 }

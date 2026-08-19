@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
     test: {
         // jsdom gives us a DOM for canvas/shell tests without spinning a browser.
-        // Visual regression tests (playwright + golden PNGs) land in M3.2.i under
+        // Visual regression tests (playwright + golden PNGs) live under
         // tests/visual/ with their own runner; vitest stays unit-only.
         environment: 'jsdom',
         include: ['tests/unit/**/*.test.ts'],

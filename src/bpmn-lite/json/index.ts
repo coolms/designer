@@ -10,7 +10,7 @@
  *    model
  *  - {@link bpmnLiteWireToModel} -- pre-parsed wire object → editor
  *    model (used internally by `bpmnLiteJsonToModel` after JSON.parse;
- *    exposed so M3.3.h+ consumers that already have the parsed
+ *    exposed so consumers that already have the parsed
  *    object don't re-parse)
  *  - {@link BpmnLiteParseError} -- thrown by `bpmnLiteJsonToModel`
  *    on shape errors that prevent mounting
@@ -32,7 +32,7 @@ export {
  * auto-layout fallback. Exposed so tests + custom
  * consumers can invoke it directly on a model that came in
  * without a diagram. Called automatically by `bpmnLiteWireToModel`
- * during parse, so the typical M3.3.h.2 page path doesn't need to
+ * during parse, so the typical page path doesn't need to
  * touch it.
  */
 export { autoLayoutBpmnLite } from './autoLayout.js';

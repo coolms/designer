@@ -16,7 +16,7 @@ export interface DmnTableEditorOptions {
 /**
  * The DMN decision-table surface editor -- top-level wiring that
  * instantiates the model + view + manages lifecycle. Consumers
- * (Angular wrapper in M3.2.h, M3.2.f test fixtures) construct this
+ * (a framework wrapper, the test fixtures) construct this
  * once after `createEditor({surface: 'dmn-table'})` and connect it
  * to the editor's primitives (`editor.body` + `editor.commands`).
  *
@@ -28,7 +28,7 @@ export interface DmnTableEditorOptions {
  *
  * Round-trip: `load(model)` swaps in a new DecisionTableModel,
  * `state` exposes the current snapshot for saving + serialization
- * (M3.2.g XML serializer reads from `state`).
+ * (the XML serializer reads from `state`).
  */
 export class DmnTableEditor {
     private readonly model: DmnTableModel;
@@ -54,7 +54,7 @@ export class DmnTableEditor {
      * Convenience: serialize the current state as DMN 1.3 XML for
      * `POST /decision-definitions/{key}/draft.dmn`. Equivalent to
      * `writeDmnXml(this.state)` -- exposed as a method so the Angular
-     * wrapper at M3.2.h can call `editor.toXml()` without importing
+     * wrapper can call `editor.toXml()` without importing
      * the serializer separately.
      */
     toXml(): string {

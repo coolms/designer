@@ -4,7 +4,7 @@ import { SVG_NS } from './renderers/svg.js';
 import type { BpmnSequenceFlow } from './types.js';
 
 /**
- * Options for constructing the M3.3.e {@link ConnectMode}.
+ * Options for constructing a {@link ConnectMode}.
  */
 export interface ConnectModeOptions {
     /**
@@ -69,30 +69,31 @@ interface DragState {
  * with keyboard-only authors. The hover-handle pattern (Camunda
  * Modeler's "click an element, blue arrow appears, drag from arrow")
  * is more polished but requires per-element bbox tracking + hover
- * state propagation -- M3.3.f / property panel territory. M3.3.e
- * ships the modal as the floor; the Angular wrapper toolbar
- * surfaces an "enter connect mode" button + "Esc" key handler.
+ * state propagation, which is property-panel territory. The modal
+ * mode is the floor; a host toolbar surfaces an "enter connect mode"
+ * button and an "Esc" key handler.
  *
  * **Why self-loops are silently disallowed**: a source==target flow
  * would auto-route through {@link computeOrthogonalRoute} where the
  * source-exit + target-entry coincide (both edges of the same
- * element), producing a zero-length path. The M2.c validator does
+ * element), producing a zero-length path. The engine validator DOES
  * permit self-loops on activities (look-back patterns), so this is
- * an editor-UX choice not a model constraint -- M3.3.f property
- * panel may grow a "self-loop" affordance that lays a deliberate
- * curved route around the host. M3.3.e treats release-on-source as
+ * an editor-UX choice, not a model constraint -- the property panel
+ * may grow a "self-loop" affordance that lays a deliberate curved
+ * route around the host. Until then, release-on-source is treated as
  * a cancel signal.
  *
  * **What ConnectMode does NOT do** (deferred):
  *  - **Target highlight** -- hovering over an element mid-drag
- *    doesn't pulse / outline it. M3.3.f polish.
+ *    doesn't pulse / outline it.
  *  - **Snap-to-element-center for the rubber-band** -- the band
  *    follows the cursor verbatim. Snap is a future affordance.
  *  - **Esc-to-cancel** -- handled at the wrapper level (the
  *    keyboard shortcut calls `connectMode.exit()`).
- *  - **Connection validation** -- M3.3.e creates whatever the user
- *    drags. The M2.c validator catches structural issues on deploy.
- *  - **Reattach existing flow endpoints** -- M3.3.f territory.
+ *  - **Connection validation** -- connect mode creates whatever the
+ *    user drags. The engine validator catches structural issues on
+ *    deploy.
+ *  - **Reattach existing flow endpoints**.
  *
  * **Dispose contract**: detaches all listeners + removes any
  * in-flight rubber-band + the CSS mode class on the SVG. Safe to

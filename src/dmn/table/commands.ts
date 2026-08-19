@@ -11,7 +11,7 @@ import type {
 
 /**
  * Each DMN editor user action wraps in one of these Commands so undo/
- * redo works via the {@link CommandStack} from M3.2.b. Commands hold
+ * redo works via the {@link CommandStack}. Commands hold
  * onto whatever previous state they need for `revert()` to restore --
  * the model's mutators conveniently return the prior value where
  * applicable so apply() can capture it for revert without an extra

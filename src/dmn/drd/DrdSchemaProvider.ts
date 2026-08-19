@@ -2,7 +2,7 @@ import type { FieldDescriptor } from '../../property-panel/FieldDescriptor.js';
 import type { DmnDrdElementKind } from './types.js';
 
 /**
- * M4.j (slice 2) property-panel schema for the DMN DRD editor. Returns
+ * Property-panel schema for the DMN DRD editor. Returns
  * the field descriptors the {@link DmnDrdPropertyPanel} mounts for each
  * selection scope:
  *

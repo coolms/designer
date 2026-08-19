@@ -6,11 +6,11 @@ import type {
 import type { ElExpressionFieldDescriptor, FieldDescriptor } from '../FieldDescriptor.js';
 
 /**
- * Expression-language input. At M3.2.e it's a monospace single-line
+ * Expression-language input. A monospace single-line
  * input with no syntax highlighting + a `data-el-flavour` attribute
  * for future syntax-highlighting plugins to read.
  *
- * Future enhancement (M3.3 BPMN editor or later): plug in a real EL
+ * Future enhancement: plug in a real EL
  * tokenizer + highlight tokens (functions, identifiers, literals).
  * The single-line vs multi-line question is also open -- decision-table
  * cells need single-line, BPMN condition expressions can grow, EL

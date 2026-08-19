@@ -29,10 +29,10 @@ import { SVG_NS, svgEl } from './svg.js';
  * outgoing flow). The marker is a short `<path>` perpendicular to
  * the flow's first segment, ~6 px long.
  *
- * **Condition label**: deferred to M3.3.f -- the property panel
+ * **Condition label**: the property panel
  * will surface `flow.condition` as an inline `[condition]` text
- * element placed at the route's midpoint. M3.3.c paints the path
- * without the label.
+ * element placed at the route's midpoint. The base path renderer
+ * paints without the label.
  */
 export type EdgeRenderer = (
     flow: BpmnSequenceFlow,
@@ -99,11 +99,11 @@ function appendDefaultMarker(
 }
 
 /**
- * The single default flow renderer M3.3.c ships. Painted into the
+ * The single default flow renderer. Painted into the
  * editor's flows group; the editor passes the marker URL so the
  * arrowhead `<defs>` reference is per-instance unique.
  *
- * **M3.3.f extension** -- when `flow.condition` is set (a non-empty
+ * **Condition rendering** -- when `flow.condition` is set (a non-empty
  * string), paints an inline `[<condition>]` label at the route
  * midpoint so BPMN authors can tell at a glance which exclusive-
  * gateway branch evaluates each expression. The label sits above
@@ -133,7 +133,7 @@ export const renderSequenceFlow: EdgeRenderer = (
         'marker-end': markerEndUrl,
     });
     path.classList.add('coolms-designer__bpmn-flow-path');
-    // The path is the click target for M3.3.e+ interactions; the
+    // The path is the click target for interactions; the
     // marker stroke + per-segment thickness live in CSS.
     g.appendChild(path);
 

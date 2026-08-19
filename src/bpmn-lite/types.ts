@@ -8,38 +8,31 @@
  * → storage → deployer → engine has no translation layer, the same
  * shape the DMN serializer and its deployer established.
  *
- * **M3.3.a scope (this ship)**: minimal shape -- only the fields
- * the scaffold needs (processId, elements, flows). Concrete
- * subtype shapes for Start/End/Task/Gateway + per-element
- * properties (form key, candidates, timer durations, message
- * names, condition expressions) land in M3.3.b-f as the renderers
- * + palette + property panel come online.
- *
- * **Why mirror M2.c at the type layer, not at the editor's
- * internal graph layer**: the editor's mutation API needs to be
- * imperative (drag, drop, reroute, undo) -- that's the M3.2.c
- * `Graph` shape. The model exposed via `BpmnLiteEditor.state` is
- * the immutable serializable snapshot that maps directly onto the
- * M2.c JSON shape. M3.3.g composes Graph → BpmnLiteModel for
- * `toJson()` and BpmnLiteModel → Graph for `fromJson()`. Two
- * tier-aligned types beats one type that has to be both an undo
- * unit AND a wire-format.
+ * **Why mirror the engine at the type layer, not at the editor's
+ * internal graph layer**: the editor's mutation API has to be
+ * imperative (drag, drop, reroute, undo) -- that is the `Graph`
+ * shape. The model exposed via `BpmnLiteEditor.state` is the
+ * immutable serializable snapshot that maps directly onto the
+ * engine's JSON shape, and the serializer composes Graph →
+ * BpmnLiteModel for `toJson()` and BpmnLiteModel → Graph for
+ * `fromJson()`. Two tier-aligned types beats one type that has to
+ * be both an undo unit AND a wire format.
  *
  * **Camunda extensions (`camunda:property`, `camunda:formKey`)**
- * land as per-element-type optional fields in M3.3.f when the
- * property panel comes online. M3.2.o XML corpus is the
- * round-trip reference.
+ * are not modelled as first-class fields yet -- they survive in
+ * `extras`, and the XML corpus is the round-trip reference for
+ * when they get promoted.
  */
 
 /**
  * The closed set of BPMN-Lite element kinds the renderer
- * library supports. Mirrors a subset of M2.c's `ElementKind` enum --
- * the 5 core node types every BPMN-Lite process is built from.
- * adds `sequenceFlow` as an edge type (modeled separately
- * in {@link BpmnSequenceFlow}, not as an element). M3.3.f layers
- * variant tags on top (timer / message event variants, user /
- * service task variants) without expanding this list -- the variant
- * tag lives on the element body, not the kind.
+ * library supports. Mirrors a subset of the engine's `ElementKind`
+ * enum -- the 5 core node types every BPMN-Lite process is built
+ * from. `sequenceFlow` is modelled separately as an edge type in
+ * {@link BpmnSequenceFlow}, not as an element. Variant tags layer
+ * on top (timer / message event variants, user / service task
+ * variants) without expanding this list -- the variant tag lives on
+ * the element body, not the kind.
  *
  * Adding a new kind = (1) extend this union + (2) ship a renderer +
  * (3) register it in {@link defaultElementRendererRegistry}.
@@ -60,7 +53,7 @@ export type BpmnElementKind =
 /**
  * Fork-vs-join declaration for the gateway kinds that carry one.
  *
- * The M2.c parser reads `direction` on **parallel** and **inclusive**
+ * The engine parser reads `direction` on **parallel** and **inclusive**
  * gateways (exclusive + event-based have none). It defaults to
  * `diverging` when the field is absent or unparseable -- and its own
  * comment calls that "a safe lie", leaving `GatewayDegreeRule` to
@@ -76,8 +69,8 @@ export type BpmnGatewayDirection = 'diverging' | 'converging';
 /**
  * Event subtype discriminator for typed events.
  *
- * **Why a `subtype` slot and not one kind per event type**: the M2.c
- * parser's canonical wire spelling for a typed intermediate event is
+ * **Why a `subtype` slot and not one kind per event type**: the
+ * engine parser's canonical wire spelling for a typed intermediate event is
  * `{type: "intermediateCatchEvent", subtype: "timer"}` -- verified
  * against the engine's own integration corpus (67 `intermediateCatchEvent`
  * occurrences vs. a handful of the distinct-type spelling, which are
@@ -160,10 +153,10 @@ export interface BpmnConditionDefinition {
 }
 
 /**
- * Element position in the canvas coordinate system. M3.3.b convention:
- * `(x, y)` is the top-left corner of the element's bounding box --
- * matches the BPMN modeler convention + makes geometry arithmetic
- * (waypoint computation in M3.3.c) straightforward.
+ * Element position in the canvas coordinate system. `(x, y)` is the
+ * top-left corner of the element's bounding box -- it matches the
+ * BPMN modeler convention and makes the waypoint arithmetic
+ * straightforward.
  */
 export interface BpmnPosition {
     readonly x: number;
@@ -171,15 +164,15 @@ export interface BpmnPosition {
 }
 
 /**
- * Element bounding box in the canvas coordinate system. M3.3.b ships
- * five default sizes:
+ * Element bounding box in the canvas coordinate system. The
+ * conventional default sizes are:
  *   - Events: 36×36 (small-icon convention from the BPMN spec)
  *   - Tasks: 100×80 (modeler convention; gives room for a label)
  *   - Gateways: 50×50 (modeler convention)
  *
  * Defaults aren't enforced in the renderers; they read whatever the
- * model carries. M3.3.d palette will set conventional defaults at
- * create time so authors get the expected starting geometry.
+ * model carries; the palette sets these defaults at create time so
+ * authors get the expected starting geometry.
  */
 export interface BpmnSize {
     readonly width: number;
@@ -211,37 +204,32 @@ export interface BpmnElement {
      * / `'task'` -> plain task; `'userTask'` -> user-task fields
      * (`formKey` autocomplete vs the forms catalog);
      * `'serviceTask'` -> service-task fields (`implementation`
-     * autocomplete vs the M2.j handler catalog). M2.c's BPMN-Lite
-     * parser already carries the same `variant` slot on the wire
-     * format -- this is a verbatim round-trip; the editor doesn't
-     * synthesise it on save.
+     * autocomplete vs the engine's handler catalog). The engine's
+     * BPMN-Lite parser already carries the same `variant` slot on
+     * the wire format -- this is a verbatim round-trip; the editor
+     * doesn't synthesise it on save.
      *
-     * Variants on non-task kinds are NOT defined at M3.3.i (timer /
-     * message event variants land in a later phase via the same
-     * pattern -- the schema provider's `getSchemaForElement` is
-     * already variant-aware).
+     * Variants on non-task kinds are NOT defined yet (timer /
+     * message event variants land later via the same pattern -- the
+     * schema provider's `getSchemaForElement` is already
+     * variant-aware).
      */
     readonly variant?: string;
     /**
-     * service-task implementation key. Set when
-     * `variant === 'serviceTask'`. Mirrors the M2.c BPMN-Lite parser's
-     * top-level `implementation` slot + the
-     * {@see https://docs.coolms} engine's
-     * handler dispatch key. The M3.3.f property panel renders a select
-     * dropdown driven by the XRefs scope
-     * `'workflow.handlers'` populated from the backend
-     * `/api/v1/workflow/handlers` endpoint.
+     * Service-task implementation key, set when
+     * `variant === 'serviceTask'`. Mirrors the engine parser's
+     * top-level `implementation` slot and the engine's handler
+     * dispatch key. The property panel renders it as a select
+     * driven by the `'workflow.handlers'` XRefs scope, which the
+     * host populates from its own handler catalogue.
      */
     readonly implementation?: string;
     /**
-     * user-task form key. Set when
-     * `variant === 'userTask'`. Resolves to a FormModule definition
-     * id resolved by the host's form registry;
-     * the M2.k Inbox surface uses it to render the task's form when
-     * the user opens the work item. The M3.3.f property panel
-     * renders a select dropdown driven by the XRefs scope
-     * `'workflow.forms'` populated from the existing
-     * `/api/v1/forms` endpoint.
+     * User-task form key, set when `variant === 'userTask'`. It
+     * resolves to a form definition id in the host's form registry,
+     * which the host's task inbox uses to render the form when a
+     * user opens the work item. The property panel renders it as a
+     * select driven by the `'workflow.forms'` XRefs scope.
      */
     readonly formKey?: string;
     /**
@@ -353,17 +341,17 @@ export interface BpmnElement {
     readonly loopElementVariable?: string;
     readonly loopCompletionCondition?: string;
     /**
-     * wire-format fields the editor doesn't author but
-     * MUST preserve across JSON round-trips. The M2.c BPMN-Lite
+     * Wire-format fields the editor doesn't author but MUST
+     * preserve across JSON round-trips. The engine's BPMN-Lite
      * parser shape carries a long tail of element-kind-specific
      * fields (`message`, `documentation`, `inputs`, `outputs`,
      * `candidateUsers`, ...) that the editor doesn't yet surface.
      * Hand-authored JSON may carry them; the editor's `fromJson`
      * parks them in `extras`; `toJson` re-emits them verbatim.
      * Authors get lossless round-trip even for fields the editor
-     * can't yet edit. M3.3.i+ progressively promotes specific
-     * extras to top-level fields (variant, implementation, formKey
-     * landed in M3.3.i) so the property panel can surface them
+     * can't yet edit. Specific extras get promoted to top-level
+     * fields over time -- `variant`, `implementation` and `formKey`
+     * already have been -- so the property panel can surface them
      * cleanly.
      */
     readonly extras?: Readonly<Record<string, unknown>>;
@@ -372,26 +360,24 @@ export interface BpmnElement {
 /**
  * Sequence-flow shape -- a single connection in the process graph.
  * Each flow connects `source` → `target` by element id (matching the
- * M2.c parser's adjacency model).
+ * engine parser's adjacency model).
  *
- * **M3.3.c additions** over M3.3.a:
  *  - `waypoints` -- optional manual route. When present, the editor
  *    paints exactly these points + skips
  *    {@link computeOrthogonalRoute}; when absent, the editor falls
- *    back to the auto-router. Manual waypoints become the default
- *    once M3.3.e connect mode + drag-to-reroute land (the user's
- *    explicit route always wins over auto-routing).
+ *    back to the auto-router. A manual route always wins over
+ *    auto-routing: the user's explicit intent outranks the
+ *    heuristic.
  *  - `condition` -- optional EL expression evaluated by the engine
- *    when the source is an exclusive gateway (per M2.c
- *    `WF.GATEWAY_CONDITION_*` rules). At M3.3.c the editor just
- *    holds the string; M3.3.f surfaces it as a property-panel
- *    field + paints an inline `[condition]` label between the
- *    middle waypoints.
+ *    when the source is an exclusive gateway (per its
+ *    `WF.GATEWAY_CONDITION_*` rules). The editor holds the string
+ *    and the property panel surfaces it, painting an inline
+ *    `[condition]` label between the middle waypoints.
  *  - `isDefault` -- marks the gateway's "default" outgoing flow
- *    (the one the engine picks when no condition matches). Per
- *    M2.c `WF.GATEWAY_DEFAULT_*` rules: at most one default per
- *    gateway. M3.3.c paints default flows with a small diagonal
- *    "/" marker near the source-exit waypoint (BPMN convention).
+ *    (the one the engine picks when no condition matches). Per the
+ *    engine's `WF.GATEWAY_DEFAULT_*` rules there is at most one per
+ *    gateway. Default flows paint with a small diagonal "/" marker
+ *    near the source-exit waypoint (BPMN convention).
  */
 export interface BpmnSequenceFlow {
     readonly id: string;
@@ -409,18 +395,18 @@ export interface BpmnSequenceFlow {
 
 /**
  * Top-level model the editor exposes via `state`. `processId` is
- * the BPMN-Lite `process.id` (matches the M2.b
- * `WorkflowDefinition.definitionKey`); the Angular wrapper
- * deploys against the same key the URL carries.
+ * the BPMN-Lite `process.id`, which matches the engine's
+ * `WorkflowDefinition.definitionKey` -- a host deploys against the
+ * same key it loaded.
  */
 export interface BpmnLiteModel {
     readonly processId: string;
     readonly elements: ReadonlyArray<BpmnElement>;
     readonly flows: ReadonlyArray<BpmnSequenceFlow>;
     /**
-     * the wire-format `process` header carries fields the
-     * editor doesn't author at M3.3.f (`version`, `documentation`,
-     * `variables`). `fromJson` parks them here; `toJson` re-emits
+     * The wire-format `process` header carries fields the editor
+     * doesn't author (`version`, `documentation`, `variables`).
+     * `fromJson` parks them here; `toJson` re-emits
      * them verbatim. Lossless round-trip even for fields the editor
      * can't yet edit.
      */
@@ -429,11 +415,11 @@ export interface BpmnLiteModel {
 
 /**
  * Default starter model -- an empty process with no elements + no
- * flows. M3.3.b adds the M2.c `WF.START_EVENT_REQUIRED` precondition
- * (every process must have at least one start event), but that's a
- * validate-on-deploy check, not an editor invariant -- authors
- * frequently work with incomplete graphs mid-edit + the M3.2.h
- * save-then-deploy split lets them save broken bodies as drafts.
+ * flows. The engine's `WF.START_EVENT_REQUIRED` rule (every process
+ * must have at least one start event) is a validate-on-deploy
+ * check, NOT an editor invariant -- authors work with incomplete
+ * graphs mid-edit, and the save-then-deploy split lets them save
+ * broken bodies as drafts.
  */
 export function emptyBpmnLiteModel(processId = 'process.unnamed'): BpmnLiteModel {
     return {
