@@ -307,7 +307,7 @@ const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescripto
             key: 'timer.value',
             label: t('designer.bpmn.field.timer.value.label', 'Timer expression'),
             description: t(
-                'designer.bpmn.intermediateCatchEvent.timer.timer.value.description',
+                'designer.bpmn.intermediateCatchEvent.timer.value.description',
                 'ISO-8601 literal (PT15M, 2026-01-01T00:00:00Z, R3/PT10M) or an EL expression resolved when the token arrives.',
             ),
             placeholder: t('designer.bpmn.field.timer.value.placeholder', 'PT15M'),
@@ -321,10 +321,10 @@ const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescripto
             key: 'message.name',
             label: t('designer.bpmn.field.message.name.label', 'Message name'),
             description: t(
-                'designer.bpmn.intermediateCatchEvent.message.message.name.description',
+                'designer.bpmn.intermediateCatchEvent.message.name.description',
                 'Name the inbound message must carry to wake this token.',
             ),
-            placeholder: t('designer.bpmn.intermediateCatchEvent.message.message.name.placeholder', 'OrderApproved'),
+            placeholder: t('designer.bpmn.intermediateCatchEvent.message.name.placeholder', 'OrderApproved'),
             maxLength: 255,
         },
         {
@@ -346,7 +346,7 @@ const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescripto
             key: 'signal.name',
             label: t('designer.bpmn.field.signal.name.label', 'Signal name'),
             description: t(
-                'designer.bpmn.intermediateCatchEvent.signal.signal.name.description',
+                'designer.bpmn.intermediateCatchEvent.signal.name.description',
                 'Broadcast name. Signals carry no correlation key -- every waiting token with this name resumes.',
             ),
             placeholder: t('designer.bpmn.field.signal.name.placeholder', 'ShipmentDelayed'),
@@ -396,7 +396,7 @@ const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescripto
             key: 'timer.value',
             label: t('designer.bpmn.field.timer.value.label', 'Timer expression'),
             description: t(
-                'designer.bpmn.boundaryEvent.timer.timer.value.description',
+                'designer.bpmn.boundaryEvent.timer.value.description',
                 'ISO-8601 literal (PT15M, R3/PT10M) or an EL expression. The clock starts when the host activity begins.',
             ),
             placeholder: t('designer.bpmn.field.timer.value.placeholder', 'PT15M'),
@@ -410,10 +410,10 @@ const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescripto
             key: 'message.name',
             label: t('designer.bpmn.field.message.name.label', 'Message name'),
             description: t(
-                'designer.bpmn.boundaryEvent.message.message.name.description',
+                'designer.bpmn.boundaryEvent.message.name.description',
                 'Name the inbound message must carry to fire this boundary while the host is live.',
             ),
-            placeholder: t('designer.bpmn.boundaryEvent.message.message.name.placeholder', 'OrderCancelled'),
+            placeholder: t('designer.bpmn.boundaryEvent.message.name.placeholder', 'OrderCancelled'),
             maxLength: 255,
         },
         {
@@ -435,7 +435,7 @@ const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescripto
             key: 'signal.name',
             label: t('designer.bpmn.field.signal.name.label', 'Signal name'),
             description: t(
-                'designer.bpmn.boundaryEvent.signal.signal.name.description',
+                'designer.bpmn.boundaryEvent.signal.name.description',
                 'Broadcast name. Fires whenever a matching signal is broadcast while the host is live.',
             ),
             placeholder: t('designer.bpmn.field.signal.name.placeholder', 'ShipmentDelayed'),
