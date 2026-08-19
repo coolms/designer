@@ -7,6 +7,7 @@ import type {
     FieldInstance,
 } from '../property-panel/FieldRenderer.js';
 import type { BpmnLiteEditor } from './BpmnLiteEditor.js';
+import type { Translator } from '../i18n.js';
 import {
     BpmnLiteSchemaProvider,
     defaultBpmnLiteSchemaProvider,
@@ -42,6 +43,12 @@ export interface BpmnLitePropertyPanelOptions {
      * Override the schema provider. Defaults to the built-in
      * (label per kind, condition + isDefault for flows).
      */
+    /**
+     * Resolves the field text of the DEFAULT schema provider. Ignored when
+     * `schemas` is supplied -- that provider brings its own.
+     */
+    readonly t?: Translator;
+
     readonly schemas?: BpmnLiteSchemaProvider;
     /**
      * Override the field registry. Defaults to a fresh registry
@@ -145,7 +152,7 @@ export class BpmnLitePropertyPanel {
     constructor(options: BpmnLitePropertyPanelOptions) {
         this.host = options.host;
         this.editor = options.editor;
-        this.schemas = options.schemas ?? defaultBpmnLiteSchemaProvider();
+        this.schemas = options.schemas ?? defaultBpmnLiteSchemaProvider(options.t);
         this.registry = options.registry ?? this.defaultRegistry();
         this.xrefs = options.xrefs ?? new XRefs();
         this.readOnly = options.readOnly ?? false;

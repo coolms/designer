@@ -126,9 +126,9 @@ const boundaryCommon = (t: Translator): FieldDescriptor[] => [
     {
         type: 'text',
         key: 'label',
-        label: t('designer.bpmn.common.label.label', 'Label'),
-        description: t('designer.bpmn.common.label.description', 'Optional human-readable name displayed below the event.'),
-        placeholder: t('designer.bpmn.common.label.placeholder', 'On timeout'),
+        label: t('designer.bpmn.boundary.label.label', 'Label'),
+        description: t('designer.bpmn.boundary.label.description', 'Optional human-readable name displayed below the event.'),
+        placeholder: t('designer.bpmn.boundary.label.placeholder', 'On timeout'),
         maxLength: 80,
     },
     {
@@ -136,7 +136,7 @@ const boundaryCommon = (t: Translator): FieldDescriptor[] => [
         key: 'subtype',
         label: t('designer.bpmn.field.subtype.label', 'Event type'),
         description: t(
-            'designer.bpmn.common.subtype.description',
+            'designer.bpmn.boundary.subtype.description',
             'What interrupts the host activity. Changing this re-types the event in place.',
         ),
         options: boundarySubtypeOptions(t),
@@ -159,9 +159,9 @@ const catchEventCommon = (t: Translator): FieldDescriptor[] => [
     {
         type: 'text',
         key: 'label',
-        label: t('designer.bpmn.common.label.label', 'Label'),
-        description: t('designer.bpmn.common.label.description', 'Optional human-readable name displayed below the event.'),
-        placeholder: t('designer.bpmn.common.label.placeholder', 'Wait'),
+        label: t('designer.bpmn.catchEvent.label.label', 'Label'),
+        description: t('designer.bpmn.catchEvent.label.description', 'Optional human-readable name displayed below the event.'),
+        placeholder: t('designer.bpmn.catchEvent.label.placeholder', 'Wait'),
         maxLength: 80,
     },
     {
@@ -169,7 +169,7 @@ const catchEventCommon = (t: Translator): FieldDescriptor[] => [
         key: 'subtype',
         label: t('designer.bpmn.field.subtype.label', 'Event type'),
         description: t(
-            'designer.bpmn.common.subtype.description',
+            'designer.bpmn.catchEvent.subtype.description',
             'What the token waits for. Changing this re-types the event in place.',
         ),
         options: eventSubtypeOptions(t),
