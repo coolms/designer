@@ -87,7 +87,7 @@ interface HandleDragState {
  *
  * **What this controller does NOT do** (deferred, same list as
  * ConnectMode): target highlight mid-drag, snap-to-center, connection
- * validation (the M2.c validator catches structural issues on deploy),
+ * validation (the engine validator catches structural issues on deploy),
  * reattach existing endpoints, self-loop routing.
  *
  * **Dispose contract**: detaches the hover listener + the handle's

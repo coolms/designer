@@ -3,7 +3,7 @@ import { requirementSegment } from './geometry.js';
 import { svgEl, SVG_NS } from './svg.js';
 
 /**
- * M4.j DRD requirement (arrow) renderer + the shared arrowhead
+ * DRD requirement (arrow) renderer + the shared arrowhead
  * `<marker>`.
  *
  * Mirrors the transition-renderer contract: a pure function taking
@@ -15,7 +15,7 @@ import { svgEl, SVG_NS } from './svg.js';
  * Visual: a straight segment trimmed to the node borders with a filled
  * arrowhead at the target (the requiring decision). DMN information
  * requirements carry no label, so — unlike a state-machine transition —
- * none is painted. M4.j keeps routing straight; orthogonal/waypoint
+ * none is painted. Routing stays straight; orthogonal/waypoint
  * routing is a later enhancement (the renderer contract won't change).
  */
 export type RequirementRenderer = (

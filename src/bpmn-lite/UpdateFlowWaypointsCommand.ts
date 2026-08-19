@@ -30,7 +30,7 @@ import type { BpmnPosition } from './types.js';
  * for chained reroutes (each subsequent command captures the
  * result of the previous one's apply).
  *
- * **Label format**: `"Reroute Flow"` -- the M3.2.b
+ * **Label format**: `"Reroute Flow"` -- the
  * {@link CommandStack.nextUndoLabel} surfaces it in tooltips
  * ("Undo: Reroute Flow"). The flow's id isn't included in the
  * label because the user just dragged a waypoint they could see

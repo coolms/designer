@@ -203,7 +203,7 @@ describe('BPMN-Lite JSON serializer', () => {
                         label: 'Real label',
                         extras: {
                             label: 'Should be overridden',
-                            // Use non-reserved keys here -- M3.3.i promoted
+                            // Use non-reserved keys here -- the parser promotes
                             // variant + implementation + formKey to top-level
                             // slots; they're now in {@link RESERVED_ELEMENT_KEYS}
                             // and stripped from extras at serialise time.
@@ -538,7 +538,7 @@ describe('BPMN-Lite JSON serializer', () => {
             // variant/implementation/formKey are now promoted slots,
             // not extras. Use non-promoted keys to exercise the extras
             // round-trip while letting the promoted-slot round-trip live
-            // in the dedicated M3.3.i section below.
+            // in the dedicated promotion section below.
             const m: BpmnLiteModel = {
                 processId: 'p',
                 elements: [
@@ -622,9 +622,9 @@ describe('BPMN-Lite JSON serializer', () => {
         });
     });
 
-    /* ────────────────────────── M3.3.i variant / impl / formKey ─────────────────── */
+    /* ───────────────────── variant / impl / formKey promotion ───────────────────── */
 
-    describe('M3.3.i — variant, implementation, formKey promotion', () => {
+    describe('variant, implementation, formKey promotion', () => {
         it('reads variant/implementation/formKey out of element extras into top-level slots', () => {
             const json = `{
                 "process": {"id": "p1"},
@@ -657,12 +657,12 @@ describe('BPMN-Lite JSON serializer', () => {
         });
 
         it('emits promoted slots at top level on toJson + leaves extras clean', () => {
-            // **M3.3.l-followup**: editor `{type: 'task', variant: 'serviceTask'}`
+            // **Wire task-type encoding**: editor `{type: 'task', variant: 'serviceTask'}`
             // emits wire `type: 'serviceTask'` (NOT `type: 'task' + variant: '…'`)
-            // because the M2.c parser dispatches the task family on the wire
+            // because the engine parser dispatches the task family on the wire
             // `type` field, not on `variant`. The `variant` field is reserved
             // for event sub-flavours (`message`, `timer`); emitting it on a
-            // task would be redundant + ignored by M2.c. See
+            // task would be redundant + ignored by the engine. See
             // `WIRE_TASK_TYPE_TO_VARIANT` in `fromJson.ts`.
             const svcTask: BpmnElement = {
                 id: 't1',
@@ -724,7 +724,7 @@ describe('BPMN-Lite JSON serializer', () => {
 
         it('strips promoted-slot keys from extras even when they come back via the wire', () => {
             // Hand-authored JSON puts the slot inside extras (e.g. via a
-            // tenant tool that didn't know they were promoted in M3.3.i).
+            // tenant tool that didn't know they were promoted).
             // fromJson promotes them; toJson re-emits at top level only.
             const json = `{
                 "process": {"id": "p1"},
@@ -749,11 +749,11 @@ describe('BPMN-Lite JSON serializer', () => {
         });
     });
 
-    /* ───────────────── M3.3.l-followup: wire task-type translation ──────────────── */
+    /* ──────────────────── wire task-type translation ────────────────────────────── */
 
-    describe('M3.3.l-followup — wire-task-type ⇄ editor-variant translation', () => {
+    describe('wire-task-type ⇄ editor-variant translation', () => {
         it('reads wire `type: "userTask"` as editor `{type: "task", variant: "userTask"}`', () => {
-            // **The M2.c wire shape** -- the parser emits the full type name
+            // **The engine wire shape** -- the parser emits the full type name
             // (`userTask` / `serviceTask`) on the wire, NOT a plain `task`
             // with a `variant` sidecar. The editor model collapses the task
             // family into the closed 5-kind `BpmnElementKind` set + carries
@@ -795,10 +795,10 @@ describe('BPMN-Lite JSON serializer', () => {
         });
 
         it('emits editor `{type: "task", variant: "userTask"}` as wire `type: "userTask"`', () => {
-            // **The inverse** -- a clean wire body that M2.c will read with
+            // **The inverse** -- a clean wire body the engine reads with
             // full `UserTaskAst` / `ServiceTaskAst` runtime semantics. The
-            // pre-fix shape `type: "task" + variant: "userTask"` made M2.c
-            // build a plain `TaskAst` (no Inbox creation on park, no handler
+            // pre-fix shape `type: "task" + variant: "userTask"` made the engine
+            // build a plain `TaskAst` (no task-inbox entry on park, no handler
             // dispatch), silently losing the runtime behaviour.
             const usrTask: BpmnElement = {
                 id: 't1',
@@ -842,7 +842,7 @@ describe('BPMN-Lite JSON serializer', () => {
                 'serviceTask',
                 undefined,
             ]);
-            // Round-trip back to the wire reproduces the M2.c shape.
+            // Round-trip back to the wire reproduces the engine shape.
             const wire = bpmnLiteModelToWire(model);
             const els = wire['elements'] as Array<Record<string, unknown>>;
             expect(els.map((e) => e['type'])).toEqual([
@@ -852,13 +852,13 @@ describe('BPMN-Lite JSON serializer', () => {
             ]);
         });
 
-        it('honours legacy M3.3.i pre-fix shape: `type: "task" + variant: "userTask"` still parses + upgrades on save', () => {
+        it('honours the legacy pre-fix shape: `type: "task" + variant: "userTask"` still parses + upgrades on save', () => {
             // **Forward-compat**: drafts that the broken pre-fix `toJson`
             // emitted (or hand-authored bodies that used the schema
             // verbatim) carry `type: "task"` + an explicit `variant` slot.
             // The variant slot is honoured at parse time so existing drafts
             // don't lose their subtype. On save, `toJson` emits the
-            // M2.c-correct wire shape -- effectively an in-place upgrade.
+            // engine-correct wire shape -- effectively an in-place upgrade.
             const legacy = `{
                 "process": {"id": "p1"},
                 "elements": [
@@ -881,9 +881,9 @@ describe('BPMN-Lite JSON serializer', () => {
             expect(els[0]).not.toHaveProperty('variant');
         });
 
-        it('M2.n verify-spine regression: 6 elements + 5 flows survive, start has outgoing', () => {
+        it('verify-spine regression: 6 elements + 5 flows survive, start has outgoing', () => {
             // Mirror of the deployed `identity.verify_new_user_spine` body --
-            // the shape that triggered the M3.3.l-followup investigation.
+            // the shape that triggered this investigation.
             // Pre-fix, fromJson silently dropped the 2 serviceTasks + the
             // userTask + 4 of the 5 flows; only `start.registered`,
             // `gw.email_result`, `end.verified`, + `flow.email_ok` survived.

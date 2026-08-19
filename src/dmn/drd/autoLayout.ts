@@ -1,10 +1,10 @@
 import type { DmnDrdElement, DmnInformationRequirement } from './types.js';
 
 /**
- * M4.j — topological auto-layout for DRDs that arrive without diagram
+ * Topological auto-layout for DRDs that arrive without diagram
  * geometry.
  *
- * **The problem (mirrors M3.5.b for state machines).** A DMN model
+ * **The problem (the state-machine layout solves the same one).** A DMN model
  * deserialized from hand-authored / module-shipped XML may carry no
  * DMNDI diagram sidecar, so every node sits at the origin `{x: 0,
  * y: 0}` — one fuzzy pile in the top-left. This lays them out into

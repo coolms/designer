@@ -18,8 +18,8 @@ import { test, expect } from '@playwright/test';
  *  - If intentional: re-run `npm run test:visual:update` to refresh
  *    the goldens, commit the new PNGs, and add a note to the PR.
  *  - If unintentional: the diff highlights the affected region; the
- *    canvas substrate + M3.2.d shell composition logs ought
- *    to point at the recent commits that touched those areas.
+ *    canvas substrate + shell composition logs ought to point at
+ *    the recent commits that touched those areas.
  *
  * **Adding a scenario**: append it to the `SCENARIOS` registry in
  * `fixtures/main.ts`, then add a `test()` block here referencing the

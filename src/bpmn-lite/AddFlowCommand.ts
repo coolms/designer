@@ -9,9 +9,9 @@ import type { BpmnSequenceFlow } from './types.js';
  * / {@link BpmnLiteEditor.removeFlow}) so the editor stays the
  * single source of mutation truth.
  *
- * **Symmetry with M3.3.d's {@link AddElementCommand}**: same thin
- * wrapper pattern. The {@link ConnectMode} (M3.3.e drag-from-source-
- * to-target-on-canvas surface) constructs + dispatches one of these
+ * **Symmetry with {@link AddElementCommand}**: same thin wrapper
+ * pattern. The {@link ConnectMode} (the drag-from-source-to-target
+ * canvas surface) constructs + dispatches one of these
  * per successful release; the Angular wrapper's undo/redo
  * buttons + Ctrl+Z / Ctrl+Y bindings reverse the connection.
  *
@@ -24,8 +24,8 @@ import type { BpmnSequenceFlow } from './types.js';
  * **Label format**: `"Connect <sourceId> → <targetId>"` -- the
  * arrow + endpoint ids carry the semantic in a way the
  * {@link CommandStack.nextUndoLabel} getter can surface in tooltips
- * ("Undo: Connect startEvent_1 → task_1"). The M3.3.f property
- * panel may later swap to element labels when those are available
+ * ("Undo: Connect startEvent_1 → task_1"). The property panel may
+ * later swap to element labels when those are available
  * (e.g. "Connect Start → Approve"), but the id form is unambiguous
  * + readable for now.
  */

@@ -497,8 +497,8 @@ export class Toolbar {
             // rejection -- catch it so a rejected save/deploy doesn't leak
             // an unhandled-rejection. The consumer's own onSave/onDeploy
             // promise rejects independently; surfacing user-visible errors
-            // is the consumer's job (the Angular wrapper at M3.2.h fires a
-            // toast via the platform notification service).
+            // is the consumer's job (a host typically fires a toast
+            // via its own notification service).
             result
                 .finally(() => {
                     if (this.disposed) return;

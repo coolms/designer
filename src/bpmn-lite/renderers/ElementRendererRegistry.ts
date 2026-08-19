@@ -5,18 +5,17 @@ import type { BpmnElement, BpmnElementKind } from '../types.js';
  * the document the SVG nodes must be created in, returns the root
  * `<g>` group element to append to the canvas viewport.
  *
- * **Why a pure function not a class**: at M3.3.b the renderer has
- * no state. Element id, position, size, label all flow in through
+ * **Why a pure function not a class**: the renderer has no state. Element id, position, size, label all flow in through
  * the `element` argument; the renderer returns fresh SVG nodes per
- * call. Stateful renderers land if/when M3.3.b-e need per-element
+ * call. Stateful renderers land if/when a surface needs per-element
  * memoization (e.g. cached layout boxes for connector routing);
  * the type can grow to a {render, layout} object then without
  * breaking existing call sites.
  *
  * **Why pass `doc` explicitly instead of using `globalThis.document`**:
  * the vitest + jsdom tests run with their own document; the
- * Playwright visual fixtures run in the real browser; the M3.3.h
- * Angular wrapper runs in the browser too. Passing `doc` keeps
+ * Playwright visual fixtures run in the real browser; a framework
+ * wrapper runs in the browser too. Passing `doc` keeps
  * the renderer pure + lets tests use a fresh document per case.
  */
 export type ElementRenderer<E extends BpmnElement = BpmnElement> = (

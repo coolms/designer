@@ -5,15 +5,15 @@ import type { BpmnPosition } from './types.js';
 import { UpdateFlowWaypointsCommand } from './UpdateFlowWaypointsCommand.js';
 
 /**
- * Options for constructing the M3.3.e {@link WaypointDragController}.
+ * Options for constructing a {@link WaypointDragController}.
  */
 export interface WaypointDragControllerOptions {
     readonly editor: BpmnLiteEditor;
     /**
      * The id of the flow whose waypoints should get drag handles.
-     * Typically driven by the property panel's selection;
-     * for M3.3.e the host constructs one controller per selected
-     * flow + disposes it when the selection changes.
+     * Typically driven by the property panel's selection: the host
+     * constructs one controller per selected flow and disposes it
+     * when the selection changes.
      */
     readonly flowId: string;
 }
@@ -50,7 +50,7 @@ interface DragState {
  * everything between waypoints[0] (source-exit) and waypoints[N-1]
  * (target-entry). The endpoints are pinned to element bbox edges by
  * the router + dragging them would conceptually mean
- * "reattach to a different element," which is M3.3.f territory.
+ * "reattach to a different element," which this controller does not do.
  *
  * For an auto-routed Z-route (4 waypoints), that's the 2 middle
  * points -- both editable, drag-promotes the route to manual.
@@ -84,16 +84,14 @@ interface DragState {
  *
  * **What this controller does NOT do** (deferred):
  *  - **Add a new waypoint via mid-segment drag** -- handles paint
- *    only at existing waypoint positions; M3.3.f polish adds
- *    midpoint "ghost handles" that, when dragged, splice a new
- *    waypoint into the chain.
- *  - **Reattach the source/target endpoints** -- M3.3.f territory.
- *  - **Snap-to-grid** -- raw cursor world coords. M3.2.b `Snap`
- *    utility wires up at M3.3.f when the property panel surfaces
- *    grid affordances.
+ *    only at existing waypoint positions; midpoint "ghost handles"
+ *    that splice a new waypoint into the chain land later.
+ *  - **Reattach the source/target endpoints.**
+ *  - **Snap-to-grid** -- raw cursor world coords. The `Snap` utility
+ *    wires up when the property panel surfaces grid affordances.
  *  - **Constrain to orthogonal axes** -- middle handles drag freely
  *    even on auto-routed Z-routes; the user can produce a non-
- *    orthogonal route. M3.3.f polish may add Shift-to-axis-constrain.
+ *    orthogonal route. Shift-to-axis-constrain may land later.
  *
  * **Dispose contract**: removes handles + cancels in-flight drag +
  * unsubscribes from editor change events + restores the flow's

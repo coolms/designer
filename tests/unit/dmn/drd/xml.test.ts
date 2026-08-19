@@ -9,7 +9,7 @@ import {
 import type { DmnDrdModel } from '../../../../src/dmn/drd/index.js';
 
 /**
- * M4.j slice-4 DMN-DRD XML serializer tests — the round-trip guarantee
+ * DMN-DRD XML serializer tests — the round-trip guarantee
  * (`readDrdXml(writeDrdXml(m))` ≅ m), the requiredInput/requiredDecision
  * source distinction, DMNDI geometry preservation, the decisionLogicRef
  * vendor attribute, the no-geometry fallback, lenient namespace-prefix

@@ -75,7 +75,7 @@ export { UpdateFlowPropertyCommand } from './UpdateFlowPropertyCommand.js';
 export type { EditableFlowPropertyKey } from './UpdateFlowPropertyCommand.js';
 
 // JSON round-trip serializer (toJson / fromJson) against
-// the M2.c BPMN-Lite parser wire shape.
+// the engine's BPMN-Lite parser wire shape.
 export {
     bpmnLiteModelToJson,
     bpmnLiteModelToWire,

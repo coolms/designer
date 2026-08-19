@@ -126,7 +126,7 @@ describe('autoLayoutBpmnLite', () => {
         }
     });
 
-    it('retry-loop in M2.n verify-spine shape keeps the forward chain monotonic (F-7.5)', () => {
+    it('retry-loop in a verification-spine shape keeps the forward chain monotonic', () => {
         // Mirror of the spine: start -> sendCode -> enter_otp ->
         // verify -> gw, with gw -> end (success) AND gw -> enter_otp
         // (retry, the back-edge).
@@ -217,7 +217,7 @@ describe('autoLayoutBpmnLite', () => {
     });
 
     it('fromJson auto-lays out a body with no diagram sidecar', () => {
-        // Mirror of the M2.n identity.verify_new_user_spine shape:
+        // Mirror of a verification-spine shape:
         // 5 elements + 4 flows, NO diagram, all elements at {0,0}.
         const body = JSON.stringify({
             process: { id: 'test' },

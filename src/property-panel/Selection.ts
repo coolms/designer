@@ -7,13 +7,13 @@ interface SelectionEvents extends Record<string, unknown> {
 
 /**
  * Tracks which element is currently selected. Single-selection at
- * multi-selection lands when a surface needs it (BPMN
- * marquee select in M3.3.b probably).
+ * multi-selection lands when a surface needs it (BPMN marquee
+ * select, probably).
  *
  * Subscribers:
  *  - {@link PropertyPanel} reacts to selection changes by re-binding
  *    its field instances to the new element's properties.
- *  - Surface renderers (M3.3+) subscribe to highlight the selected
+ *  - Surface renderers subscribe to highlight the selected
  *    element in the canvas + adjust palette behaviour (e.g.
  *    "selected user task → show user-task-specific palette").
  *

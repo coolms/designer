@@ -1,13 +1,13 @@
 /**
- * Types for the DMN DRD (Decision Requirements Diagram) editor (M4.j).
+ * Types for the DMN DRD (Decision Requirements Diagram) editor.
  *
  * A DRD is the *graph* view of a DMN decision model: **Decision** nodes
  * (a rectangle, each ultimately backed by a decision table or other
  * logic) and **InputData** nodes (a stadium, the raw facts a decision
  * consumes), joined by **InformationRequirement** edges — a solid arrow
  * pointing INTO the decision that requires the source. This is the
- * second DMN surface in `@coolms/designer`: M3.2 shipped the single
- * decision *table* editor; M4.j adds the requirements *diagram* that
+ * second DMN surface in `@coolms/designer`: the first is the single
+ * decision *table* editor, and this adds the requirements *diagram* that
  * stitches several decisions + their inputs together.
  *
  * The shapes mirror the state-machine model (id-keyed nodes +

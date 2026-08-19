@@ -87,13 +87,13 @@ const SCENARIOS: Record<string, ScenarioFn> = {
         tableEditor.load(model);
     },
 
-    /* ─────────────────── M3.3.j BPMN-Lite scenarios ─────────────────── */
+    /* ───────────────────── BPMN-Lite scenarios ──────────────────────── */
 
     /**
      * bare-mount BPMN-Lite editor: shell + canvas + palette
      * + property panel sidebar slots, empty process. Pins the
-     * fresh-mount geometry of the canvas + M3.3.d palette tiles
-     * + M3.3.f panel "no selection" empty state.
+     * fresh-mount geometry of the canvas + the palette tiles
+     * + the panel's "no selection" empty state.
      */
     'bpmn-empty': (host) => {
         const editor = createEditor(host, {
@@ -195,7 +195,7 @@ const SCENARIOS: Record<string, ScenarioFn> = {
      * panel actively driven (service-task variant + a populated
      * `workflow.handlers` XRef scope). Pins the variant-specific
      * field rendering (label + variant select + implementation
-     * autocomplete) introduced in M3.3.i.
+     * autocomplete).
      */
     'bpmn-property-panel': (host) => {
         const editor = createEditor(host, {

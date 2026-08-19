@@ -3,7 +3,7 @@ import { renderDecision, renderInputData } from './nodeRenderers.js';
 import type { NodeRenderer } from './nodeRenderers.js';
 
 /**
- * M4.j DRD element-renderer registry — maps a node {@link
+ * DRD element-renderer registry — maps a node {@link
  * DmnDrdElementKind} to its pure renderer. The editor dispatches every
  * node through {@link renderElement} rather than branching inline, so
  * widening the DRD to `businessKnowledgeModel` / `knowledgeSource` later

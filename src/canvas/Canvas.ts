@@ -36,9 +36,9 @@ export interface CanvasOptions {
     readonly wheelZoomStep?: number;
     /**
      * Callback fired once per animation frame via the {@link RenderLoop}.
-     * Surface renderers wire their diff-render here. At M3.2.b the canvas
-     * has no rendered content of its own; this is the seam M3.2.c lands
-     * graph diff-rendering against.
+     * Surface renderers wire their diff-render here. The canvas has
+     * no rendered content of its own; this is the seam a surface's
+     * graph diff-rendering hooks into.
      */
     readonly onRender?: () => void;
 }
@@ -61,7 +61,7 @@ export interface CanvasOptions {
  *     <g class="coolms-designer__viewport"/>       ← Viewport transforms apply here
  *   </svg>
  *
- * Surface renderers (M3.3 BPMN, M4 DMN DRD, M3.5 StateMachine) APPEND
+ * Surface renderers (BPMN-Lite, DMN DRD, state machine) APPEND
  * their element trees to {@link Canvas.group} -- never to the SVG root
  * directly -- so pan/zoom flows through naturally.
  *

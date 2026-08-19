@@ -151,7 +151,7 @@ describe('Palette', () => {
         palette.dispose();
     });
 
-    it('button carries the SVG icon + label spans (M3.3.m polish-bundle F-2)', () => {
+    it('button carries the SVG icon + label spans', () => {
         const palette = new Palette({ host: paletteHost, editor });
         const first = palette.buttonElements[0]!;
 

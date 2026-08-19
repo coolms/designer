@@ -111,7 +111,7 @@ export class Sidebar {
     }
 
     /**
-     * Host element for property-panel content. The M3.2.e property
+     * Host element for property-panel content. The property
      * framework binds field renderers here based on selection state.
      */
     get propertyHost(): HTMLElement {

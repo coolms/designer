@@ -1,7 +1,7 @@
 /**
  * Editor smoke test -- lives at the top of the test tree as the
  * "is the package alive" check. Started life as the scaffold
- * proof; expanded in M3.2.b/c/d as new lifecycle responsibilities
+ * proof; expanded as new lifecycle responsibilities
  * landed (canvas substrate, graph wiring, shell composition).
  *
  * Per-subsystem unit suites live in `tests/unit/{canvas,model,shell}/`;
@@ -123,7 +123,7 @@ describe('createEditor — package smoke test', () => {
             onChange.mockClear();
 
             editor.destroy();
-            // No mutations possible at M3.2.a but the guard is in place for M3.2.c.
+            // No mutations are possible here, but the guard is in place.
             expect(onChange).not.toHaveBeenCalled();
         });
 
@@ -154,10 +154,9 @@ describe('createEditor — package smoke test', () => {
         });
 
         it('accepts every documented surface', () => {
-            // Future surfaces (bpmn-lite, dmn-drd, state-machine) accept the
-            // factory call at M3.2.a even though their surface-specific code
-            // doesn't exist yet — the shell mount/destroy is identical until
-            // / M3.3 / M3.5 layer in the specialisations.
+            // Every surface accepts the factory call: the shell
+            // mount/destroy path is identical until each surface
+            // layers in its own specialisations.
             const surfaces = ['dmn-table', 'bpmn-lite', 'dmn-drd', 'state-machine'] as const;
             const editors: Editor[] = surfaces.map((surface) =>
                 createEditor(host, { surface }),

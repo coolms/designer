@@ -163,7 +163,7 @@ function coalesceTransitions(
  * Deserialize a Symfony `framework.workflows.{name}` body back into a
  * {@link StateMachineModel}. Places come back at the origin with the
  * default size (the config carries no diagram geometry) — the
- * StateMachineEditor's load path runs M3.5.b auto-layout to position
+ * StateMachineEditor's load path runs auto-layout to position
  * them. A list `from` expands into one {@link SmTransition} per source,
  * id `{name}__{from}`; a single `from` keeps id `{name}`.
  */

@@ -12,16 +12,16 @@ import { test, expect } from '@playwright/test';
  * **Scenarios**:
  *  - `bpmn-empty` -- bare-mount BPMN-Lite editor with shell +
  *    canvas + palette + empty property panel. Pins fresh-mount
- *    geometry of the canvas substrate, M3.3.d palette tile
- *    layout, M3.3.f panel "no selection" empty state.
+ *    geometry of the canvas substrate, the palette tile layout,
+ *    and the panel's "no selection" empty state.
  *  - `bpmn-populated` -- 7-element approve-request flow with branching
- *    XOR gateway + default flow marker. Loaded through the M3.3.g
+ *    XOR gateway + default flow marker. Loaded through the
  *    JSON round-trip so the diagram sidecar geometry hits the
- *    rendered canvas. Pins M3.3.b node + M3.3.c edge paint.
- *  - `bpmn-property-panel` -- service-task selected with the M3.3.i
+ *    rendered canvas. Pins the node + edge paint.
+ *  - `bpmn-property-panel` -- service-task selected with the
  *    XRef autocomplete scopes populated. Pins the variant-specific
  *    field rendering (label + variant SELECT + implementation
- *    autocomplete) that landed in M3.3.i.
+ *    autocomplete).
  *
  * **Failure debugging**:
  *  - On a diff failure Playwright writes the actual + expected + diff
@@ -50,7 +50,7 @@ const SCENARIOS = [
     },
     {
         name: 'bpmn-property-panel',
-        description: 'service-task selected with M3.3.i implementation autocomplete populated',
+        description: 'service-task selected with implementation autocomplete populated',
     },
 ] as const;
 

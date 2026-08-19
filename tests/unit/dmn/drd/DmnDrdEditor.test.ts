@@ -13,10 +13,10 @@ import type {
 } from '../../../../src/dmn/drd/index.js';
 
 /**
- * M4.j DmnDrdEditor tests — the render half: paint-on-construct, the
+ * DmnDrdEditor tests — the render half: paint-on-construct, the
  * Decision/InputData node SVG, the requirement path + arrowhead,
  * dangling-endpoint skip, self-reference skip, selection on click,
- * load() replace, and the empty-model banner. Mirrors the M3.5
+ * load() replace, and the empty-model banner. Mirrors the
  * StateMachineEditor paint tests.
  */
 describe('DmnDrdEditor', () => {

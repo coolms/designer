@@ -5,8 +5,8 @@
  * any ancestor of the editor). Consumers re-skin by overriding these
  * variables; the class names themselves are NOT a stability contract.
  *
- * ships the minimal contract — surface backgrounds + a banner
- * line. Real toolbar / sidebar / palette tokens land with M3.2.d.
+ * The minimal contract -- surface backgrounds, plus the toolbar,
+ * sidebar and palette tokens.
  */
 
 .coolms-designer {
@@ -43,9 +43,8 @@
 }
 
 /*
- * shell composition (toolbar + body{canvas + sidebar}).
- * The banner from M3.2.a is gone; the toolbar replaces it as the
- * editor's visible identity signal.
+ * Shell composition (toolbar + body{canvas + sidebar}). The toolbar
+ * is the editor's visible identity signal.
  */
 
 .coolms-designer__body {
@@ -160,7 +159,7 @@
     background: var(--coolms-designer-toolbar-border);
 }
 
-/* M3.3.m polish-bundle (F-3): icon-bearing toolbar buttons match the
+/* Icon-bearing toolbar buttons match the
  * Image Editor's top-toolbar icon-button shape -- square footprint,
  * larger glyph, centred. The base `.coolms-designer__toolbar-button`
  * rule sets a min-width of 28px + 8px horizontal padding that's fine
@@ -178,7 +177,7 @@
     line-height: 1;
 }
 
-/* M3.3.m polish-bundle (F-3): the zoom-reset button doubles as the
+/* The zoom-reset button doubles as the
  * percentage indicator (single source of truth -- matches the Image
  * Editor's clickable "{percent}%" display). Slightly wider footprint
  * for the 3-4 character text + tabular-nums so digit-width doesn't
@@ -188,7 +187,7 @@
     font-variant-numeric: tabular-nums;
 }
 
-/* M3.3.m polish-bundle (F-6): pressed-state styling for mode-toggle
+/* Pressed-state styling for mode-toggle
  * buttons (Connect, Hand). Mirrors the Image Editor's
  * `.top-toolbar__btn--active` modifier: a soft blue tint + a colored
  * border so users have an unambiguous "you are in this mode" signal.
@@ -616,7 +615,7 @@
 
 /* The viewport <g> -- the Viewport.applyTransform target. Surface renderers
  * append their element trees into this group so the pan/zoom transform
- * cascades naturally. No styling needed at M3.2.b. */
+ * cascades naturally. No styling needed here. */
 .coolms-designer__viewport {
     /* future: cursor changes per active tool */
 }
@@ -627,10 +626,9 @@
     font-weight: 400;
 }
 
-/* ─── M3.3.a BPMN-Lite scaffold banner ──────────────────────────────────── */
-/* Mounts inside the shell body alongside the (empty) canvas SVG. M3.3.b
- * replaces this overlay with the first real element renderer; until then,
- * it makes the "scaffold landed but no elements yet" state observable in
+/* ─── BPMN-Lite scaffold banner ─────────────────────────────────────────── */
+/* Mounts inside the shell body alongside the (empty) canvas SVG.
+ * It makes the "no elements yet" state observable in
  * the visual-regression fixtures. `pointer-events: none` so the
  * banner doesn't intercept pan/zoom gestures destined for the canvas. */
 .coolms-designer__bpmn-lite-banner {
@@ -660,7 +658,7 @@
     opacity: 0.85;
 }
 
-/* ─── M3.3.b BPMN-Lite element renderers ────────────────────────────────── */
+/* ─── BPMN-Lite element renderers ───────────────────────────────────────── */
 /* Base styling shared by all painted elements. Each element-kind class layers
  * its own fill/stroke per BPMN convention. Labels use a single shared style;
  * gateway X/+ markers carry their own no-fill stroke. */
@@ -822,7 +820,7 @@
     stroke-dasharray: 4 3;
 }
 
-/* ─── M3.3.c BPMN-Lite SequenceFlow renderer ────────────────────────────── */
+/* ─── BPMN-Lite SequenceFlow renderer ───────────────────────────────────── */
 /* Edges paint into a sibling group ABOVE elements in source order but
  * BEHIND elements in document-painter order (SVG paints later siblings
  * on top). Default-flow markers + arrowheads ride on the same group. */
@@ -846,12 +844,12 @@
     stroke-linecap: round;
 }
 
-/* ─── M3.3.d BPMN-Lite palette + drag ghost ─────────────────────────────── */
+/* ─── BPMN-Lite palette + drag ghost ────────────────────────────────────── */
 /* Buttons mount into the sidebar palette host. The ghost is a fixed
  * positioned div the user drags from a button toward the canvas; CSS gives
  * it `pointer-events: none` so the cursor's pointerup target is whatever
  * sits underneath. The transform centers the ghost on the cursor. */
-/* M3.3.m polish-bundle (F-2): palette tiles match the platform's
+/* Palette tiles match the platform's
  * "tools panel" tile convention (Image Editor / Media tools / etc).
  * Two-column grid of icon-on-top + label-below tiles, BPMN-shape
  * SVG mirroring the canvas paint. Designed to align visually with
@@ -994,7 +992,7 @@
     color: #2563eb;
 }
 
-/* ─── M3.3.e BPMN-Lite connect mode + rubber-band + waypoint handles ─── */
+/* ─── BPMN-Lite connect mode + rubber-band + waypoint handles ────────── */
 /* Connect mode flips the canvas cursor to a crosshair so authors know
  * a click will start a connection drag. The rubber-band is a dashed
  * blue line painted in the flows group during the drag. Waypoint
@@ -1004,7 +1002,7 @@
     cursor: crosshair;
 }
 
-/* M3.3.m polish-bundle (F-4): hand-tool pan mode. Flips the canvas
+/* Hand-tool pan mode. Flips the canvas
  * cursor to `grab` so the user has an explicit "drag to pan"
  * affordance; `grabbing` while a pointer is held. Mirrors the
  * Image Editor's hand-tool state styling. */
@@ -1066,7 +1064,7 @@
     fill: #93c5fd;
 }
 
-/* ─── M3.3.f BPMN-Lite selection highlight + condition label ─────────── */
+/* ─── BPMN-Lite selection highlight + condition label ────────────────── */
 /* The selected element / flow gets a thicker blue stroke so authors can
  * tell at a glance which thing the property panel is editing. The
  * condition label (inline `[<expr>]`) sits above the flow's route
@@ -1092,7 +1090,7 @@
     pointer-events: none;
 }
 
-/* ─── M3.5.a State Machine scaffold banner ──────────────────────────────── */
+/* ─── State Machine scaffold banner ─────────────────────────────────────── */
 /* Mirrors the BPMN-Lite banner: a centered "scaffold landed but no
  * places yet" overlay the StateMachineEditor hides the moment the model is
  * non-empty. `pointer-events: none` so it never intercepts pan/zoom. */
@@ -1123,7 +1121,7 @@
     opacity: 0.85;
 }
 
-/* ─── M3.5.a State Machine place (state) renderer ───────────────────────── */
+/* ─── State Machine place (state) renderer ──────────────────────────────── */
 /* A place is Symfony Workflow's "state": a rounded rectangle with the place
  * name centered inside. The places group paints OVER the transitions group
  * (document order) so arrowheads tuck behind the boxes they arrive at. */
@@ -1165,7 +1163,7 @@
     stroke-linecap: round;
 }
 
-/* ─── M3.5.a State Machine transition renderer ──────────────────────────── */
+/* ─── State Machine transition renderer ─────────────────────────────────── */
 /* Transitions paint into a sibling group BEHIND places (earlier in document
  * order). Each is a straight segment trimmed to the place borders with an
  * arrowhead at the target; self-transitions arc as a loop above the place. */
@@ -1209,7 +1207,7 @@
     stroke-width: 3;
 }
 
-/* ─── M4.j DMN DRD scaffold banner ──────────────────────────────────────── */
+/* ─── DMN DRD scaffold banner ───────────────────────────────────────────── */
 /* Mirrors the state-machine banner: a centered "scaffold landed but no
  * nodes yet" overlay the DmnDrdEditor hides the moment the model is non-empty.
  * `pointer-events: none` so it never intercepts pan/zoom. */
@@ -1240,7 +1238,7 @@
     opacity: 0.85;
 }
 
-/* ─── M4.j DMN DRD node renderers ───────────────────────────────────────── */
+/* ─── DMN DRD node renderers ────────────────────────────────────────────── */
 /* A Decision is a sharp-cornered rectangle; an InputData is a stadium (rounded
  * ends). The elements group paints OVER the requirements group (document order)
  * so arrowheads tuck behind the boxes they arrive at. */
@@ -1270,7 +1268,7 @@
     pointer-events: none;
 }
 
-/* ─── M4.j DMN DRD requirement renderer ─────────────────────────────────── */
+/* ─── DMN DRD requirement renderer ──────────────────────────────────────── */
 /* InformationRequirements paint into a sibling group BEHIND nodes (earlier in
  * document order). Each is a straight segment trimmed to the node borders with
  * a filled arrowhead at the requiring decision. */

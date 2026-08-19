@@ -13,7 +13,7 @@ import type { BpmnElement } from './types.js';
  * - `id` mutations break command + selection + cross-references.
  * - `type` mutations require re-rendering through a different
  *   {@link ElementRenderer}; not a property edit.
- * - `position` + `size` are owned by drag-to-move (M3.3.h+) and the
+ * - `position` + `size` are owned by drag-to-move and the
  *   palette drop / future auto-layout passes -- not text inputs.
  *
  * If a future ship adds a new editable property (e.g.
@@ -27,9 +27,9 @@ import type { BpmnElement } from './types.js';
  *  - `'variant'` — picks the task subkind (`undefined` /
  *    `'task'` / `'userTask'` / `'serviceTask'`). Changing it pivots
  *    the schema so the panel re-mounts with the variant's fields.
- *  - `'implementation'` — service-task dispatch key (M3.3.i XRefs
+ *  - `'implementation'` — service-task dispatch key (the XRefs
  *    scope `'workflow.handlers'`).
- *  - `'formKey'` — user-task form id (M3.3.i XRefs scope
+ *  - `'formKey'` — user-task form id (the XRefs scope
  *    `'workflow.forms'`).
  */
 export type EditableElementPropertyKey =
@@ -60,7 +60,7 @@ export type EditableElementPropertyKey =
  * editable property on an element + ports the previous value so
  * `revert()` round-trips exactly.
  *
- * **Symmetry with M3.3.e's {@link UpdateFlowWaypointsCommand}**:
+ * **Symmetry with {@link UpdateFlowWaypointsCommand}**:
  * same construction-time snapshot pattern. The
  * {@link BpmnLitePropertyPanel} builds one of these per field
  * change + dispatches through {@link CommandStack} so the editor
@@ -78,8 +78,8 @@ export type EditableElementPropertyKey =
  * is more meaningful here than its display label (the panel could
  * surface "Name" / "Label" / "Title" for the same `label` property
  * depending on tenant config; the underlying property key is the
- * stable identity). The M3.3.f tooltip surface ("Undo: Edit task
- * label") is good enough; M3.3.h can layer richer labels on top.
+ * stable identity). The tooltip surface ("Undo: Edit task label")
+ * is good enough; richer labels can layer on top later.
  */
 export class UpdateElementPropertyCommand implements Command {
     readonly label: string;

@@ -8,7 +8,7 @@ import type { BpmnElement } from '../../../src/bpmn-lite/index.js';
 import type { FieldDescriptor } from '../../../src/property-panel/FieldDescriptor.js';
 
 /**
- * + M3.3.i BpmnLiteSchemaProvider pins.
+ * BpmnLiteSchemaProvider pins.
  */
 describe('BpmnLiteSchemaProvider', () => {
     it('defaults expose a label field for every element kind', () => {
@@ -48,7 +48,7 @@ describe('BpmnLiteSchemaProvider', () => {
         const keys = provider.keys();
         expect(keys).toContain('startEvent');
         expect(keys).toContain('flow');
-        // 6 keys (5 kinds + flow); M3.3.i: + userTask + serviceTask = 8;
+        // 6 keys (5 kinds + flow); + userTask + serviceTask = 8;
         // catch events: + intermediateCatchEvent + its 4 `:subtype` keys = 13;
         // boundary events: + boundaryEvent + its 5 `:subtype` keys = 19;
         // gateways: + inclusiveGateway + eventBasedGateway = 21.
@@ -115,7 +115,7 @@ describe('BpmnLiteSchemaProvider', () => {
         }
     });
 
-    /* ──────────────────── M3.3.i additions ──────────────────── */
+    /* ──────────────────── variant additions ─────────────────── */
 
     it('task schema exposes a variant SELECT after the label', () => {
         const schema = defaultBpmnLiteSchemaProvider().getSchema('task');
