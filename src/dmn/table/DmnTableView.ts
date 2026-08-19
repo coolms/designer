@@ -1,4 +1,6 @@
 import type { CommandStack } from '../../canvas/CommandStack.js';
+import { defaultTranslator } from '../../i18n.js';
+import type { Translator } from '../../i18n.js';
 import {
     AddInputClauseCommand,
     AddOutputClauseCommand,
@@ -36,6 +38,7 @@ const AGGREGATORS: ReadonlyArray<Aggregator> = ['SUM', 'MIN', 'MAX', 'COUNT'];
  * than diffing, and the renderer code stays simple.
  */
 export class DmnTableView {
+    private readonly t: Translator;
     private readonly host: HTMLElement;
     private readonly model: DmnTableModel;
     private readonly commands: CommandStack;
@@ -43,7 +46,13 @@ export class DmnTableView {
     private root: HTMLElement;
     private disposed = false;
 
-    constructor(host: HTMLElement, model: DmnTableModel, commands: CommandStack) {
+    constructor(
+        host: HTMLElement,
+        model: DmnTableModel,
+        commands: CommandStack,
+        t: Translator = defaultTranslator,
+    ) {
+        this.t = t;
         this.host = host;
         this.model = model;
         this.commands = commands;
@@ -79,14 +88,14 @@ export class DmnTableView {
         const header = doc.createElement('div');
         header.classList.add('coolms-designer__dmn-table-header');
         header.appendChild(this.renderLabeledInput('Name', state.name, (next) => {
-            this.commands.execute(new RenameDecisionCommand(this.model, next));
+            this.commands.execute(new RenameDecisionCommand(this.model, next, this.t));
         }));
         header.appendChild(this.renderLabeledSelect(
             'Hit policy',
             state.hitPolicy,
             HIT_POLICIES.map((p) => ({ value: p, label: p })),
             (next) => {
-                this.commands.execute(new SetHitPolicyCommand(this.model, next as HitPolicy));
+                this.commands.execute(new SetHitPolicyCommand(this.model, next as HitPolicy, this.t));
             },
         ));
         if (state.hitPolicy === 'COLLECT') {
@@ -96,7 +105,7 @@ export class DmnTableView {
                 [{ value: '', label: '— none —' }, ...AGGREGATORS.map((a) => ({ value: a, label: a }))],
                 (next) => {
                     const aggregator = next === '' ? null : (next as Aggregator);
-                    this.commands.execute(new SetAggregatorCommand(this.model, aggregator));
+                    this.commands.execute(new SetAggregatorCommand(this.model, aggregator, this.t));
                 },
             ));
         }
@@ -127,7 +136,7 @@ export class DmnTableView {
             nameInput.setAttribute('aria-label', `Input ${idx + 1} name`);
             nameInput.addEventListener('change', () => {
                 if (nameInput.value !== input.name) {
-                    this.commands.execute(new SetInputNameCommand(this.model, idx, nameInput.value));
+                    this.commands.execute(new SetInputNameCommand(this.model, idx, nameInput.value, this.t));
                 }
             });
             th.appendChild(nameInput);
@@ -140,7 +149,7 @@ export class DmnTableView {
             exprInput.setAttribute('aria-label', `Input ${idx + 1} expression`);
             exprInput.addEventListener('change', () => {
                 if (exprInput.value !== input.expression) {
-                    this.commands.execute(new SetInputExpressionCommand(this.model, idx, exprInput.value));
+                    this.commands.execute(new SetInputExpressionCommand(this.model, idx, exprInput.value, this.t));
                 }
             });
             th.appendChild(exprInput);
@@ -152,7 +161,7 @@ export class DmnTableView {
                 delBtn.setAttribute('aria-label', `Delete input ${idx + 1}`);
                 delBtn.textContent = '×';
                 delBtn.addEventListener('click', () => {
-                    this.commands.execute(new DeleteInputClauseCommand(this.model, idx));
+                    this.commands.execute(new DeleteInputClauseCommand(this.model, idx, this.t));
                 });
                 th.appendChild(delBtn);
             }
@@ -163,10 +172,10 @@ export class DmnTableView {
         addInputTh.classList.add('coolms-designer__dmn-table-add-input');
         const addInputBtn = doc.createElement('button');
         addInputBtn.type = 'button';
-        addInputBtn.textContent = '+ input';
-        addInputBtn.setAttribute('aria-label', 'Add input column');
+        addInputBtn.textContent = this.t('designer.dmn.addInput', '+ input');
+        addInputBtn.setAttribute('aria-label', this.t('designer.dmn.addInput.aria', 'Add input column'));
         addInputBtn.addEventListener('click', () => {
-            this.commands.execute(new AddInputClauseCommand(this.model));
+            this.commands.execute(new AddInputClauseCommand(this.model, undefined, this.t));
         });
         addInputTh.appendChild(addInputBtn);
         headerRow.appendChild(addInputTh);
@@ -183,7 +192,7 @@ export class DmnTableView {
             nameInput.setAttribute('aria-label', `Output ${idx + 1} name`);
             nameInput.addEventListener('change', () => {
                 if (nameInput.value !== output.name) {
-                    this.commands.execute(new SetOutputNameCommand(this.model, idx, nameInput.value));
+                    this.commands.execute(new SetOutputNameCommand(this.model, idx, nameInput.value, this.t));
                 }
             });
             th.appendChild(nameInput);
@@ -195,7 +204,7 @@ export class DmnTableView {
                 delBtn.setAttribute('aria-label', `Delete output ${idx + 1}`);
                 delBtn.textContent = '×';
                 delBtn.addEventListener('click', () => {
-                    this.commands.execute(new DeleteOutputClauseCommand(this.model, idx));
+                    this.commands.execute(new DeleteOutputClauseCommand(this.model, idx, this.t));
                 });
                 th.appendChild(delBtn);
             }
@@ -206,10 +215,10 @@ export class DmnTableView {
         addOutputTh.classList.add('coolms-designer__dmn-table-add-output');
         const addOutputBtn = doc.createElement('button');
         addOutputBtn.type = 'button';
-        addOutputBtn.textContent = '+ output';
-        addOutputBtn.setAttribute('aria-label', 'Add output column');
+        addOutputBtn.textContent = this.t('designer.dmn.addOutput', '+ output');
+        addOutputBtn.setAttribute('aria-label', this.t('designer.dmn.addOutput.aria', 'Add output column'));
         addOutputBtn.addEventListener('click', () => {
-            this.commands.execute(new AddOutputClauseCommand(this.model));
+            this.commands.execute(new AddOutputClauseCommand(this.model, undefined, this.t));
         });
         addOutputTh.appendChild(addOutputBtn);
         headerRow.appendChild(addOutputTh);
@@ -247,7 +256,7 @@ export class DmnTableView {
                 input.addEventListener('change', () => {
                     const prev = rule.inputEntries[colIdx] ?? '';
                     if (input.value !== prev) {
-                        this.commands.execute(new SetInputEntryCommand(this.model, ruleIdx, colIdx, input.value));
+                        this.commands.execute(new SetInputEntryCommand(this.model, ruleIdx, colIdx, input.value, this.t));
                     }
                 });
                 td.appendChild(input);
@@ -272,7 +281,7 @@ export class DmnTableView {
                 input.addEventListener('change', () => {
                     const prev = rule.outputEntries[colIdx] ?? '';
                     if (input.value !== prev) {
-                        this.commands.execute(new SetOutputEntryCommand(this.model, ruleIdx, colIdx, input.value));
+                        this.commands.execute(new SetOutputEntryCommand(this.model, ruleIdx, colIdx, input.value, this.t));
                     }
                 });
                 td.appendChild(input);
@@ -292,7 +301,7 @@ export class DmnTableView {
                 delBtn.textContent = '×';
                 delBtn.setAttribute('aria-label', `Delete rule ${ruleIdx + 1}`);
                 delBtn.addEventListener('click', () => {
-                    this.commands.execute(new DeleteRuleCommand(this.model, ruleIdx));
+                    this.commands.execute(new DeleteRuleCommand(this.model, ruleIdx, this.t));
                 });
                 actionsTd.appendChild(delBtn);
             }
@@ -314,10 +323,10 @@ export class DmnTableView {
         addRuleCell.classList.add('coolms-designer__dmn-table-add-rule-cell');
         const addRuleBtn = doc.createElement('button');
         addRuleBtn.type = 'button';
-        addRuleBtn.textContent = '+ rule';
-        addRuleBtn.setAttribute('aria-label', 'Add rule');
+        addRuleBtn.textContent = this.t('designer.dmn.addRule', '+ rule');
+        addRuleBtn.setAttribute('aria-label', this.t('designer.dmn.addRule.aria', 'Add rule'));
         addRuleBtn.addEventListener('click', () => {
-            this.commands.execute(new AddRuleCommand(this.model));
+            this.commands.execute(new AddRuleCommand(this.model, undefined, this.t));
         });
         addRuleCell.appendChild(addRuleBtn);
         addRuleRow.appendChild(addRuleCell);

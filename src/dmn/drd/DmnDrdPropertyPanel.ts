@@ -2,6 +2,7 @@ import { FieldRegistry } from '../../property-panel/FieldRegistry.js';
 import { registerBuiltinFields } from '../../property-panel/PropertyPanel.js';
 import { XRefs } from '../../shell/XRefs.js';
 import type { FieldDescriptor } from '../../property-panel/FieldDescriptor.js';
+import type { Translator } from '../../i18n.js';
 import type {
     FieldContext,
     FieldInstance,
@@ -22,6 +23,12 @@ export interface DmnDrdPropertyPanelOptions {
     /** Host element to mount field controls into (typically the shell sidebar's property host). */
     readonly host: HTMLElement;
     readonly editor: DmnDrdEditor;
+    /**
+     * Resolves the panel's field text. Ignored when `schemas` is supplied
+     * -- that provider brings its own.
+     */
+    readonly t?: Translator;
+
     /** Override the schema provider (defaults to the built-in). */
     readonly schemas?: DrdSchemaProvider;
     /** Override the field registry (defaults to a fresh one with the built-in field renderers). */
@@ -77,7 +84,7 @@ export class DmnDrdPropertyPanel {
     constructor(options: DmnDrdPropertyPanelOptions) {
         this.host = options.host;
         this.editor = options.editor;
-        this.schemas = options.schemas ?? new DrdSchemaProvider();
+        this.schemas = options.schemas ?? new DrdSchemaProvider(options.t);
         this.registry = options.registry ?? this.defaultRegistry();
         this.xrefs = options.xrefs ?? new XRefs();
 

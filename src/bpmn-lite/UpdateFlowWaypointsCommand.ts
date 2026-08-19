@@ -38,7 +38,7 @@ import type { BpmnPosition } from './types.js';
  * affordances where the spatial context isn't available.
  */
 export class UpdateFlowWaypointsCommand implements Command {
-    readonly label = 'Reroute Flow';
+    readonly label: string;
     private readonly nextWaypoints: ReadonlyArray<BpmnPosition>;
     private readonly previousWaypoints: ReadonlyArray<BpmnPosition> | undefined;
 
@@ -47,6 +47,7 @@ export class UpdateFlowWaypointsCommand implements Command {
         private readonly flowId: string,
         nextWaypoints: ReadonlyArray<BpmnPosition>,
     ) {
+        this.label = editor.t('designer.command.rerouteFlow', 'Reroute Flow');
         // Defensive clone so later edits to the caller's array don't
         // mutate the command's captured state.
         this.nextWaypoints = [...nextWaypoints];

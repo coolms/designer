@@ -1,4 +1,6 @@
 import type { Command, CommandStack } from '../canvas/CommandStack.js';
+import { defaultTranslator } from '../i18n.js';
+import type { Translator } from '../i18n.js';
 import { Emitter } from '../internal/Emitter.js';
 import { AddElementCommand } from './AddElementCommand.js';
 import { BpmnLiteSelection } from './BpmnLiteSelection.js';
@@ -44,6 +46,12 @@ let bpmnLiteEditorInstanceCounter = 0;
  * flows).
  */
 export interface BpmnLiteEditorOptions {
+    /**
+     * Resolves this component's user-visible text. Defaults to the English
+     * written at each call site, so nothing needs configuring to work.
+     */
+    readonly t?: Translator;
+
     readonly host: HTMLElement;
     readonly commands: CommandStack;
     readonly svgGroup: SVGGElement;
@@ -90,6 +98,12 @@ interface BpmnLiteEvents extends Record<string, unknown> {
  *    `WF.UNKNOWN_FLOW_ENDPOINT` from the engine validator.
  */
 export class BpmnLiteEditor {
+    /**
+     * The translator this editor renders with. Public so the commands and
+     * surface controllers built around it share one, rather than each
+     * defaulting to English independently.
+     */
+    readonly t: Translator;
     private state_: BpmnLiteModel;
     private bannerEl: HTMLElement | null;
     private paintedFlows: SVGGElement | null = null;
@@ -112,6 +126,7 @@ export class BpmnLiteEditor {
     private readonly offSelectionChange: () => void;
 
     constructor(options: BpmnLiteEditorOptions) {
+        this.t = options.t ?? defaultTranslator;
         this.instanceId = ++bpmnLiteEditorInstanceCounter;
         this.commands = options.commands;
         this.svgGroup = options.svgGroup;
@@ -1067,13 +1082,13 @@ export class BpmnLiteEditor {
 
         const title = doc.createElement('div');
         title.classList.add('coolms-designer__bpmn-lite-banner-title');
-        title.textContent = 'BPMN-Lite editor';
+        title.textContent = this.t('designer.bpmn.banner.title', 'BPMN-Lite editor');
         banner.appendChild(title);
 
         const subtitle = doc.createElement('div');
         subtitle.classList.add('coolms-designer__bpmn-lite-banner-subtitle');
         subtitle.textContent =
-            'Drag an element from the palette to begin.';
+            this.t('designer.bpmn.banner.subtitle', 'Drag an element from the palette to begin.');
         banner.appendChild(subtitle);
 
         host.appendChild(banner);
@@ -1216,7 +1231,7 @@ export class BpmnLiteEditor {
 
         for (const element of ordered) {
             const renderer = this.renderers.resolve(element.type);
-            const node = renderer(element, doc);
+            const node = renderer(element, doc, this.t);
             root.appendChild(node);
         }
 

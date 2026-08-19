@@ -1,5 +1,7 @@
 import type { CommandStack } from '../canvas/CommandStack.js';
 import type { Viewport } from '../canvas/Viewport.js';
+import { defaultTranslator } from '../i18n.js';
+import type { Translator } from '../i18n.js';
 
 export interface ToolbarLabels {
     readonly save: string;
@@ -16,20 +18,28 @@ export interface ToolbarLabels {
     readonly handExit: string;
 }
 
-const DEFAULT_LABELS: ToolbarLabels = {
-    save: 'Save',
-    deploy: 'Deploy',
-    undo: 'Undo',
-    redo: 'Redo',
-    zoomIn: 'Zoom in',
-    zoomOut: 'Zoom out',
-    zoomReset: 'Reset zoom',
-    zoomFit: 'Fit diagram to canvas',
-    connect: 'Connect mode — draw flows between elements',
-    connectExit: 'Exit connect mode',
-    hand: 'Hand tool — drag to pan the canvas',
-    handExit: 'Exit hand tool',
-};
+/**
+ * The built-in labels, resolved through a {@link Translator}.
+ *
+ * A function rather than a constant because the English is the FALLBACK,
+ * not the value: the translator gets a chance at every one of these.
+ */
+function defaultLabels(t: Translator): ToolbarLabels {
+    return {
+        save: t('designer.toolbar.save', 'Save'),
+        deploy: t('designer.toolbar.deploy', 'Deploy'),
+        undo: t('designer.toolbar.undo', 'Undo'),
+        redo: t('designer.toolbar.redo', 'Redo'),
+        zoomIn: t('designer.toolbar.zoomIn', 'Zoom in'),
+        zoomOut: t('designer.toolbar.zoomOut', 'Zoom out'),
+        zoomReset: t('designer.toolbar.zoomReset', 'Reset zoom'),
+        zoomFit: t('designer.toolbar.zoomFit', 'Fit diagram to canvas'),
+        connect: t('designer.toolbar.connect', 'Connect mode — draw flows between elements'),
+        connectExit: t('designer.toolbar.connectExit', 'Exit connect mode'),
+        hand: t('designer.toolbar.hand', 'Hand tool — drag to pan the canvas'),
+        handExit: t('designer.toolbar.handExit', 'Exit hand tool'),
+    };
+}
 
 export interface ToolbarOptions {
     readonly commands: CommandStack;
@@ -71,7 +81,18 @@ export interface ToolbarOptions {
      * mode (middle-click + wheel still pan).
      */
     readonly readOnly?: boolean;
-    /** Override one or more button labels (for i18n at the consumer layer). */
+    /**
+     * Resolves the toolbar's text. Defaults to the English fallbacks.
+     */
+    readonly t?: Translator;
+
+    /**
+     * Override one or more button labels outright.
+     *
+     * This wins over `t`, and is the escape hatch for a host that wants a
+     * different WORD rather than a different language ("Publish" instead of
+     * "Deploy"). Reach for `t` for translation; reach for this for wording.
+     */
     readonly labels?: Partial<ToolbarLabels>;
     /**
      * Multiplicative zoom factor for the zoom-in / zoom-out buttons.
@@ -173,13 +194,17 @@ export class Toolbar {
         if (options.onFit !== undefined) {
             this.onFit = options.onFit;
         }
-        this.labels = { ...DEFAULT_LABELS, ...(options.labels ?? {}) };
+        const t = options.t ?? defaultTranslator;
+        this.labels = { ...defaultLabels(t), ...(options.labels ?? {}) };
         this.zoomStep = Math.max(1.001, options.zoomStep ?? 1.25);
 
         this.host = doc.createElement('div');
         this.host.classList.add('coolms-designer__toolbar');
         this.host.setAttribute('role', 'toolbar');
-        this.host.setAttribute('aria-label', 'Designer toolbar');
+        this.host.setAttribute(
+            'aria-label',
+            t('designer.toolbar.ariaLabel', 'Designer toolbar'),
+        );
 
         // F-8 redesign -- four subgroups in document order. The
         // `--action` and `--creation` subgroups stay empty when their

@@ -1,3 +1,5 @@
+import { defaultTranslator } from '../i18n.js';
+import type { Translator } from '../i18n.js';
 import type {
     BpmnElement,
     BpmnElementKind,
@@ -179,21 +181,33 @@ export function paletteItemLabel(
     kind: BpmnElementKind,
     subtype?: BpmnEventSubtype,
     variant?: string,
+    t: Translator = defaultTranslator,
 ): string {
+    const kindLabel = (): string => t(`designer.palette.kind.${kind}`, PALETTE_LABELS[kind]);
     if (kind === 'task' && variant !== undefined) {
-        return TASK_VARIANT_LABELS[variant] ?? PALETTE_LABELS[kind];
+        const variantLabel = TASK_VARIANT_LABELS[variant];
+        return variantLabel === undefined
+            ? kindLabel()
+            : t(`designer.palette.variant.${variant}`, variantLabel);
     }
-    if (subtype === undefined) return PALETTE_LABELS[kind];
+    if (subtype === undefined) return kindLabel();
+
+    // The composed forms are ONE message each, not a concatenation of two:
+    // English puts the noun last, and a translator has to be free to move it.
+    const subtypeLabel = t(
+        `designer.palette.subtype.${subtype}`,
+        EVENT_SUBTYPE_LABELS[subtype],
+    );
     if (kind === 'intermediateCatchEvent') {
-        return `${EVENT_SUBTYPE_LABELS[subtype]} Event`;
+        return t('designer.palette.catchEvent', '%subtype% Event', { subtype: subtypeLabel });
     }
     if (kind === 'boundaryEvent') {
         // "Timer Boundary" reads better on a narrow tile than
         // "Boundary Timer Event", and keeps the subtype word first so
         // the tiles sort/scan by what they catch.
-        return `${EVENT_SUBTYPE_LABELS[subtype]} Boundary`;
+        return t('designer.palette.boundaryEvent', '%subtype% Boundary', { subtype: subtypeLabel });
     }
-    return PALETTE_LABELS[kind];
+    return kindLabel();
 }
 
 /**
