@@ -11,10 +11,10 @@ import type {
  * auto-layout fallback for bodies that arrive without a
  * diagram sidecar.
  *
- * **The problem.** The M2.c BPMN-Lite parser doesn't require
+ * **The problem.** The BPMN-Lite parser doesn't require
  * `diagram.elements[id].bounds` because the engine only cares about
- * semantics. Hand-authored bodies (the M2.n
- * `identity.verify_new_user_spine`, the M3 conformance corpus,
+ * semantics. Hand-authored bodies (the
+ * `identity.verify_new_user_spine` fixture, the conformance corpus,
  * future migrated bodies from non-coolms engines) tend to omit the
  * diagram sidecar entirely, leaving every element at `{x: 0, y: 0}`
  * after the `fromJson` default. They all stack at the
@@ -30,7 +30,7 @@ import type {
  * orthogonal-router (the model carries no waypoints unless
  * the wire body had them). Output is "good enough to see the shape
  * + start editing" -- the user is expected to drag elements into
- * their final layout once authoring begins. M3.3.b default sizes
+ * their final layout once authoring begins. Default sizes are set
  * per kind so events / tasks / gateways look right.
  *
  * **Why this lives in fromJson, not BpmnLiteEditor.** Geometry is
@@ -38,7 +38,7 @@ import type {
  * round-trips through `toJson` immediately after a no-diagram
  * `fromJson`, the new positions get persisted into the model's
  * implicit diagram sidecar (via the BpmnElement.position /
- * BpmnElement.size top-level fields). Saving from the M3.3.h.2
+ * BpmnElement.size top-level fields). Saving from the designer
  * page then writes those bounds back via `bpmnLiteModelToJson` so
  * the next load has a real diagram. Lossy on first save in the
  * sense that the auto-layout becomes the "real" layout once the
@@ -105,7 +105,7 @@ export function autoLayoutBpmnLite(
  * the orthogonal router's elbow corners + condition labels
  * between adjacent elements. ROW_HEIGHT keeps siblings far enough
  * apart that auto-routed flows don't intersect even at the maximum
- * branch factor M3.3.b supports (2 outgoing per XOR).
+ * branch factor the editor supports (2 outgoing per XOR).
  */
 const COL_WIDTH = 200;
 const ROW_HEIGHT = 130;
@@ -140,7 +140,7 @@ function positionFor(
  * **F-7.5 back-edge skip** -- before the BFS, the algorithm classifies
  * each flow as either a forward edge or a **back-edge** (the target is
  * an ancestor of the source in the DFS tree from roots). Back-edges
- * are EXCLUDED from column assignment. The M2.n verify spine's
+ * are EXCLUDED from column assignment. The verify spine fixture's
  * `gw.email_result → task.email.enter_otp` retry edge is exactly this
  * case: without the skip it pushed `enter_otp`'s column from 2 (its
  * true forward position right after `svc.email.sendCode`) up to 5
@@ -171,8 +171,8 @@ function computeColumns(
     const out = stripBackEdges(elements, fullOut, backEdges);
     // In-degree computed against the forward-only graph so the BFS
     // seed correctly identifies "true forward roots" (nodes that are
-    // not the target of any forward edge). Without this, the M2.n
-    // verify spine would still seed start.registered (correct) but
+    // not the target of any forward edge). Without this, the
+    // verify spine fixture would still seed start.registered (correct) but
     // also leak enter_otp as a "root" because its only remaining
     // incoming forward edge from sendCode would be discovered via
     // BFS, not via the seed -- wait, no: the in-degree-zero seed only
@@ -264,12 +264,12 @@ function computeColumns(
  * entry point still get classified. Self-loops (s → s) are
  * back-edges by definition.
  *
- * **Output** -- a Set of "{source} {target}" strings; lookup is
+ * **Output** -- a Set of "{source}\u0000{target}" strings; lookup is
  * O(1) per edge. Total cost: O(V + E) one-shot at layout time.
  *
  * **Why not Tarjan SCC** -- a full SCC algorithm would also classify
  * non-tree forward edges + cross-edges, which we don't need. The DFS
- * coloring is the minimal subset that catches the M2.n retry-loop
+ * coloring is the minimal subset that catches the verify spine's retry-loop
  * pattern + every variation of "cycle-closing edge from a deeper node
  * back to an ancestor."
  */
@@ -347,7 +347,7 @@ function computeBackEdges(
 }
 
 function edgeKey(source: string, target: string): string {
-    return `${source} ${target}`;
+    return `${source}\u0000${target}`;
 }
 
 function stripBackEdges(
