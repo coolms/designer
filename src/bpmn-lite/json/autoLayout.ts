@@ -264,7 +264,7 @@ function computeColumns(
  * entry point still get classified. Self-loops (s → s) are
  * back-edges by definition.
  *
- * **Output** -- a Set of "{source} {target}" strings; lookup is
+ * **Output** -- a Set of "{source}\u0000{target}" strings; lookup is
  * O(1) per edge. Total cost: O(V + E) one-shot at layout time.
  *
  * **Why not Tarjan SCC** -- a full SCC algorithm would also classify
@@ -347,7 +347,7 @@ function computeBackEdges(
 }
 
 function edgeKey(source: string, target: string): string {
-    return `${source} ${target}`;
+    return `${source}\u0000${target}`;
 }
 
 function stripBackEdges(
