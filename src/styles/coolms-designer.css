@@ -78,6 +78,23 @@
     --coolms-designer-toolbar-button-hover: #f3f4f6;
     --coolms-designer-toolbar-button-active: #e5e7eb;
 
+    /* A toolbar button that is a persistent MODE rather than a one-shot
+       action -- pan, connect -- reads as selected while it is on.
+       #dbeafe is the selection tint the surrounding admin uses for
+       `.selected`, so a mode that is on highlights the way every other
+       selected thing around it does.
+
+       These four were used with fallbacks from the first release and
+       declared nowhere, which meant the fallback painted and the token
+       never applied: a host re-skinning the designer could not reach
+       them, and re-skinning through these properties IS the theming
+       contract this package publishes. Values are exactly the fallbacks
+       already written at the use sites, so nothing changes visually. */
+    --coolms-designer-toolbar-mode-active-bg: #dbeafe;
+    --coolms-designer-toolbar-mode-active-bg-hover: #bfdbfe;
+    --coolms-designer-toolbar-mode-active-border: #2563eb;
+    --coolms-designer-toolbar-mode-active-fg: #1d4ed8;
+
     flex: 0 0 auto;
     display: flex;
     align-items: center;
