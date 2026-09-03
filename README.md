@@ -113,6 +113,34 @@ The build asserts that nothing resolves outside `src/`, so the zero-dependency c
 
 Styling is governed by CSS custom properties documented in `src/styles/coolms-designer.css`. Re-skinning is a stylesheet override, not a fork — the theme contract is the public surface, not the class names.
 
+There are two levels, and the first is usually the one you want:
+
+- **The core vocabulary**, declared on `.coolms-designer`: `--coolms-designer-paper`, `-ink` and its steps, `-line`, `-accent`, `-danger`, `-shadow-*`. Every panel resolves through these, so overriding `--coolms-designer-paper` re-papers the toolbar, the inputs, the DMN table and the shapes on the canvas in one declaration.
+- **Role tokens** — `--coolms-designer-toolbar-bg`, `-sidebar-bg`, `-field-label-fg` and so on — declared on the element each belongs to, for when one part should differ from the rest.
+
+**Override on the element that declares the token, never on `:root`.** The core on `.coolms-designer`; a role token on its own panel (`.coolms-designer__toolbar`, `__sidebar`, `__property-field`, `__dmn-table`):
+
+```css
+/* re-papers the whole editor */
+.coolms-designer            { --coolms-designer-paper: #fffdf7; }
+/* just the toolbar */
+.coolms-designer__toolbar   { --coolms-designer-toolbar-bg: #eef; }
+```
+
+`:root { --coolms-designer-paper: … }` is silently ignored — it paints nothing and reports nothing. A declaration sitting on an element beats a value inherited from an ancestor no matter how specific the ancestor's selector was, and every token here is declared on the element that uses it. This holds for the core too: `.coolms-designer` declares those, so a `:root` override is shadowed there exactly as it is on a panel. The core is not a way to reach the tokens from further up — it is a single place to aim at instead of five.
+
+### Dark mode
+
+Shipped, and driven by `data-theme`:
+
+```html
+<html data-theme="dark">
+```
+
+Set it on the document element or on any ancestor of the editor. It is deliberately **not** wired to `prefers-color-scheme`: an editor embedded in an application must match the application, and asking the browser instead makes the two disagree on any machine whose OS setting and chosen theme differ.
+
+**The notation does not change with the theme.** Start green, end red, gateway amber, boundary violet and selection blue mean something; only the chrome and the neutrals flip — including the paper a shape is drawn on and its outline, which would otherwise disappear against it.
+
 ## Development
 
 ```bash
