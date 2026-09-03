@@ -1,25 +1,84 @@
 /*
  * @coolms/designer — base stylesheet.
  *
- * The theme contract is the CSS custom properties listed at `:root` (or
- * any ancestor of the editor). Consumers re-skin by overriding these
- * variables; the class names themselves are NOT a stability contract.
+ * The theme contract is the CSS custom properties declared on
+ * `.coolms-designer` and on the panels below. Consumers re-skin by
+ * overriding these variables; the class names themselves are NOT a
+ * stability contract.
  *
- * The minimal contract -- surface backgrounds, plus the toolbar,
- * sidebar and palette tokens.
+ * Two levels: a CORE vocabulary on `.coolms-designer` -- paper, ink,
+ * line, accent, danger, shadow -- that every panel resolves through, and
+ * ROLE tokens on the panels for when one part should differ from the
+ * rest. Overriding the core re-skins everything in one declaration.
+ *
+ * ⚠️ NOT from `:root`, which this note used to say. See the longer note
+ * beside the core block: these are declared on the elements that consume
+ * them, so a `:root` override is shadowed and paints nothing.
+ *
+ * Dark mode ships, driven by `data-theme="dark"` on any ancestor. The
+ * NOTATION does not follow it -- start green, end red, gateway amber and
+ * boundary violet mean something; only chrome and neutrals flip.
  */
 
 .coolms-designer {
+    /* ── the core vocabulary ──────────────────────────────────────────── */
+    /* Declared once, here, and inherited by every part of the editor. The
+     * role tokens below and in the panels resolve THROUGH these, so the dark
+     * block at the end of this section re-points one set and the whole
+     * surface follows. Light values are the literals they replaced, so light
+     * mode is unchanged to the byte. */
+    --coolms-designer-surface-raised:    #f9fafb;  /* panels that sit above the canvas */
+    --coolms-designer-surface-sunken:    #f3f4f6;  /* inset fills: table headers, disabled inputs, pressed buttons */
+    --coolms-designer-paper:             #ffffff;  /* the sheet a shape is drawn ON -- node fills, inputs, the toolbar */
+    --coolms-designer-line:              #e5e7eb;  /* ordinary dividers */
+    --coolms-designer-line-strong:       #d1d5db;  /* input and table borders */
+    --coolms-designer-ink-strong:        #111827;  /* titles */
+    --coolms-designer-ink:               #1f2937;  /* body text and the toolbar label */
+    --coolms-designer-ink-body:          #374151;  /* field labels */
+    --coolms-designer-ink-soft:          #4b5563;  /* palette button text */
+    --coolms-designer-ink-muted:         #6b7280;  /* descriptions, icons, banner copy */
+    --coolms-designer-ink-disabled:      #9ca3af;  /* disabled text */
+    --coolms-designer-ink-slate:         #475569;  /* the subprocess label */
+    --coolms-designer-accent:            #2563eb;  /* the editor accent -- focus, active mode, hover borders */
+    --coolms-designer-accent-strong:     #1d4ed8;  /* accent INK; it must read on accent-wash, so it inverts */
+    --coolms-designer-accent-wash:       #dbeafe;  /* the active-mode fill */
+    --coolms-designer-accent-wash-hover: #bfdbfe;  /* that fill, hovered */
+    --coolms-designer-accent-tint:       #eef2ff;  /* the faintest accent fill: pressed palette, DRD input box */
+    --coolms-designer-focus:             #6366f1;  /* focus ring colour */
+    --coolms-designer-focus-ring:        rgba(99, 102, 241, 0.15);  /* the ring itself */
+    --coolms-designer-danger:            #ef4444;  /* destructive affordances */
+    --coolms-designer-danger-line:       #fecaca;  /* their border */
+    --coolms-designer-danger-wash:       #fee2e2;  /* their hover fill */
+    --coolms-designer-shadow-panel:      rgba(0, 0, 0, 0.06);  /* panel drop shadow -- deeper in dark, where light does less work */
+    --coolms-designer-shadow-soft:       rgba(0, 0, 0, 0.04);  /* a lifted button */
+    --coolms-designer-shadow-drag:       rgba(0, 0, 0, 0.15);  /* the drag ghost */
+    --coolms-designer-node-stroke:       #1f2937;  /* the outline of a task/decision/place -- NEUTRAL, so it flips */
+    --coolms-designer-node-stroke-soft:  #64748b;  /* a subprocess outline */
+    --coolms-designer-edge:              #374151;  /* flows, transitions, requirements and their arrowheads */
+
     /*
      * Theme variables (public contract).
      * --------------------------------------------------------------
      * Override these on the editor host or any ancestor to re-skin.
-     * Naming follows the CoolMS convention `--coolms-designer-*` so
-     * a single root `:root { ... }` block can host tokens for several
-     * coolms-* packages without prefix collisions.
+     * Naming follows the CoolMS convention `--coolms-designer-*` so one
+     * block can host tokens for several coolms-* packages without prefix
+     * collisions.
+     *
+     * ⚠️ BUT NOT FROM `:root`, WHICH THIS NOTE USED TO RECOMMEND. Every
+     * token here and in the panels below is declared ON the element that
+     * consumes it, and a declaration on an element beats a value inherited
+     * from an ancestor whatever rule set the ancestor's.
+     *
+     * It is not a specificity contest and scoring it misleads: the two
+     * rules match DIFFERENT elements, so they never compete, and no amount
+     * of specificity on a `:root` selector changes the outcome. A `:root`
+     * override paints nothing and reports nothing.
+     *
+     * Override on `.coolms-designer` for the core, or on the panel's own
+     * class for a role token.
      */
     --coolms-designer-surface-bg: #fafafa;
-    --coolms-designer-surface-fg: #1f2937;
+    --coolms-designer-surface-fg: var(--coolms-designer-ink);
     --coolms-designer-banner-bg: #1f2937;
     --coolms-designer-banner-fg: #f9fafb;
     --coolms-designer-banner-pad: 0.5rem 0.75rem;
@@ -72,11 +131,11 @@
 
 .coolms-designer__toolbar {
     --coolms-designer-toolbar-height: 36px;
-    --coolms-designer-toolbar-bg: #ffffff;
-    --coolms-designer-toolbar-fg: #1f2937;
-    --coolms-designer-toolbar-border: #e5e7eb;
-    --coolms-designer-toolbar-button-hover: #f3f4f6;
-    --coolms-designer-toolbar-button-active: #e5e7eb;
+    --coolms-designer-toolbar-bg: var(--coolms-designer-paper);
+    --coolms-designer-toolbar-fg: var(--coolms-designer-ink);
+    --coolms-designer-toolbar-border: var(--coolms-designer-line);
+    --coolms-designer-toolbar-button-hover: var(--coolms-designer-surface-sunken);
+    --coolms-designer-toolbar-button-active: var(--coolms-designer-line);
 
     /* A toolbar button that is a persistent MODE rather than a one-shot
        action -- pan, connect -- reads as selected while it is on.
@@ -90,10 +149,10 @@
        them, and re-skinning through these properties IS the theming
        contract this package publishes. Values are exactly the fallbacks
        already written at the use sites, so nothing changes visually. */
-    --coolms-designer-toolbar-mode-active-bg: #dbeafe;
-    --coolms-designer-toolbar-mode-active-bg-hover: #bfdbfe;
-    --coolms-designer-toolbar-mode-active-border: #2563eb;
-    --coolms-designer-toolbar-mode-active-fg: #1d4ed8;
+    --coolms-designer-toolbar-mode-active-bg: var(--coolms-designer-accent-wash);
+    --coolms-designer-toolbar-mode-active-bg-hover: var(--coolms-designer-accent-wash-hover);
+    --coolms-designer-toolbar-mode-active-border: var(--coolms-designer-accent);
+    --coolms-designer-toolbar-mode-active-fg: var(--coolms-designer-accent-strong);
 
     flex: 0 0 auto;
     display: flex;
@@ -239,8 +298,8 @@
  * visually.
  */
 .coolms-designer__sidebar {
-    --coolms-designer-sidebar-bg: #f9fafb;
-    --coolms-designer-sidebar-border: #e5e7eb;
+    --coolms-designer-sidebar-bg: var(--coolms-designer-surface-raised);
+    --coolms-designer-sidebar-border: var(--coolms-designer-line);
 
     position: absolute;
     top: 0;
@@ -250,7 +309,7 @@
     background: var(--coolms-designer-sidebar-bg);
     border-left: 1px solid var(--coolms-designer-sidebar-border);
     width: 280px;          /* default; overridden by inline style from JS */
-    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.06);
+    box-shadow: -4px 0 16px var(--coolms-designer-shadow-panel, rgba(0, 0, 0, 0.06));
     transform: translateX(0);
     transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 10;
@@ -262,7 +321,7 @@
     border-left: none;
     border-right: 1px solid var(--coolms-designer-sidebar-border);
     flex-direction: row-reverse;
-    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 4px 0 16px var(--coolms-designer-shadow-panel, rgba(0, 0, 0, 0.06));
 }
 
 /* F-8 slide-over -- collapsed panel slides ENTIRELY off the right
@@ -297,7 +356,7 @@
 }
 
 .coolms-designer__sidebar-toggle:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--coolms-designer-shadow-soft, rgba(0, 0, 0, 0.04));
 }
 
 .coolms-designer__sidebar-body {
@@ -327,11 +386,11 @@
 
 .coolms-designer__property-field {
     --coolms-designer-field-gap: 4px;
-    --coolms-designer-field-label-fg: #374151;
-    --coolms-designer-field-desc-fg: #6b7280;
-    --coolms-designer-field-input-border: #d1d5db;
-    --coolms-designer-field-input-focus-border: #6366f1;
-    --coolms-designer-field-input-bg: #ffffff;
+    --coolms-designer-field-label-fg: var(--coolms-designer-ink-body);
+    --coolms-designer-field-desc-fg: var(--coolms-designer-ink-muted);
+    --coolms-designer-field-input-border: var(--coolms-designer-line-strong);
+    --coolms-designer-field-input-focus-border: var(--coolms-designer-focus);
+    --coolms-designer-field-input-bg: var(--coolms-designer-paper);
 
     display: flex;
     flex-direction: column;
@@ -372,12 +431,12 @@
 .coolms-designer__field-input:focus {
     outline: none;
     border-color: var(--coolms-designer-field-input-focus-border);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 3px var(--coolms-designer-focus-ring, rgba(99, 102, 241, 0.15));
 }
 
 .coolms-designer__field-input:disabled {
-    background: #f3f4f6;
-    color: #9ca3af;
+    background: var(--coolms-designer-surface-sunken, #f3f4f6);
+    color: var(--coolms-designer-ink-disabled, #9ca3af);
     cursor: not-allowed;
 }
 
@@ -402,7 +461,7 @@
 
 .coolms-designer__field-checkbox-row:has(.coolms-designer__field-checkbox:disabled) {
     cursor: not-allowed;
-    color: #9ca3af;
+    color: var(--coolms-designer-ink-disabled, #9ca3af);
 }
 
 .coolms-designer__field-checkbox {
@@ -422,10 +481,10 @@
 }
 
 .coolms-designer__dmn-table {
-    --coolms-designer-dmn-bg: #ffffff;
-    --coolms-designer-dmn-border: #d1d5db;
-    --coolms-designer-dmn-header-bg: #f3f4f6;
-    --coolms-designer-dmn-input-bg: #fafafa;
+    --coolms-designer-dmn-bg: var(--coolms-designer-paper);
+    --coolms-designer-dmn-border: var(--coolms-designer-line-strong);
+    --coolms-designer-dmn-header-bg: var(--coolms-designer-surface-sunken);
+    --coolms-designer-dmn-input-bg: var(--coolms-designer-surface-bg);
     --coolms-designer-dmn-output-bg: #f0fdf4;
 
     flex: 1 1 auto;
@@ -455,7 +514,7 @@
 }
 
 .coolms-designer__dmn-table-header-field > span {
-    color: #6b7280;
+    color: var(--coolms-designer-ink-muted, #6b7280);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -491,7 +550,7 @@
 .coolms-designer__dmn-table-corner,
 .coolms-designer__dmn-table-rule-index {
     background: var(--coolms-designer-dmn-header-bg);
-    color: #6b7280;
+    color: var(--coolms-designer-ink-muted, #6b7280);
     text-align: center;
     width: 32px;
     min-width: 32px;
@@ -544,7 +603,7 @@
 }
 
 .coolms-designer__dmn-table-entry-input:focus {
-    outline: 2px solid #6366f1;
+    outline: 2px solid var(--coolms-designer-focus, #6366f1);
     outline-offset: -2px;
 }
 
@@ -580,7 +639,7 @@
 .coolms-designer__dmn-table-row-delete,
 .coolms-designer__dmn-table-col-delete {
     border: 1px solid var(--coolms-designer-dmn-border);
-    background: #ffffff;
+    background: var(--coolms-designer-paper, #ffffff);
     border-radius: 4px;
     padding: 2px 8px;
     cursor: pointer;
@@ -590,13 +649,13 @@
 
 .coolms-designer__dmn-table-row-delete,
 .coolms-designer__dmn-table-col-delete {
-    color: #ef4444;
-    border-color: #fecaca;
+    color: var(--coolms-designer-danger, #ef4444);
+    border-color: var(--coolms-designer-danger-line, #fecaca);
 }
 
 .coolms-designer__dmn-table-row-delete:hover,
 .coolms-designer__dmn-table-col-delete:hover {
-    background: #fee2e2;
+    background: var(--coolms-designer-danger-wash, #fee2e2);
 }
 
 .coolms-designer__dmn-table-col-delete {
@@ -658,7 +717,7 @@
     pointer-events: none;
     text-align: center;
     padding: 24px;
-    color: #6b7280;
+    color: var(--coolms-designer-ink-muted, #6b7280);
     font: 500 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
@@ -666,7 +725,7 @@
 .coolms-designer__bpmn-lite-banner-title {
     font-size: 18px;
     font-weight: 600;
-    color: #111827;
+    color: var(--coolms-designer-ink-strong, #111827);
     margin-bottom: 6px;
 }
 
@@ -700,29 +759,29 @@
 .coolms-designer__bpmn-label {
     font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    fill: #111827;
+    fill: var(--coolms-designer-ink-strong, #111827);
     user-select: none;
     pointer-events: none;
 }
 
 /* Start Event -- thin green stroke, no fill. */
 .coolms-designer__bpmn-start-event > circle {
-    fill: #ffffff;
+    fill: var(--coolms-designer-paper, #ffffff);
     stroke: #16a34a;
     stroke-width: 2;
 }
 
 /* End Event -- thick stroke (BPMN convention; thicker than start). */
 .coolms-designer__bpmn-end-event > circle {
-    fill: #ffffff;
+    fill: var(--coolms-designer-paper, #ffffff);
     stroke: #dc2626;
     stroke-width: 4;
 }
 
 /* Task -- rounded rectangle, light grey fill. */
 .coolms-designer__bpmn-task > rect {
-    fill: #ffffff;
-    stroke: #1f2937;
+    fill: var(--coolms-designer-paper, #ffffff);
+    stroke: var(--coolms-designer-node-stroke, #1f2937);
     stroke-width: 2;
 }
 
@@ -735,14 +794,14 @@
  * everything the author put inside it. */
 .coolms-designer__bpmn-subprocess > rect {
     fill: rgba(148, 163, 184, 0.1);
-    stroke: #64748b;
+    stroke: var(--coolms-designer-node-stroke-soft, #64748b);
     stroke-width: 1.5;
 }
 
 /* The container's own label is a quiet caption, not a title competing
  * with the labels of the activities inside it. */
 .coolms-designer__bpmn-subprocess > text {
-    fill: #475569;
+    fill: var(--coolms-designer-ink-slate, #475569);
     font-weight: 600;
 }
 
@@ -751,8 +810,8 @@
  * because it IS an activity; the border weight is the whole
  * distinction, so it has to be unmistakable at a glance. */
 .coolms-designer__bpmn-call-activity > rect {
-    fill: #ffffff;
-    stroke: #1f2937;
+    fill: var(--coolms-designer-paper, #ffffff);
+    stroke: var(--coolms-designer-node-stroke, #1f2937);
     stroke-width: 4;
 }
 
@@ -765,7 +824,7 @@
 .coolms-designer__bpmn-parallel-gateway > polygon,
 .coolms-designer__bpmn-inclusive-gateway > polygon:first-of-type,
 .coolms-designer__bpmn-event-based-gateway > polygon:first-of-type {
-    fill: #ffffff;
+    fill: var(--coolms-designer-paper, #ffffff);
     stroke: #ca8a04;
     stroke-width: 2;
 }
@@ -792,7 +851,7 @@
  * outline. The outer ring is the filled body (and the hit area); the
  * inner ring and the marker are stroke-only. */
 .coolms-designer__bpmn-intermediate-catch-event > .coolms-designer__bpmn-event-ring-outer {
-    fill: #ffffff;
+    fill: var(--coolms-designer-paper, #ffffff);
     stroke: #2563eb;
     stroke-width: 2;
 }
@@ -815,7 +874,7 @@
  * activity rather than sitting in the flow), DASHED when
  * non-interrupting per BPMN 2.0. */
 .coolms-designer__bpmn-boundary-event > .coolms-designer__bpmn-event-ring-outer {
-    fill: #ffffff;
+    fill: var(--coolms-designer-paper, #ffffff);
     stroke: #7c3aed;
     stroke-width: 2;
 }
@@ -843,20 +902,20 @@
  * on top). Default-flow markers + arrowheads ride on the same group. */
 .coolms-designer__bpmn-flow-path {
     fill: none;
-    stroke: #374151;
+    stroke: var(--coolms-designer-edge, #374151);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 .coolms-designer__bpmn-arrowhead > path {
-    fill: #374151;
+    fill: var(--coolms-designer-edge, #374151);
     stroke: none;
 }
 
 .coolms-designer__bpmn-flow-default-marker {
     fill: none;
-    stroke: #374151;
+    stroke: var(--coolms-designer-edge, #374151);
     stroke-width: 2;
     stroke-linecap: round;
 }
@@ -881,10 +940,10 @@
     min-height: 78px;
     padding: 10px 8px;
     margin-bottom: 8px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
+    background: var(--coolms-designer-paper, #ffffff);
+    border: 1px solid var(--coolms-designer-line, #e5e7eb);
     border-radius: 8px;
-    color: #4b5563;
+    color: var(--coolms-designer-ink-soft, #4b5563);
     font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     cursor: grab;
@@ -898,7 +957,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #6b7280;
+    color: var(--coolms-designer-ink-muted, #6b7280);
     line-height: 0;
     transition: color 0.12s;
 }
@@ -970,20 +1029,20 @@
 }
 
 .coolms-designer__palette-button:hover {
-    background: #f9fafb;
-    border-color: #2563eb;
-    color: #1f2937;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    background: var(--coolms-designer-surface-raised, #f9fafb);
+    border-color: var(--coolms-designer-accent, #2563eb);
+    color: var(--coolms-designer-ink, #1f2937);
+    box-shadow: 0 1px 2px var(--coolms-designer-shadow-soft, rgba(0, 0, 0, 0.04));
 }
 
 .coolms-designer__palette-button:hover .coolms-designer__palette-icon {
-    color: #2563eb;
+    color: var(--coolms-designer-accent, #2563eb);
 }
 
 .coolms-designer__palette-button:active {
     cursor: grabbing;
-    background: #eef2ff;
-    border-color: #2563eb;
+    background: var(--coolms-designer-accent-tint, #eef2ff);
+    border-color: var(--coolms-designer-accent, #2563eb);
 }
 
 .coolms-designer__palette-ghost {
@@ -995,18 +1054,18 @@
     align-items: center;
     gap: 6px;
     padding: 6px 10px;
-    background: #ffffff;
-    border: 1.5px solid #2563eb;
+    background: var(--coolms-designer-paper, #ffffff);
+    border: 1.5px solid var(--coolms-designer-accent, #2563eb);
     border-radius: 6px;
-    color: #1f2937;
+    color: var(--coolms-designer-ink, #1f2937);
     font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 8px var(--coolms-designer-shadow-drag, rgba(0, 0, 0, 0.15));
     opacity: 0.92;
 }
 
 .coolms-designer__palette-ghost .coolms-designer__palette-icon {
-    color: #2563eb;
+    color: var(--coolms-designer-accent, #2563eb);
 }
 
 /* ─── BPMN-Lite connect mode + rubber-band + waypoint handles ────────── */
@@ -1051,7 +1110,7 @@
 
 .coolms-designer__bpmn-connect-handle > circle {
     fill: #2563eb;
-    stroke: #ffffff;
+    stroke: var(--coolms-designer-paper, #ffffff);
     stroke-width: 1.5;
 }
 
@@ -1060,13 +1119,13 @@
 }
 
 .coolms-designer__bpmn-connect-handle-arrow {
-    fill: #ffffff;
+    fill: var(--coolms-designer-paper, #ffffff);
     stroke: none;
     pointer-events: none;
 }
 
 .coolms-designer__bpmn-waypoint-handle {
-    fill: #ffffff;
+    fill: var(--coolms-designer-paper, #ffffff);
     stroke: #2563eb;
     stroke-width: 2;
     cursor: grab;
@@ -1103,7 +1162,7 @@
 .coolms-designer__bpmn-flow-condition {
     font: 11px/1 "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
         monospace;
-    fill: #374151;
+    fill: var(--coolms-designer-edge, #374151);
     pointer-events: none;
 }
 
@@ -1121,7 +1180,7 @@
     pointer-events: none;
     text-align: center;
     padding: 24px;
-    color: #6b7280;
+    color: var(--coolms-designer-ink-muted, #6b7280);
     font: 500 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
@@ -1129,7 +1188,7 @@
 .coolms-designer__sm-banner-title {
     font-size: 18px;
     font-weight: 600;
-    color: #111827;
+    color: var(--coolms-designer-ink-strong, #111827);
     margin-bottom: 6px;
 }
 
@@ -1147,15 +1206,15 @@
 }
 
 .coolms-designer__sm-place-box {
-    fill: #ffffff;
-    stroke: #1f2937;
+    fill: var(--coolms-designer-paper, #ffffff);
+    stroke: var(--coolms-designer-node-stroke, #1f2937);
     stroke-width: 2;
 }
 
 .coolms-designer__sm-place-label {
     font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    fill: #111827;
+    fill: var(--coolms-designer-ink-strong, #111827);
     user-select: none;
     pointer-events: none;
 }
@@ -1186,21 +1245,21 @@
  * arrowhead at the target; self-transitions arc as a loop above the place. */
 .coolms-designer__sm-transition-path {
     fill: none;
-    stroke: #374151;
+    stroke: var(--coolms-designer-edge, #374151);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 .coolms-designer__sm-arrowhead > path {
-    fill: #374151;
+    fill: var(--coolms-designer-edge, #374151);
     stroke: none;
 }
 
 .coolms-designer__sm-transition-label {
     font: 500 11px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    fill: #374151;
+    fill: var(--coolms-designer-ink-body, #374151);
     user-select: none;
     pointer-events: none;
 }
@@ -1238,7 +1297,7 @@
     pointer-events: none;
     text-align: center;
     padding: 24px;
-    color: #6b7280;
+    color: var(--coolms-designer-ink-muted, #6b7280);
     font: 500 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
@@ -1246,7 +1305,7 @@
 .coolms-designer__drd-banner-title {
     font-size: 18px;
     font-weight: 600;
-    color: #111827;
+    color: var(--coolms-designer-ink-strong, #111827);
     margin-bottom: 6px;
 }
 
@@ -1264,15 +1323,15 @@
 }
 
 .coolms-designer__drd-decision-box {
-    fill: #ffffff;
-    stroke: #1f2937;
+    fill: var(--coolms-designer-paper, #ffffff);
+    stroke: var(--coolms-designer-node-stroke, #1f2937);
     stroke-width: 2;
 }
 
 /* InputData stadium reads as the "raw fact" — a softer fill + tint so it's
  * visually distinct from the decision rectangles it feeds. */
 .coolms-designer__drd-input-box {
-    fill: #eef2ff;
+    fill: var(--coolms-designer-accent-tint, #eef2ff);
     stroke: #4f46e5;
     stroke-width: 2;
 }
@@ -1280,7 +1339,7 @@
 .coolms-designer__drd-element-label {
     font: 500 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    fill: #111827;
+    fill: var(--coolms-designer-ink-strong, #111827);
     user-select: none;
     pointer-events: none;
 }
@@ -1291,14 +1350,14 @@
  * a filled arrowhead at the requiring decision. */
 .coolms-designer__drd-requirement-path {
     fill: none;
-    stroke: #374151;
+    stroke: var(--coolms-designer-edge, #374151);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 .coolms-designer__drd-arrowhead > path {
-    fill: #374151;
+    fill: var(--coolms-designer-edge, #374151);
     stroke: none;
 }
 
@@ -1313,4 +1372,66 @@
 .coolms-designer__drd-requirement--selected > .coolms-designer__drd-requirement-path {
     stroke: #2563eb;
     stroke-width: 3;
+}
+
+
+/* ── dark mode ───────────────────────────────────────────────────────────── */
+/*
+ * Pinned to `data-theme`, never to `prefers-color-scheme`. The platform sets the
+ * attribute for BOTH values (core-angular ThemeService.applyToDocument), and the
+ * admin ships zero prefers-color-scheme rules -- so asking the browser instead
+ * would make the designer disagree with the page around it on any machine whose
+ * OS and chosen theme differ. That divergence is not hypothetical: it reached a
+ * user through the PDF viewer, which asked the browser and rendered a white
+ * dialog inside a dark admin.
+ *
+ * Standalone consumers opt in the same way -- put data-theme="dark" on the
+ * document element, or on any ancestor of the editor.
+ *
+ * ⚠️ The selector must reach the SAME elements that declare these tokens. A rule
+ * on :root cannot: a declaration on an element beats a value inherited from an
+ * ancestor whatever the ancestor selector scored, so the light values would
+ * simply keep painting and nothing would report it.
+ *
+ * ⚠️ THE NOTATION IS NOT IN HERE, ON PURPOSE. Start green, end red, gateway
+ * amber, boundary violet and selection blue mean something; a diagram that
+ * recolours with the chrome is a different diagram. Only neutrals flip -- which
+ * is why a task rect's white fill and near-black stroke are tokens above while
+ * its siblings' hues are left as literals.
+ */
+[data-theme='dark'] .coolms-designer {
+    --coolms-designer-surface-raised:    #1a2332;
+    --coolms-designer-surface-sunken:    #243044;
+    --coolms-designer-paper:             #1a2332;
+    --coolms-designer-line:              #2d3f57;
+    --coolms-designer-line-strong:       #3a4a63;
+    --coolms-designer-ink-strong:        #f1f5fa;
+    --coolms-designer-ink:               #e8edf4;
+    --coolms-designer-ink-body:          #c9d3e0;
+    --coolms-designer-ink-soft:          #aab8ca;
+    --coolms-designer-ink-muted:         #9aa8bd;
+    --coolms-designer-ink-disabled:      #6b7f96;
+    --coolms-designer-ink-slate:         #9aa8bd;
+    --coolms-designer-accent:            #3b82f6;
+    --coolms-designer-accent-strong:     #93c5fd;
+    --coolms-designer-accent-wash:       #16263f;
+    --coolms-designer-accent-wash-hover: #1e3a5f;
+    --coolms-designer-accent-tint:       #16263f;
+    --coolms-designer-focus:             #818cf8;
+    --coolms-designer-focus-ring:        rgba(129, 140, 248, 0.28);
+    --coolms-designer-danger:            #f87171;
+    --coolms-designer-danger-line:       #7f3a40;
+    --coolms-designer-danger-wash:       #3a1a1d;
+    --coolms-designer-shadow-panel:      rgba(0, 0, 0, 0.45);
+    --coolms-designer-shadow-soft:       rgba(0, 0, 0, 0.35);
+    --coolms-designer-shadow-drag:       rgba(0, 0, 0, 0.55);
+    --coolms-designer-node-stroke:       #aab8ca;
+    --coolms-designer-node-stroke-soft:  #7c8ba1;
+    --coolms-designer-edge:              #9aa8bd;
+
+    /* Roles with a meaning the core does not carry. */
+    --coolms-designer-surface-bg:        #0f1722;
+    --coolms-designer-banner-bg:         #243044;
+    --coolms-designer-banner-fg:         #e8edf4;
+    --coolms-designer-dmn-output-bg:     #14331f;
 }

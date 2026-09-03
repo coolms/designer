@@ -27,7 +27,8 @@
         "dist",
         "tools",
         "LICENSE",
-        "README.md"
+        "README.md",
+        "CHANGELOG.md"
     ],
     "scripts": {
         "build": "node esbuild.config.mjs && npm run build:types && npm run build:css",
