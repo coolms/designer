@@ -16,7 +16,7 @@ The package mounts to any DOM element and assumes nothing about the host stack. 
 
 ## Status
 
-**Alpha.** Four surfaces ship, covered by 951 unit tests:
+**Alpha.** Four surfaces ship, covered by 970 unit tests:
 
 | Surface | `surface` option | What it authors |
 |---|---|---|
