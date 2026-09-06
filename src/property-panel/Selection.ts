@@ -15,7 +15,7 @@ interface SelectionEvents extends Record<string, unknown> {
  *    its field instances to the new element's properties.
  *  - Surface renderers subscribe to highlight the selected
  *    element in the canvas + adjust palette behaviour (e.g.
- *    "selected user task → show user-task-specific palette").
+ *    "selected user task -> show user-task-specific palette").
  *
  * Selection holds element IDs as strings, not Element references --
  * IDs survive across graph mutations (an element with a stable id

@@ -16,7 +16,7 @@ import type { DmnDrdModel } from '../dmn/drd/types.js';
 /**
  * Read-only diagram rendering -- the one public path from a model to pixels.
  *
- * ⚠️ **Why this exists.** {@link createEditor} builds the shell and nothing
+ * !! **Why this exists.** {@link createEditor} builds the shell and nothing
  * else: it paints chrome for four surfaces it cannot draw. Rendering a diagram
  * meant constructing a surface editor by hand, which needed FOUR things this
  * package declines to stand behind -- a submodule import path the entry point
@@ -25,7 +25,7 @@ import type { DmnDrdModel } from '../dmn/drd/types.js';
  * A consumer following the documented public surface could not render a
  * diagram at all. The seam was published at one end only.
  *
- * ⚠️ Worse than unstable: the submodule paths are not PUBLISHED. `exports` in
+ * !! Worse than unstable: the submodule paths are not PUBLISHED. `exports` in
  * `package.json` declares only `.`, `./global` and `./styles`, and the build
  * has a single entry point, so `dist` contains no submodule to resolve. First-
  * party consumers reach them through a source path mapping; an installed
@@ -84,7 +84,7 @@ export interface ToSvgOptions {
 /**
  * A mounted, read-only diagram.
  *
- * ⚠️ `destroy()` is not optional. The view owns a shell, a surface editor, a
+ * !! `destroy()` is not optional. The view owns a shell, a surface editor, a
  * render loop and pointer listeners; a host that mounts one per opened item and
  * never unwinds degrades over a session rather than failing outright.
  */
@@ -105,18 +105,18 @@ export interface DiagramView {
      * Serialize what was drawn: a standalone `<svg>` string with a tight
      * viewBox and no editor chrome.
      *
-     * ⚠️ Serializing the live canvas instead would capture the pan/zoom
+     * !! Serializing the live canvas instead would capture the pan/zoom
      * transform -- storing wherever somebody happened to leave the scrollbar.
      * This works on a CLONE, drops the transform, removes the background hit
      * target (chrome, not diagram), and computes the viewBox from the content
      * box, so the same model gives the same bytes regardless of the viewport.
      *
-     * ⚠️ It also INLINES the resolved paint. The renderers emit classes and no
+     * !! It also INLINES the resolved paint. The renderers emit classes and no
      * fill or stroke of their own, so markup taken away from
      * `coolms-designer.css` renders every shape solid black. A snapshot is
      * shown where the designer is not, so the styles are written into it.
      *
-     * ⚠️ The class names it strips, and the stylesheet whose result it bakes
+     * !! The class names it strips, and the stylesheet whose result it bakes
      * in, are this package's own internals -- which is exactly why the method
      * lives here. A consumer doing this reaches into DOM structure and a
      * cascade that no version promises to keep.
@@ -236,7 +236,7 @@ function mount(shell: Editor, options: RenderDiagramOptions): MountedSurface {
 /**
  * Presentational properties copied onto the serialized clone.
  *
- * ⚠️ **Without this the capture is BLACK.** Nothing the renderers emit carries
+ * !! **Without this the capture is BLACK.** Nothing the renderers emit carries
  * a fill or a stroke: every shape is a class, and `coolms-designer.css` paints
  * it. Serialized markup taken anywhere that stylesheet is not loaded -- a
  * public page, an email, a PDF -- falls back to the SVG default of `fill:
@@ -246,7 +246,7 @@ function mount(shell: Editor, options: RenderDiagramOptions): MountedSurface {
  * A snapshot has to stand on its own, so the styles that were resolved at
  * capture time are written into it.
  *
- * ⚠️ `display` and `visibility` are deliberately NOT copied. Everything inside
+ * !! `display` and `visibility` are deliberately NOT copied. Everything inside
  * `<defs>` -- the arrowhead markers -- computes to `display: none`, and writing
  * that inline would remove every arrowhead from the drawing while the elements
  * were still present to look at in the markup.
@@ -265,7 +265,7 @@ const PAINTED = [
  * Clone the canvas, resolve its styles, strip the chrome, give it a tight
  * viewBox.
  *
- * ⚠️ `getBBox()` and `getComputedStyle()` are read from the LIVE tree, not the
+ * !! `getBBox()` and `getComputedStyle()` are read from the LIVE tree, not the
  * clone: a detached SVG has neither layout nor a cascade, so the clone's box is
  * zero everywhere and its computed styles are empty.
  */

@@ -8,15 +8,15 @@ import type { BpmnLiteModel } from '../../../src/bpmn-lite/types.js';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /**
- * F-7.6 take-2 regression test — pins the position-transform-strip bug
+ * F-7.6 take-2 regression test -- pins the position-transform-strip bug
  * surfaced by the user after F-7.4 (auto-fit on open) shipped.
  *
- * The bug: a real click on an element typically lasts 150–250ms with
- * 5–10px of trackpad/mouse drift, which crossed both the 5px screen-
+ * The bug: a real click on an element typically lasts 150-250ms with
+ * 5-10px of trackpad/mouse drift, which crossed both the 5px screen-
  * pixel arm threshold AND the 120ms hold gate, ARMING the drag. The
  * armed-frame returned without writing a transform (so workingPosition
  * stayed at startPosition), and pointerup then took the no-op-move
- * branch (finalPosition === startPosition → skip command dispatch). BUT
+ * branch (finalPosition === startPosition -> skip command dispatch). BUT
  * the pre-take-2 cancelDrag() did `removeAttribute('transform')`, which
  * left the element `<g>` with NO transform. Without a follow-up repaint
  * (no command = no repaint), the renderer's `translate(position.x,
@@ -85,7 +85,7 @@ describe('MoveElementController — F-7.6 take-2 cancelDrag transform restore', 
             clientX: opts.clientX,
             clientY: opts.clientY,
         });
-        // PointerEvent's timeStamp is read-only — override via
+        // PointerEvent's timeStamp is read-only -- override via
         // Object.defineProperty so the controller's time-gate sees the
         // values we want. The browser-side test environment uses a
         // synthetic JSDOM-shimmed event so defineProperty works.
@@ -100,21 +100,21 @@ describe('MoveElementController — F-7.6 take-2 cancelDrag transform restore', 
     }
 
     it('armed-then-released-with-no-motion restores the position transform', () => {
-        // Find the rendered <g> for task_1 — the editor's repaint
+        // Find the rendered <g> for task_1 -- the editor's repaint
         // already minted it in the constructor.
         const elementG = svgGroup.querySelector<SVGGElement>(
             '[data-element-id="task_1"]',
         );
         expect(elementG).not.toBeNull();
         const initialTransform = elementG!.getAttribute('transform');
-        // The renderer writes "translate(100, 200)" — exact format
+        // The renderer writes "translate(100, 200)" -- exact format
         // varies by string template (with/without space), so just
         // pin the numeric content.
         expect(initialTransform).toMatch(/translate\(\s*100\s*,\s*200\s*\)/);
 
         // 1) Pointerdown on the element. Dispatch on the element `<g>`
         // (not the SVG root) so `ev.target.closest('[data-element-id]')`
-        // resolves in JSDOM — the controller's pointerdown handler is
+        // resolves in JSDOM -- the controller's pointerdown handler is
         // attached at the SVG root but the event bubbles up, so
         // ev.target stays as the element we dispatched to.
         fireEv(elementG!, 'pointerdown', {
@@ -123,7 +123,7 @@ describe('MoveElementController — F-7.6 take-2 cancelDrag transform restore', 
             timeStamp: 1000,
         });
 
-        // 2) Tiny mouse drift past BOTH gates (5px + 120ms) — typical
+        // 2) Tiny mouse drift past BOTH gates (5px + 120ms) -- typical
         // for a casual click on a trackpad. This ARMS the drag.
         fireEv(document, 'pointermove', {
             clientX: 158,
@@ -133,8 +133,8 @@ describe('MoveElementController — F-7.6 take-2 cancelDrag transform restore', 
         expect(controller.dragging).toBe(true);
 
         // 3) Pointerup with no further motion. finalPosition ===
-        // startPosition → no-op-move branch → no command dispatched
-        // → no repaint. BEFORE the take-2 fix, the cancelDrag would
+        // startPosition -> no-op-move branch -> no command dispatched
+        // -> no repaint. BEFORE the take-2 fix, the cancelDrag would
         // have stripped the transform here.
         fireEv(document, 'pointerup', {
             clientX: 158,
@@ -159,7 +159,7 @@ describe('MoveElementController — F-7.6 take-2 cancelDrag transform restore', 
         );
         const initialTransform = elementG!.getAttribute('transform');
 
-        // Pointerdown + immediate pointerup with NO motion → drag
+        // Pointerdown + immediate pointerup with NO motion -> drag
         // never arms. This was always safe (no transform write), but
         // pin it so a future refactor can't accidentally introduce a
         // strip on the un-armed cancel path.
@@ -205,7 +205,7 @@ describe('MoveElementController — F-7.6 take-2 cancelDrag transform restore', 
             clientY: 245,
             timeStamp: 1150,
         });
-        // Real drag motion AFTER arming — moves the element by 50px in screen px.
+        // Real drag motion AFTER arming -- moves the element by 50px in screen px.
         // At identity zoom (1.0) this is 50 world px.
         fireEv(document, 'pointermove', {
             clientX: 208,
@@ -218,7 +218,7 @@ describe('MoveElementController — F-7.6 take-2 cancelDrag transform restore', 
             timeStamp: 1250,
         });
 
-        // After pointerup, the command is executed → repaint → new
+        // After pointerup, the command is executed -> repaint -> new
         // `<g>` minted with the new position transform. Look up the
         // element by id again (the old reference is stale post-repaint).
         const movedG = svgGroup.querySelector<SVGGElement>(

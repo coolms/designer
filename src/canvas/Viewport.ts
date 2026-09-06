@@ -15,7 +15,7 @@ interface ViewportEvents extends Record<string, unknown> {
 }
 
 export interface ViewportOptions {
-    /** Lower zoom bound. Default 0.1 (10×). Floors at 0.01 to avoid div-by-zero in `toWorld`. */
+    /** Lower zoom bound. Default 0.1 (10x). Floors at 0.01 to avoid div-by-zero in `toWorld`. */
     readonly minZoom?: number;
     /** Upper zoom bound. Default 10. Floored at the effective minZoom. */
     readonly maxZoom?: number;

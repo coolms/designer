@@ -9,7 +9,7 @@ import {
 import type { BpmnElement } from '../../../src/bpmn-lite/types.js';
 
 /**
- * polish-bundle (F-7.1) — pins {@link MoveElementCommand}'s
+ * polish-bundle (F-7.1) -- pins {@link MoveElementCommand}'s
  * apply/revert symmetry + the editor's `updateElementPosition`
  * mutator. The companion {@link MoveElementController} tests live
  * separately (they need the SVG + pointer-event plumbing).

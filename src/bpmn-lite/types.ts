@@ -5,7 +5,7 @@
  * (`writeBpmnLiteJson` / `readBpmnLiteJson`) is a near-identity
  * transform between the in-memory editor model and the JSON body the
  * engine's workflow deployer reads back through that parser. Editor
- * → storage → deployer → engine has no translation layer, the same
+ * -> storage -> deployer -> engine has no translation layer, the same
  * shape the DMN serializer and its deployer established.
  *
  * **Why mirror the engine at the type layer, not at the editor's
@@ -13,8 +13,8 @@
  * imperative (drag, drop, reroute, undo) -- that is the `Graph`
  * shape. The model exposed via `BpmnLiteEditor.state` is the
  * immutable serializable snapshot that maps directly onto the
- * engine's JSON shape, and the serializer composes Graph →
- * BpmnLiteModel for `toJson()` and BpmnLiteModel → Graph for
+ * engine's JSON shape, and the serializer composes Graph ->
+ * BpmnLiteModel for `toJson()` and BpmnLiteModel -> Graph for
  * `fromJson()`. Two tier-aligned types beats one type that has to
  * be both an undo unit AND a wire format.
  *
@@ -112,7 +112,7 @@ export type BpmnEventSubtype =
  * awkward to bind a property panel to, so the editor normalises it to an
  * explicit `{kind, value}` pair (a kind select + a value input) and the
  * serializer converts on the way out. Same spirit as the
- * task-variant ⇄ wire-type translation in `fromJson.ts`.
+ * task-variant <-> wire-type translation in `fromJson.ts`.
  */
 export interface BpmnTimerDefinition {
     readonly kind: 'duration' | 'date' | 'cycle';
@@ -122,7 +122,7 @@ export interface BpmnTimerDefinition {
 /**
  * Message definition -- catch-event correlation.
  *
- * ⚠️ The wire key is `correlation`, NOT `correlationKey` (the latter
+ * !! The wire key is `correlation`, NOT `correlationKey` (the latter
  * is the constructor argument on the engine's message definition). The
  * serializer must emit `correlation` or the engine silently correlates
  * on an empty key.
@@ -166,9 +166,9 @@ export interface BpmnPosition {
 /**
  * Element bounding box in the canvas coordinate system. The
  * conventional default sizes are:
- *   - Events: 36×36 (small-icon convention from the BPMN spec)
- *   - Tasks: 100×80 (modeler convention; gives room for a label)
- *   - Gateways: 50×50 (modeler convention)
+ *   - Events: 36x36 (small-icon convention from the BPMN spec)
+ *   - Tasks: 100x80 (modeler convention; gives room for a label)
+ *   - Gateways: 50x50 (modeler convention)
  *
  * Defaults aren't enforced in the renderers; they read whatever the
  * model carries; the palette sets these defaults at create time so
@@ -246,7 +246,7 @@ export interface BpmnElement {
     readonly subtype?: BpmnEventSubtype;
     /**
      * Timer block. Set when `subtype === 'timer'`. See
-     * {@link BpmnTimerDefinition} for the wire ⇄ editor translation.
+     * {@link BpmnTimerDefinition} for the wire <-> editor translation.
      */
     readonly timer?: BpmnTimerDefinition;
     /**
@@ -280,7 +280,7 @@ export interface BpmnElement {
      * to. Set only when `type === 'boundaryEvent'`; it is what turns an
      * event into a boundary event (the parser also treats an
      * `intermediateCatchEvent` CARRYING `attachedTo` as a boundary, per
-     * the §2.4 dual spelling).
+     * the section 2.4 dual spelling).
      *
      * The editor is permissive about WHICH kinds may host a boundary --
      * `BoundaryAttachmentRule` restricts it to userTask / serviceTask /
@@ -306,8 +306,8 @@ export interface BpmnElement {
      * The engine's AST is deliberately FLAT: a subprocess's children
      * stay in the same `elements[]` array and point back with this
      * field, rather than nesting inside the container. The canvas
-     * mirrors that exactly — a child is an ordinary element whose
-     * geometry happens to sit inside the container's rect — so
+     * mirrors that exactly -- a child is an ordinary element whose
+     * geometry happens to sit inside the container's rect -- so
      * dragging something out of a scope is a `parent` edit, never a
      * tree re-parent.
      *
@@ -321,7 +321,7 @@ export interface BpmnElement {
      * `type === 'callActivity'`.
      *
      * Resolved at CALL time against the callee's currently-deployed
-     * version — not pinned here — so the editor accepts any string,
+     * version -- not pinned here -- so the editor accepts any string,
      * including a definition that does not exist yet. Validating it
      * against the deployed set would make a legal authoring order
      * (caller before callee) impossible.
@@ -333,7 +333,7 @@ export interface BpmnElement {
      *
      * Flat fields rather than a nested `loopCharacteristics` object
      * because the property panel's field registry addresses values by a
-     * single key — the serializer nests them on the way out, which is
+     * single key -- the serializer nests them on the way out, which is
      * the same translation seam the editor already uses for task
      * `variant`.
      */
@@ -359,7 +359,7 @@ export interface BpmnElement {
 
 /**
  * Sequence-flow shape -- a single connection in the process graph.
- * Each flow connects `source` → `target` by element id (matching the
+ * Each flow connects `source` -> `target` by element id (matching the
  * engine parser's adjacency model).
  *
  *  - `waypoints` -- optional manual route. When present, the editor

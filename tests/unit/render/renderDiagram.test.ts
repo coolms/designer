@@ -11,7 +11,7 @@ import type { DmnDrdModel } from '../../../src/dmn/drd/types.js';
  * parts needed to draw were all marked internal or shipped in no published
  * entry point.
  *
- * ⚠️ **All three drawing surfaces are exercised here on purpose.** The function
+ * !! **All three drawing surfaces are exercised here on purpose.** The function
  * claims bpmn-lite, state-machine and dmn-drd. Only one of them can be checked
  * in a browser today, and a claim of three verified once is the same defect
  * this function exists to fix -- something declared supported that nobody

@@ -20,7 +20,7 @@ import type {
     DmnInformationRequirement,
 } from './types.js';
 
-/** Process-wide instance counter — gives each editor a unique arrowhead `<marker>` id. */
+/** Process-wide instance counter -- gives each editor a unique arrowhead `<marker>` id. */
 let dmnDrdEditorInstanceCounter = 0;
 
 /** Construction options for {@link DmnDrdEditor}. */
@@ -49,19 +49,19 @@ interface DmnDrdEvents extends Record<string, unknown> {
 }
 
 /**
- * DMN DRD editor — the fourth surface on the `@coolms/designer`
+ * DMN DRD editor -- the fourth surface on the `@coolms/designer`
  * substrate, after the DMN table, BPMN-Lite and the state machine.
  * It owns the render half: an immutable {@link DmnDrdModel} painted
- * onto the shared canvas — Decision/InputData nodes joined by
+ * onto the shared canvas -- Decision/InputData nodes joined by
  * InformationRequirement arrows. The palette, connect mode, property
  * panel and the DMN-XML serializer compose around it.
  *
  * **Two paint groups inside `svgGroup`, in document order** (mirroring
- * the state-machine editor): a `…__drd-requirements` group (edges + the
+ * the state-machine editor): a `...__drd-requirements` group (edges + the
  * `<defs>` arrowhead marker) appended FIRST so it paints UNDER the
- * `…__drd-elements` group, so node boxes cover the arrowhead tips
+ * `...__drd-elements` group, so node boxes cover the arrowhead tips
  * arriving at them. Dangling requirement endpoints (a `from`/`to` that
- * resolves to no node) — and any self-reference — are skipped silently;
+ * resolves to no node) -- and any self-reference -- are skipped silently;
  * the model may hold draft state mid-edit, and the future serializer +
  * backend DMN parser surface those on deploy.
  */
@@ -117,7 +117,7 @@ export class DmnDrdEditor {
 
     /**
      * Replace the model + repaint + emit `change`. A model that arrives
-     * fully at the origin (the deserialize case — DMN XML with no DMNDI
+     * fully at the origin (the deserialize case -- DMN XML with no DMNDI
      * carries no diagram geometry) is auto-laid-out into columns; a
      * model that already carries positions is respected verbatim.
      */
@@ -196,12 +196,12 @@ export class DmnDrdEditor {
         return { left: left - 12, top: top - 12, right: right + 12, bottom: bottom + 12 };
     }
 
-    // ─── slice-2 mutator seam (the property-panel commands call these) ────
+    // --- slice-2 mutator seam (the property-panel commands call these) ----
 
     /**
      * Update one editable property (`name` / `decisionLogicRef`) on an
      * element. Unlike a state-machine place rename, a DRD element's `id`
-     * is stable canvas identity — NOT its name — so this never touches
+     * is stable canvas identity -- NOT its name -- so this never touches
      * requirement endpoints (which reference ids). A blank
      * `decisionLogicRef` is omitted rather than stored as `''`
      * (`exactOptionalPropertyTypes`).
@@ -245,7 +245,7 @@ export class DmnDrdEditor {
     }
 
     /**
-     * Update one diagram-scope property — `name` is the DRG / definition
+     * Update one diagram-scope property -- `name` is the DRG / definition
      * key. No repaint (it doesn't touch the canvas) but still emits
      * `change`.
      */
@@ -265,11 +265,11 @@ export class DmnDrdEditor {
         return key === 'name' ? this.state_.name : undefined;
     }
 
-    // ─── slice-3 structural seam (palette / connect / drag / delete call these) ─
+    // --- slice-3 structural seam (palette / connect / drag / delete call these) -
 
     /**
      * Append a fully-formed element (caller supplies the id, via
-     * {@link suggestElementId}). A duplicate id is rejected silently —
+     * {@link suggestElementId}). A duplicate id is rejected silently --
      * requirement endpoints resolve by id, so two same-id nodes would
      * corrupt the graph.
      */
@@ -283,7 +283,7 @@ export class DmnDrdEditor {
 
     /**
      * Remove an element by id AND cascade-remove every requirement that
-     * references it (`from` or `to`) — a dangling edge would otherwise be
+     * references it (`from` or `to`) -- a dangling edge would otherwise be
      * silently dropped on paint but linger in the model. Clears the
      * selection if the removed element was selected. The
      * {@link RemoveElementCommand} captures the incident requirements
@@ -345,7 +345,7 @@ export class DmnDrdEditor {
     }
 
     /**
-     * Suggest a unique element id for a new node of the given kind —
+     * Suggest a unique element id for a new node of the given kind --
      * `decision_1` / `input_1`, bumping the suffix past any collision.
      * Deterministic (no randomness) so the palette + tests are stable;
      * the caller is free to supply its own id instead.
@@ -362,7 +362,7 @@ export class DmnDrdEditor {
         return id;
     }
 
-    /** Suggest a unique requirement id (`ir_1`, …) for a new edge. */
+    /** Suggest a unique requirement id (`ir_1`, ...) for a new edge. */
     suggestRequirementId(): string {
         const taken = new Set(this.state_.requirements.map((r) => r.id));
         let n = this.state_.requirements.length + 1;
@@ -375,7 +375,7 @@ export class DmnDrdEditor {
     }
 
     /**
-     * Delegated canvas click → selection. Walks up from the event target
+     * Delegated canvas click -> selection. Walks up from the event target
      * to the nearest painted node/requirement `<g>` (keyed by the
      * `data-element-id` / `data-requirement-id` the renderers stamp); a
      * click on empty canvas clears the selection (diagram scope).
@@ -429,17 +429,17 @@ export class DmnDrdEditor {
         this.emitter.dispose();
     }
 
-    /** Test affordance — the painted `<g>` holding the node shapes. */
+    /** Test affordance -- the painted `<g>` holding the node shapes. */
     get paintedElementsElement(): SVGGElement | null {
         return this.paintedElements;
     }
 
-    /** Test affordance — the painted `<g>` holding the requirement paths + `<defs>`. */
+    /** Test affordance -- the painted `<g>` holding the requirement paths + `<defs>`. */
     get paintedRequirementsElement(): SVGGElement | null {
         return this.paintedRequirements;
     }
 
-    /** Test affordance — the per-instance arrowhead marker id. */
+    /** Test affordance -- the per-instance arrowhead marker id. */
     get arrowheadMarkerId(): string {
         return drdArrowheadMarkerId(this.instanceId);
     }
@@ -483,13 +483,13 @@ export class DmnDrdEditor {
 
         for (const requirement of this.state_.requirements) {
             if (requirement.from === requirement.to) {
-                // A node can't require itself — skip (invalid / mid-edit).
+                // A node can't require itself -- skip (invalid / mid-edit).
                 continue;
             }
             const source = elementsById.get(requirement.from);
             const target = elementsById.get(requirement.to);
             if (source === undefined || target === undefined) {
-                // Dangling endpoint — model is mid-edit. Skip silently;
+                // Dangling endpoint -- model is mid-edit. Skip silently;
                 // the serializer + the backend DMN parser catch it on deploy.
                 continue;
             }
@@ -544,7 +544,7 @@ export class DmnDrdEditor {
 
 /**
  * Rebuild an element with the `decisionLogicRef` omitted (not set to
- * `undefined`) while preserving any `extras` passthrough —
+ * `undefined`) while preserving any `extras` passthrough --
  * `exactOptionalPropertyTypes` forbids assigning `undefined` to an
  * optional slot, so we omit the key.
  */

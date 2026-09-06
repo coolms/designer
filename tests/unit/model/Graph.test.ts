@@ -103,7 +103,7 @@ describe('Graph', () => {
             graph.addElement(node('n1'));
             graph.addElement(node('n2'));
             graph.addElement(edge('e1', 'n1', 'n2'));
-            // e1 is an edge — trying to use its id as an edge endpoint must fail.
+            // e1 is an edge -- trying to use its id as an edge endpoint must fail.
             expect(() => graph.addElement(edge('e2', 'e1', 'n2'))).toThrow(
                 /not an existing node/,
             );
@@ -381,7 +381,7 @@ describe('Graph', () => {
                 graph.transaction(() => {
                     graph.addElement(node('n2'));
                 });
-                // No event here yet — outer transaction still open.
+                // No event here yet -- outer transaction still open.
                 graph.addElement(node('n3'));
             });
 

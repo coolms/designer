@@ -14,7 +14,7 @@ import type { BpmnSequenceFlow } from './types.js';
  * surfaces "Delete Flow" in undo tooltips instead of the confusing
  * "Undo Add Flow". User intent should match command intent.
  *
- * **Label format**: simply "Delete Flow" — flows don't carry a
+ * **Label format**: simply "Delete Flow" -- flows don't carry a
  * human-readable kind label (they're all sequence flows in
  * BPMN-Lite). A future ship that adds named flow kinds
  * (message flow, association) can extend this with a label arg.
@@ -37,7 +37,7 @@ export class DeleteFlowCommand implements Command {
         this.editor.addFlow(this.flow);
     }
 
-    /** Test affordance — the flow this command will delete. */
+    /** Test affordance -- the flow this command will delete. */
     get target(): BpmnSequenceFlow {
         return this.flow;
     }

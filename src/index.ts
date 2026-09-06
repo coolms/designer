@@ -1,5 +1,5 @@
 /**
- * @coolms/designer — public entry point.
+ * @coolms/designer -- public entry point.
  *
  * The public API surface is intentionally narrow. Consumers should import
  * from this module only; submodule paths (e.g. `@coolms/designer/canvas`)
@@ -8,17 +8,17 @@
  *
  * The package is organised by responsibility:
  *
- *  - {@link createEditor} — the single public factory; everything flows
+ *  - {@link createEditor} -- the single public factory; everything flows
  *    from here. Returns an {@link Editor} handle with a `destroy()` method
  *    that fully unwinds DOM, listeners, and timers.
- *  - {@link EditorOptions}, {@link EditorSurface} — configuration types.
- *  - {@link DESIGNER_VERSION} — semver string baked at build time so
+ *  - {@link EditorOptions}, {@link EditorSurface} -- configuration types.
+ *  - {@link DESIGNER_VERSION} -- semver string baked at build time so
  *    consumers can sanity-check what they loaded (handy with the IIFE
  *    bundle dropped via a CDN).
  *
  * Later releases may add element registries, model subscription
  * APIs, and serializer factories. Those exports land here
- * deliberately, NOT by default re-exporting every internal — the
+ * deliberately, NOT by default re-exporting every internal -- the
  * narrower the public surface, the cheaper future refactors stay.
  */
 

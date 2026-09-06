@@ -82,7 +82,7 @@ const DATA_TYPE_VALUES: ReadonlySet<DataType> = new Set([
  * corruption: a DMN document may legitimately contain a decision with
  * no `<decisionTable>` (a decision node in a requirements diagram that
  * has not been given rules yet). Surfacing that as a hard parse error
- * told authors their definition was broken when it was merely a DRD —
+ * told authors their definition was broken when it was merely a DRD --
  * so the code lets the UI offer the requirements diagram instead of a
  * red banner.
  */

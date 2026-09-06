@@ -20,8 +20,8 @@ import type { BpmnElement } from '../../../src/bpmn-lite/index.js';
  *
  * The canvas mirrors the engine's FLAT model exactly: a scope's children
  * are ordinary elements carrying `parent`, never nested objects. These
- * tests pin the three things that flatness does NOT give for free —
- * capture on drop, paint order, and the move cascade — plus the wire
+ * tests pin the three things that flatness does NOT give for free --
+ * capture on drop, paint order, and the move cascade -- plus the wire
  * round-trip.
  */
 /** Package-relative fixture path (this file sits two levels under `tests/`). */
@@ -177,14 +177,14 @@ describe('embedded subprocess', () => {
 
     describe('paint order', () => {
         /**
-         * SVG has no z-index — paint order IS stacking order. A container
+         * SVG has no z-index -- paint order IS stacking order. A container
          * painted after its children would cover them with its own
          * hit-testable rect and make the whole scope unclickable.
          */
         /**
          * The child is added FIRST on purpose. Adding the container
          * first would make document order alone produce the right
-         * answer, and the test would pass with the sort deleted —
+         * answer, and the test would pass with the sort deleted --
          * proving nothing. This ordering can only come out right if
          * `paintRank` actually reorders.
          */
@@ -242,7 +242,7 @@ describe('embedded subprocess', () => {
             editor.updateElementPosition('sub_1', { x: 300, y: 400 });
 
             const child = editor.state.elements.find((e) => e.id === 'task_1')!;
-            // Container moved +200/+300, so the child must too — otherwise
+            // Container moved +200/+300, so the child must too -- otherwise
             // the box slides off its own contents and leaves them behind.
             expect(child.position).toEqual({ x: 350, y: 450 });
         });
@@ -343,7 +343,7 @@ describe('embedded subprocess', () => {
             const model = bpmnLiteWireToModel(body);
             const child = model.elements.find((e) => e.id === 'sub.start')!;
             expect(child.parent).toBe('sub.review');
-            // Promoted, so it must NOT also linger in extras — a
+            // Promoted, so it must NOT also linger in extras -- a
             // double-write would emit it twice on save.
             expect(child.extras?.['parent']).toBeUndefined();
 
@@ -360,7 +360,7 @@ describe('embedded subprocess', () => {
                 elements: Array<Record<string, unknown>>;
             };
             const root = out.elements.find((e) => e['id'] === 'start.go')!;
-            // Absent, not `""` — an empty string would trip
+            // Absent, not `""` -- an empty string would trip
             // `WF.SCOPE_UNKNOWN_PARENT` at deploy.
             expect('parent' in root).toBe(false);
         });

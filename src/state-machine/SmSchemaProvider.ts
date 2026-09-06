@@ -7,16 +7,16 @@ import type { Translator } from '../i18n.js';
  * field descriptors the {@link StateMachinePropertyPanel} mounts for each
  * selection scope:
  *
- *  - **place** — `name` (the Symfony place name) + `initial` flag.
- *  - **transition** — `name` (the verb) + `from`/`to` place selects +
+ *  - **place** -- `name` (the Symfony place name) + `initial` flag.
+ *  - **transition** -- `name` (the verb) + `from`/`to` place selects +
  *    `guard` (a Symfony EL expression).
- *  - **workflow** (nothing selected) — `workflowName`, `markingProperty`,
+ *  - **workflow** (nothing selected) -- `workflowName`, `markingProperty`,
  *    `supports` (entity FQCNs), and the `auditTrail` toggle.
  *
  * The transition `from`/`to` selects are computed from the current place
  * list, so that schema is a method (not a constant). Reuses the
  * built-in field types verbatim (text / textarea / select / el-expression
- * / boolean) — no custom field renderer needed.
+ * / boolean) -- no custom field renderer needed.
  */
 export class SmSchemaProvider {
     private readonly t: Translator;

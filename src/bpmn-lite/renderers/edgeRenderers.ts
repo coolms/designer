@@ -80,7 +80,7 @@ function appendDefaultMarker(
     const dy = p1.y - p0.y;
     const len = Math.hypot(dx, dy);
     if (len === 0) return;
-    // Unit-perpendicular (rotate 90° CCW).
+    // Unit-perpendicular (rotate 90 deg CCW).
     const px = -dy / len;
     const py = dx / len;
     // Marker centered ~6 px along the segment past p0, total length 8 px.

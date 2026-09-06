@@ -1,5 +1,5 @@
 /**
- * Editor shell — the package's single public mount point.
+ * Editor shell -- the package's single public mount point.
  *
  * scope: composes the full chrome (toolbar + canvas + sidebar)
  * around the canvas substrate and graph model. The
@@ -9,10 +9,10 @@
  * **DOM structure**:
  *
  *   <div class="coolms-designer coolms-designer--{surface}">
- *     <Toolbar/>                                                    ← top bar (save/deploy/undo/redo/zoom)
+ *     <Toolbar/>                                                    <- top bar (save/deploy/undo/redo/zoom)
  *     <div class="coolms-designer__body">
- *       <svg class="coolms-designer__canvas">…</svg>                 ← Canvas substrate
- *       <aside class="coolms-designer__sidebar">…</aside>            ← Sidebar (palette + properties hosts)
+ *       <svg class="coolms-designer__canvas">...</svg>                 <- Canvas substrate
+ *       <aside class="coolms-designer__sidebar">...</aside>            <- Sidebar (palette + properties hosts)
  *     </div>
  *   </div>
  *
@@ -45,13 +45,13 @@ import type { Translator } from '../i18n.js';
  * authoring experience over the shared shell + canvas +
  * property-panel infrastructure.
  *
- * - `dmn-table` — DMN 1.3 decision-table editor.
+ * - `dmn-table` -- DMN 1.3 decision-table editor.
  *   Spreadsheet-style, does NOT use the SVG canvas (tables aren't graphs).
- * - `bpmn-lite` — BPMN-Lite process editor.
- *   Full canvas surface — palette, drag-drop, orthogonal routing.
- * - `dmn-drd` — DMN Decision Requirements Diagram.
+ * - `bpmn-lite` -- BPMN-Lite process editor.
+ *   Full canvas surface -- palette, drag-drop, orthogonal routing.
+ * - `dmn-drd` -- DMN Decision Requirements Diagram.
  *   Canvas surface; smaller element set than BPMN.
- * - `state-machine` — Symfony Workflow state-machine editor.
+ * - `state-machine` -- Symfony Workflow state-machine editor.
  *   Canvas surface with auto-layout (states are topologically ordered).
  *
  * Surfaces that don't exist yet still appear in the union so consumers
@@ -63,12 +63,12 @@ export type EditorSurface = 'dmn-table' | 'bpmn-lite' | 'dmn-drd' | 'state-machi
 /**
  * Change event emitted whenever the underlying model mutates. The exact
  * payload shape is owned by the model layer; the kind variants are:
- *  - 'init'     — fired synchronously on mount (revision=1)
- *  - 'mutation' — fired on Graph.onChange for ordinary mutations
- *  - 'reset'    — fired when Graph.clear() runs (load a different file)
+ *  - 'init'     -- fired synchronously on mount (revision=1)
+ *  - 'mutation' -- fired on Graph.onChange for ordinary mutations
+ *  - 'reset'    -- fired when Graph.clear() runs (load a different file)
  */
 export interface SurfaceChangeEvent {
-    /** Monotonic counter — useful for "did anything change since X" checks. */
+    /** Monotonic counter -- useful for "did anything change since X" checks. */
     readonly revision: number;
     /** Classifier matching the change semantics. */
     readonly kind: 'init' | 'mutation' | 'reset';
@@ -115,7 +115,7 @@ export interface EditorOptions {
     readonly t?: Translator;
 
     /**
-     * Notified on every model mutation. Cheap and synchronous — heavy
+     * Notified on every model mutation. Cheap and synchronous -- heavy
      * work (network calls, auto-save) should be debounced by the
      * consumer.
      */
@@ -123,7 +123,7 @@ export interface EditorOptions {
 
     /**
      * Save handler. If provided, the toolbar renders a Save button that
-     * dispatches this callback on click. Async — the button is disabled
+     * dispatches this callback on click. Async -- the button is disabled
      * + carries aria-busy while the returned promise is pending.
      *
      * Hidden in read-only mode regardless of whether this is provided.
@@ -188,7 +188,7 @@ export interface EditorOptions {
  * mutation + cross-reference plumbing. Production external code
  * should NOT depend on their stability.
  *
- * A second `destroy()` is a no-op, not an error — many framework
+ * A second `destroy()` is a no-op, not an error -- many framework
  * lifecycles fire teardown more than once (e.g. Angular `ngOnDestroy`
  * + hot-reload). Throwing here just creates noise.
  */
@@ -206,7 +206,7 @@ export interface Editor {
      */
     readonly t: Translator;
 
-    /** Monotonic revision counter — increments on every change event. */
+    /** Monotonic revision counter -- increments on every change event. */
     readonly revision: number;
 
     /**
@@ -372,7 +372,7 @@ export function createEditor(host: HTMLElement, options: EditorOptions): Editor 
     // host wires up afterwards cannot end up on different translators.
     const t = options.t ?? defaultTranslator;
 
-    // Root wrapper — one element to remove on destroy.
+    // Root wrapper -- one element to remove on destroy.
     const root = doc.createElement('div');
     root.classList.add('coolms-designer', `coolms-designer--${options.surface}`);
     if (options.readOnly === true) {
@@ -393,7 +393,7 @@ export function createEditor(host: HTMLElement, options: EditorOptions): Editor 
     body.classList.add('coolms-designer__body');
 
     // Read-only surfaces (e.g. the M4 cockpit instance diagram embedded in a
-    // scrollable page) must not trap plain-wheel scroll — disable wheel-pan
+    // scrollable page) must not trap plain-wheel scroll -- disable wheel-pan
     // there so the page scrolls; Ctrl/Cmd + wheel still zooms.
     const canvas = new Canvas(body, options.surface, {
         enableWheelPan: options.readOnly !== true,

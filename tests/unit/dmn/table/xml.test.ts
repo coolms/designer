@@ -219,7 +219,7 @@ describe('DMN XML serializer', () => {
          * The UI must distinguish a RECOVERABLE shape (a decision in a
          * requirements diagram that has no rules yet) from genuine
          * corruption, and it must do so WITHOUT string-matching the
-         * message — the wording is a UI detail. Before this code
+         * message -- the wording is a UI detail. Before this code
          * existed, a DRD opened in the table surface showed a red
          * "parse error" banner and the author had no way forward.
          */

@@ -43,7 +43,7 @@ type ScenarioFn = (host: HTMLElement) => void;
  */
 const SCENARIOS: Record<string, ScenarioFn> = {
     /**
-     * Bare-mount: empty 1×1 decision table starter from the
+     * Bare-mount: empty 1x1 decision table starter from the
      * package's `emptyDecisionTable()` factory. Pins the visual
      * baseline for fresh-mount geometry (toolbar position, table
      * header heights, default cell widths, scrollbar gutter).
@@ -57,7 +57,7 @@ const SCENARIOS: Record<string, ScenarioFn> = {
     },
 
     /**
-     * Populated 2-input × 1-output table with three rules. Pins
+     * Populated 2-input x 1-output table with three rules. Pins
      * cell rendering, value alignment, header label widths,
      * type-ref badge placement, and rule-numbering column.
      */
@@ -87,7 +87,7 @@ const SCENARIOS: Record<string, ScenarioFn> = {
         tableEditor.load(model);
     },
 
-    /* ───────────────────── BPMN-Lite scenarios ──────────────────────── */
+    /* --------------------- BPMN-Lite scenarios ------------------------ */
 
     /**
      * bare-mount BPMN-Lite editor: shell + canvas + palette

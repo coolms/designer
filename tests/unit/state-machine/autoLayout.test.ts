@@ -13,7 +13,7 @@ import type {
 } from '../../../src/state-machine/index.js';
 
 /**
- * auto-layout tests — columnar topological layering, the
+ * auto-layout tests -- columnar topological layering, the
  * all-or-nothing bail, cycle-aware back-edge skipping, converging-branch
  * alignment, dangling/self-loop tolerance, and the StateMachineEditor
  * wiring (auto-apply on load + the explicit re-arrange affordance).
@@ -47,7 +47,7 @@ describe('autoLayoutStateMachine', () => {
         );
         expect(out.get('draft')!.position.x).toBeLessThan(out.get('submitted')!.position.x);
         expect(out.get('submitted')!.position.x).toBeLessThan(out.get('approved')!.position.x);
-        // Linear chain — each place is alone in its column, so they share a row.
+        // Linear chain -- each place is alone in its column, so they share a row.
         expect(out.get('draft')!.position.y).toBe(out.get('submitted')!.position.y);
         expect(out.get('submitted')!.position.y).toBe(out.get('approved')!.position.y);
     });
@@ -63,13 +63,13 @@ describe('autoLayoutStateMachine', () => {
             [positioned, origin('submitted')],
             [t('submit', 'draft', 'submitted')],
         );
-        // Bail keeps EVERY position verbatim — even submitted's origin.
+        // Bail keeps EVERY position verbatim -- even submitted's origin.
         expect(out.find((p) => p.id === 'draft')!.position).toEqual({ x: 40, y: 40 });
         expect(out.find((p) => p.id === 'submitted')!.position).toEqual({ x: 0, y: 0 });
     });
 
     it('skips a re-open back-edge so the forward chain is not inflated', () => {
-        // draft → submitted → approved, plus approved → draft (re-open loop).
+        // draft -> submitted -> approved, plus approved -> draft (re-open loop).
         const out = byId(
             autoLayoutStateMachine(
                 [origin('draft', true), origin('submitted'), origin('approved')],
@@ -87,7 +87,7 @@ describe('autoLayoutStateMachine', () => {
     });
 
     it('aligns converging branches at the longest-path column', () => {
-        // draft → a, draft → b, a → done, b → done.
+        // draft -> a, draft -> b, a -> done, b -> done.
         const out = byId(
             autoLayoutStateMachine(
                 [origin('draft', true), origin('a'), origin('b'), origin('done')],
@@ -176,7 +176,7 @@ describe('StateMachineEditor auto-layout wiring', () => {
     });
 
     it('autoLayout() re-arranges positioned places + emits change', () => {
-        // A positioned model — load() respects it (bail), positions stay put.
+        // A positioned model -- load() respects it (bail), positions stay put.
         const positioned: StateMachineModel = {
             workflowName: 'wf',
             supports: [],
@@ -195,7 +195,7 @@ describe('StateMachineEditor auto-layout wiring', () => {
         editor.autoLayout();
 
         expect(emitted).toBe(1);
-        // a is the forward root → its column is left of b's.
+        // a is the forward root -> its column is left of b's.
         expect(editor.findPlace('a')!.position.x).toBeLessThan(editor.findPlace('b')!.position.x);
         editor.dispose();
     });

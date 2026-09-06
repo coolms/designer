@@ -21,12 +21,12 @@ import type { BpmnSequenceFlow } from './types.js';
  * revert must still know exactly which id to remove. Holding the
  * flow verbatim makes the inverse deterministic.
  *
- * **Label format**: `"Connect <sourceId> → <targetId>"` -- the
+ * **Label format**: `"Connect <sourceId> -> <targetId>"` -- the
  * arrow + endpoint ids carry the semantic in a way the
  * {@link CommandStack.nextUndoLabel} getter can surface in tooltips
- * ("Undo: Connect startEvent_1 → task_1"). The property panel may
+ * ("Undo: Connect startEvent_1 -> task_1"). The property panel may
  * later swap to element labels when those are available
- * (e.g. "Connect Start → Approve"), but the id form is unambiguous
+ * (e.g. "Connect Start -> Approve"), but the id form is unambiguous
  * + readable for now.
  */
 export class AddFlowCommand implements Command {

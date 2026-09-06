@@ -12,7 +12,7 @@ import {
  * Authoring a state machine FROM SCRATCH.
  *
  * The editor shipped rename / set-initial / property-edit / remove
- * but **no create path at all** — no `AddPlace`, no `AddTransition`, and
+ * but **no create path at all** -- no `AddPlace`, no `AddTransition`, and
  * a single `click` listener for selection. So a machine could be pruned
  * and re-pointed but never BUILT, while the blank canvas told the author
  * to "Add a place to start modelling your state machine". New machines
@@ -74,7 +74,7 @@ describe('state machine authoring (create path)', () => {
     });
 
     /**
-     * A `state_machine` must declare exactly ONE initial place —
+     * A `state_machine` must declare exactly ONE initial place --
      * `validate()` rejects a machine without it. Defaulting the first
      * place keeps a just-built machine deployable instead of failing
      * validation with an error the author has to decode.

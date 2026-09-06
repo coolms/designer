@@ -16,7 +16,7 @@ export interface DmnTableEditorOptions {
     readonly host: HTMLElement;
     /** Command stack -- typically `editor.commands` for unified undo/redo with the toolbar. */
     readonly commands: CommandStack;
-    /** Initial decision table. Defaults to an empty 1×1 starter. */
+    /** Initial decision table. Defaults to an empty 1x1 starter. */
     readonly initialModel?: DecisionTableModel;
 }
 

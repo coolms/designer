@@ -7,7 +7,7 @@ import {
 import type { BpmnElement } from '../../../src/bpmn-lite/index.js';
 
 /**
- * Build a task at (x, y) with the default 100×80 size.
+ * Build a task at (x, y) with the default 100x80 size.
  * Position is the top-left corner per BPMN convention.
  */
 function task(id: string, x: number, y: number): BpmnElement {
@@ -41,9 +41,9 @@ describe('computeOrthogonalRoute', () => {
             // F-7.3: leftward edges are routed via the row's bottom so they
             // don't overlap the forward flow that almost certainly runs
             // between source and target in the same row (a
-            // verification spine's `gw → task.enter_otp` retry-loop case). The
+            // verification spine's `gw -> task.enter_otp` retry-loop case). The
             // straight-through Z-route the pre-F-7.3 router emitted made the
-            // retry edge visually disappear under the forward `task → gw`
+            // retry edge visually disappear under the forward `task -> gw`
             // edge. The U-route lifts it out of the conflict.
             expect(route).toHaveLength(4);
             // Exit: source bottom-center.

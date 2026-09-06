@@ -27,7 +27,7 @@ export interface CanvasOptions {
     /**
      * Enable plain (un-modified) wheel-drag-to-pan. Default true. When false,
      * a plain wheel event is NOT consumed (no preventDefault) so it scrolls
-     * the surrounding page — Ctrl/Cmd + wheel still zooms. Disable for
+     * the surrounding page -- Ctrl/Cmd + wheel still zooms. Disable for
      * read-only diagrams embedded in a scrollable page (e.g. the M4 cockpit
      * instance view) so hovering the diagram doesn't trap page scroll.
      */
@@ -56,9 +56,9 @@ export interface CanvasOptions {
  *
  * DOM structure mounted under `parent`:
  *
- *   <svg class="coolms-designer__canvas">          ← pointer events captured here
- *     <rect class="coolms-designer__canvas-bg"/>   ← transparent hit target
- *     <g class="coolms-designer__viewport"/>       ← Viewport transforms apply here
+ *   <svg class="coolms-designer__canvas">          <- pointer events captured here
+ *     <rect class="coolms-designer__canvas-bg"/>   <- transparent hit target
+ *     <g class="coolms-designer__viewport"/>       <- Viewport transforms apply here
  *   </svg>
  *
  * Surface renderers (BPMN-Lite, DMN DRD, state machine) APPEND
@@ -205,7 +205,7 @@ export class Canvas {
                     //    the modifier here).
                     const isZoom = e.ctrlKey || e.raw.metaKey;
                     // When wheel-pan is disabled (read-only embedded diagram),
-                    // let a plain wheel scroll the surrounding page — do NOT
+                    // let a plain wheel scroll the surrounding page -- do NOT
                     // preventDefault. Ctrl/Cmd + wheel still zooms.
                     if (!isZoom && !opts.wheelPan) {
                         return;

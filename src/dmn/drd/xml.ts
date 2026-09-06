@@ -11,7 +11,7 @@ import type {
  * {@link DmnDrdModel}.
  *
  * Parallels the state-machine config serializer + the
- * decision-table {@link writeDmnXml} — but for the *graph* (Decision +
+ * decision-table {@link writeDmnXml} -- but for the *graph* (Decision +
  * InputData nodes joined by InformationRequirement edges) rather than a
  * single table body.
  *
@@ -38,25 +38,25 @@ import type {
  *  - An `<informationRequirement>` lives INSIDE the requiring `<decision>`
  *    (the edge's `to`); its child is `<requiredInput href="#src"/>` when
  *    the source is an InputData, `<requiredDecision href="#src"/>` when
- *    the source is a Decision. So `{from, to}` ⇒ an IR nested under the
+ *    the source is a Decision. So `{from, to}` => an IR nested under the
  *    `to` decision pointing at `#from`.
  *  - Node positions + sizes round-trip via the standard **DMNDI** diagram
  *    interchange (`<DMNShape>`/`<dc:Bounds>`). Edge waypoints are NOT
- *    emitted — the editor recomputes them from node geometry.
+ *    emitted -- the editor recomputes them from node geometry.
  *  - `decisionLogicRef` (the CoolMS link from a Decision to its
- *    decision-table key) rides as a plain `logicRef` attribute — a vendor
+ *    decision-table key) rides as a plain `logicRef` attribute -- a vendor
  *    extension standard DMN parsers ignore, lossless on our round-trip.
  *
  * **Read is lenient** (mirrors {@link readDmnXml}): walks by `localName`
  * so any namespace prefix (`dmn:`, `omg:`, default) parses; node geometry
- * absent ⇒ the element lands at the origin with a default size and the
+ * absent => the element lands at the origin with a default size and the
  * editor auto-lays-it-out on load.
  *
  * **Round-trip guarantee:** `readDrdXml(writeDrdXml(m))` yields a model
  * structurally equal to `m` (ids, names, kinds, positions, sizes,
  * requirements, decisionLogicRef preserved). Requirements that don't
  * target an existing decision (dangling / self / to-an-input) are dropped
- * — they aren't valid DMN.
+ * -- they aren't valid DMN.
  */
 
 const MODEL_NS = 'https://www.omg.org/spec/DMN/20191111/MODEL/';
@@ -176,7 +176,7 @@ export function readDrdXml(xml: string): DmnDrdModel {
     const root = doc.documentElement;
     const name = root.getAttribute('name') ?? root.getAttribute('id') ?? 'decision.unnamed';
 
-    // DMNDI geometry — keyed by dmnElementRef so nodes pick up their bounds.
+    // DMNDI geometry -- keyed by dmnElementRef so nodes pick up their bounds.
     const boundsByRef = new Map<string, ParsedBounds>();
     for (const shape of findAllByLocalName(root, 'DMNShape', { directOnly: false })) {
         const ref = shape.getAttribute('dmnElementRef');
@@ -234,7 +234,7 @@ export function readDrdXml(xml: string): DmnDrdModel {
     return { name, elements, requirements };
 }
 
-/** Build a {@link DmnDrdElement} from parsed pieces — geometry-or-default. */
+/** Build a {@link DmnDrdElement} from parsed pieces -- geometry-or-default. */
 function makeElement(
     id: string,
     kind: DmnDrdElementKind,

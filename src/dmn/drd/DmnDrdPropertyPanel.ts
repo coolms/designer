@@ -47,25 +47,25 @@ interface MountedField {
 }
 
 /**
- * DMN DRD property panel — the editing surface. Mounts
+ * DMN DRD property panel -- the editing surface. Mounts
  * field renderers based on the current {@link DrdSelection} and dispatches
  * single-property commands through the editor's {@link CommandStack} on
  * every field change. Three scopes:
  *
- *  - **element** selected → name (+ decision-logic ref for a Decision).
- *  - **requirement** selected → from / to endpoint selects.
- *  - **nothing** selected → the diagram scope (the definition key).
+ *  - **element** selected -> name (+ decision-logic ref for a Decision).
+ *  - **requirement** selected -> from / to endpoint selects.
+ *  - **nothing** selected -> the diagram scope (the definition key).
  *
  * Parallels {@link StateMachinePropertyPanel}: reuses the field
  * renderers + descriptor types verbatim; only the model-binding seam is
- * DRD-specific. Simpler than the state-machine panel — a DRD element's
+ * DRD-specific. Simpler than the state-machine panel -- a DRD element's
  * `id` is stable canvas identity (its `name` is a separate field), so an
  * element rename is a plain property update with no cascade or
  * re-selection.
  *
  * **Echo guard.** When the panel itself dispatches a command, the
  * resulting editor `change` event would otherwise prompt a `setValue` on
- * every mounted field — including the one the user just edited (cursor
+ * every mounted field -- including the one the user just edited (cursor
  * jump). A boolean `inFlight` flag short-circuits the refresh while a
  * panel-sourced command is executing.
  */
@@ -94,12 +94,12 @@ export class DmnDrdPropertyPanel {
         this.rebuild();
     }
 
-    /** Test affordance — the keys of the currently mounted fields, in mount order. */
+    /** Test affordance -- the keys of the currently mounted fields, in mount order. */
     get fieldKeys(): ReadonlyArray<string> {
         return this.mountedFields.map((f) => f.descriptor.key);
     }
 
-    /** Test affordance — the current panel scope. */
+    /** Test affordance -- the current panel scope. */
     get scope(): PanelScope {
         return this.scopeOf(this.editor.selection.target);
     }
@@ -274,14 +274,14 @@ export class DmnDrdPropertyPanel {
 
     private onEditorChange(): void {
         if (this.disposed) return;
-        // Echo: the panel sourced this change — leave the user's field alone.
+        // Echo: the panel sourced this change -- leave the user's field alone.
         if (this.inFlight) return;
 
         const target = this.editor.selection.target;
         const scope = this.scopeOf(target);
         const values = this.lookupValues(scope, target);
         if (values === null) {
-            // The selected element/requirement was deleted — drop to diagram scope.
+            // The selected element/requirement was deleted -- drop to diagram scope.
             this.editor.selection.clear();
             return;
         }

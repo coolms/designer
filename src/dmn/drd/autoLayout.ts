@@ -7,19 +7,19 @@ import type { DmnDrdElement, DmnInformationRequirement } from './types.js';
  * **The problem (the state-machine layout solves the same one).** A DMN model
  * deserialized from hand-authored / module-shipped XML may carry no
  * DMNDI diagram sidecar, so every node sits at the origin `{x: 0,
- * y: 0}` — one fuzzy pile in the top-left. This lays them out into
+ * y: 0}` -- one fuzzy pile in the top-left. This lays them out into
  * readable columns following the information-requirement edges.
  *
  * **The algorithm.** Identical cycle-aware longest-path layering to the
  * state-machine + BPMN-Lite layouts: classify back-edges via DFS
  * coloring, strip them, then BFS the forward-only DAG assigning each
  * node `column = max(current, source.column + 1)` so converging
- * dependencies align. Following requirement direction (`from` → `to` =
- * required → requiring), InputData + leaf decisions land in the left
+ * dependencies align. Following requirement direction (`from` -> `to` =
+ * required -> requiring), InputData + leaf decisions land in the left
  * columns and the top-level decision lands on the right.
  *
  * **DRDs are acyclic by spec** (a decision can't transitively require
- * itself), so the cycle-aware machinery rarely fires — but it's kept so
+ * itself), so the cycle-aware machinery rarely fires -- but it's kept so
  * a mid-edit model that momentarily forms a loop still lays out instead
  * of running away to the right.
  *
@@ -28,7 +28,7 @@ import type { DmnDrdElement, DmnInformationRequirement } from './types.js';
  * they neither create phantom columns nor crash the walk.
  *
  * **All-or-nothing.** If ANY node already sits off the origin, the
- * model is treated as already-positioned + returned untouched — we
+ * model is treated as already-positioned + returned untouched -- we
  * never clobber an author's manual placement.
  *
  * @returns the same array identity (spread copy) when no layout is
@@ -62,8 +62,8 @@ export function autoLayoutDmnDrd(
 }
 
 /**
- * Layout constants tuned for the default node boxes (Decision 168×72,
- * InputData 144×52). COL_WIDTH leaves room for the requirement arrow
+ * Layout constants tuned for the default node boxes (Decision 168x72,
+ * InputData 144x52). COL_WIDTH leaves room for the requirement arrow
  * between columns; ROW_HEIGHT keeps stacked siblings clear of each
  * other.
  */
@@ -80,7 +80,7 @@ function positionFor(col: number, row: number): { x: number; y: number } {
 }
 
 /**
- * Cycle-aware column assignment — the same shape as the state-machine
+ * Cycle-aware column assignment -- the same shape as the state-machine
  * `computeColumns`, narrowed to the DRD element/requirement model.
  *
  * Root = a node with no incoming forward requirement. Each successor's
@@ -148,7 +148,7 @@ function computeColumns(
 
 /**
  * DFS-coloring back-edge classifier (WHITE / GRAY / BLACK). An edge
- * (s, t) is a back-edge iff `t` is GRAY when reached from `s` — i.e. `t`
+ * (s, t) is a back-edge iff `t` is GRAY when reached from `s` -- i.e. `t`
  * is an ancestor of `s` on the recursion stack. Seeds from in-degree-0
  * nodes first (so input/leaf nodes become DFS roots), then sweeps any
  * remaining unvisited nodes. Iterative to survive deep graphs.
@@ -240,7 +240,7 @@ function computeInDegree(
 
 /**
  * Build the forward adjacency from requirements. Only edges between two
- * KNOWN nodes are kept — dangling endpoints (mid-edit) and
+ * KNOWN nodes are kept -- dangling endpoints (mid-edit) and
  * self-references are dropped here so the graph stays clean.
  */
 function buildAdjacency(

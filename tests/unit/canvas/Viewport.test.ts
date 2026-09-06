@@ -171,8 +171,8 @@ describe('Viewport', () => {
 
     describe('fitToContent (F-7.4)', () => {
         it('centers the bbox in the canvas with padding-driven zoom', () => {
-            // Content bbox 200×100 (left 100, top 200, right 300, bottom 300).
-            // Canvas 1000×800. Padding 10% → available 800×640.
+            // Content bbox 200x100 (left 100, top 200, right 300, bottom 300).
+            // Canvas 1000x800. Padding 10% -> available 800x640.
             // Target zoom = min(800/200, 640/100) = min(4, 6.4) = 4.
             // Bbox center = (200, 250). Canvas center = (500, 400).
             // Pan = (500 - 200*4, 400 - 250*4) = (-300, -600).
@@ -188,7 +188,7 @@ describe('Viewport', () => {
         });
 
         it('clamps target zoom against maxZoom', () => {
-            // Tiny bbox 10×10 in a huge canvas → raw target zoom would be
+            // Tiny bbox 10x10 in a huge canvas -> raw target zoom would be
             // way past the default maxZoom of 10. Should clamp.
             viewport.fitToContent(
                 { left: 0, top: 0, right: 10, bottom: 10 },
@@ -198,7 +198,7 @@ describe('Viewport', () => {
         });
 
         it('clamps target zoom against minZoom for an oversized model', () => {
-            // Huge model in tiny canvas → raw target zoom would be way
+            // Huge model in tiny canvas -> raw target zoom would be way
             // below the default minZoom of 0.1. Should clamp + still
             // center the (partially-clipped) bbox.
             viewport.fitToContent(

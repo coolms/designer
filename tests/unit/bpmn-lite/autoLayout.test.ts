@@ -137,7 +137,7 @@ describe('autoLayoutBpmnLite', () => {
         // enter_otp then had to traverse the whole row, passing
         // visually THROUGH the intermediate `verify` task. The user
         // surfaced this as "Send OTP email and Verify OTP connected
-        // with just line without arrow" — the arrowhead was at
+        // with just line without arrow" -- the arrowhead was at
         // enter_otp (far right), but the line passed through verify
         // so it LOOKED like sendCode had a no-arrow connection to
         // verify.

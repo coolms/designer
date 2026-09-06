@@ -4,7 +4,7 @@
  * the `state-machine` editor module stays decoupled from `bpmn-lite`
  * (each editor owns its renderer layer; only the canvas/model/shell
  * substrate is shared). See the bpmn-lite copy for why the renderers
- * always use `createElementNS(SVG_NS, …)` rather than `createElement`.
+ * always use `createElementNS(SVG_NS, ...)` rather than `createElement`.
  */
 export const SVG_NS = 'http://www.w3.org/2000/svg';
 

@@ -1,5 +1,5 @@
 /**
- * State Machine Designer — internal module.
+ * State Machine Designer -- internal module.
  *
  * NOT re-exported from the package root: the public surface is
  * `createEditor({surface: 'state-machine'})`, parallel to the other

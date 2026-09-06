@@ -243,8 +243,8 @@ export class BpmnLiteEditor {
      * stack via an {@link AddElementCommand} so the toolbar's
      * undo/redo buttons can revert the drop.
      *
-     * **Coordinate translation**: page coords → canvas-SVG-local
-     * coords via `svg.getBoundingClientRect()` subtraction →
+     * **Coordinate translation**: page coords -> canvas-SVG-local
+     * coords via `svg.getBoundingClientRect()` subtraction ->
      * world coords via the canvas-group's `transform` attribute
      * (which the `Viewport` sets as
      * `translate(panX panY) scale(zoom)`). If the transform is
@@ -308,7 +308,7 @@ export class BpmnLiteEditor {
         /**
          * Scope capture: an element dropped inside a subprocess's rect
          * joins that scope. This is the ONLY way `parent` gets authored
-         * — there is no "set parent" field in the property panel — so
+         * -- there is no "set parent" field in the property panel -- so
          * the gesture has to be the obvious one (drop it in the box).
          *
          * A boundary event is excluded: it docks to an activity's EDGE
@@ -397,7 +397,7 @@ export class BpmnLiteEditor {
      * (see {@link paintRank}), so "last painted" is the OUTER box and a
      * plain reverse scan would put a drop into the wrong scope whenever
      * subprocesses are nested. Deepest-nesting is the unambiguous
-     * answer, and it matches what the author sees — the smallest box
+     * answer, and it matches what the author sees -- the smallest box
      * their cursor is inside.
      */
     containerAtWorldPoint(point: BpmnPosition): BpmnElement | null {
@@ -700,7 +700,7 @@ export class BpmnLiteEditor {
      *
      * A subprocess's children are ordinary elements whose geometry
      * merely happens to sit inside the box, so nothing moves them for
-     * free — without this, dragging a scope would slide the container
+     * free -- without this, dragging a scope would slide the container
      * off its own contents and leave them behind at the old position,
      * still `parent`-ed to it. Recursive so a nested scope's grandchildren
      * come too, and it reuses `updateElementPosition` per child, which
@@ -927,7 +927,7 @@ export class BpmnLiteEditor {
 
     /**
      * the resolved waypoint chain for the flow with the
-     * given id. Returns manual waypoints (≥2 entries) verbatim;
+     * given id. Returns manual waypoints (>=2 entries) verbatim;
      * falls back to {@link computeOrthogonalRoute} otherwise. Returns
      * `null` if the flow is missing OR its source/target refs are
      * dangling. Used by {@link WaypointDragController} to read the
@@ -1132,7 +1132,7 @@ export class BpmnLiteEditor {
      * selection with a `--selected` modifier class so CSS can light
      * it up. Clears the class from any other element / flow group.
      * Cheap full sweep over painted children -- with typical
-     * diagrams (≤200 elements + flows) this is well below 1ms.
+     * diagrams (<=200 elements + flows) this is well below 1ms.
      *
      * Called from {@link repaint} (so selection survives a load /
      * undo / redo) AND from the selection.onChange subscription (so
@@ -1214,8 +1214,8 @@ export class BpmnLiteEditor {
      * **Containers paint FIRST.** SVG has no z-index; paint order IS
      * stacking order, so a subprocess dropped after its children would
      * cover them with its own (hit-testable) rect and make everything
-     * inside unclickable. Sorting by scope DEPTH — outermost container,
-     * then nested containers, then leaves — also gets nested scopes
+     * inside unclickable. Sorting by scope DEPTH -- outermost container,
+     * then nested containers, then leaves -- also gets nested scopes
      * right without a second rule.
      *
      * The sort is stable within a depth, so authoring order is

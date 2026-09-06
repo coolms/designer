@@ -156,7 +156,7 @@ describe('Toolbar', () => {
                 expect(btn.getAttribute('aria-label')).not.toBe('');
             }
 
-            // zoom-reset stays as a text display — no bi-* icon.
+            // zoom-reset stays as a text display -- no bi-* icon.
             const reset = button('zoom-reset')!;
             expect(reset.querySelector('i.bi')).toBeNull();
             expect(

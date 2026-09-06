@@ -12,10 +12,10 @@ import type {
  * default geometry + labels for the palette.
  *
  * Per BPMN modeler convention:
- *  - Events (start/end + future intermediate/boundary): 36×36, the
+ *  - Events (start/end + future intermediate/boundary): 36x36, the
  *    "small icon" sizing.
- *  - Tasks: 100×80, gives room for an inside label.
- *  - Gateways (exclusive/parallel): 50×50, the canonical diamond.
+ *  - Tasks: 100x80, gives room for an inside label.
+ *  - Gateways (exclusive/parallel): 50x50, the canonical diamond.
  *
  * Default labels: the kind name in title case, so the user can see
  * "what" they just dropped without immediately editing the label.
@@ -91,7 +91,7 @@ export const EVENT_SUBTYPE_LABELS: Record<BpmnEventSubtype, string> = {
 
 /**
  * The ordered list of element kinds the palette ships with.
- * Order matches BPMN modeler conventions: events first (start →
+ * Order matches BPMN modeler conventions: events first (start ->
  * end), then activity, then gateways.
  *
  * **Superseded by {@link PALETTE_ITEMS}** now that typed events need a
@@ -127,7 +127,7 @@ export interface PaletteItem {
      * Task flavour for the activity tiles (`userTask` / `serviceTask`).
      *
      * **Why the tiles are typed rather than one generic "Task"**: the
-     * engine's `ElementKind` enum has **no plain `task` case** — only
+     * engine's `ElementKind` enum has **no plain `task` case** -- only
      * `userTask` and `serviceTask`, with no `TaskAst` behind it, and
      * `"type": "task"` appears nowhere in its corpus. So the old generic
      * tile emitted a body that failed the parser outright with
@@ -139,8 +139,8 @@ export interface PaletteItem {
 }
 
 /**
- * The ordered palette. BPMN modeler convention: events (start →
- * intermediate catch family → end), then activity, then gateways.
+ * The ordered palette. BPMN modeler convention: events (start ->
+ * intermediate catch family -> end), then activity, then gateways.
  */
 export const PALETTE_ITEMS: readonly PaletteItem[] = [
     { kind: 'startEvent' },
@@ -251,7 +251,7 @@ export function gatewayCarriesDirection(kind: BpmnElementKind): boolean {
  * would show "no direction" over an element the engine reads as
  * diverging. Authors then see a field that looks unset but isn't.
  *
- * ⚠️ Unlike `interrupting`, this one is also ALWAYS EMITTED on save.
+ * !! Unlike `interrupting`, this one is also ALWAYS EMITTED on save.
  * The parser defaults a missing `direction` to diverging but calls that
  * "a safe lie" and leaves `GatewayDegreeRule` to report the real
  * problem -- i.e. the engine wants it author-declared. Omitting a

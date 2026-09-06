@@ -6,7 +6,7 @@ import type { BpmnElement, BpmnPosition } from '../types.js';
  * are set.
  *
  * **Algorithm: orthogonal Z-route**. Pick the dominant axis between
- * source + target centers (`abs(dx) >= abs(dy)` → horizontal; else
+ * source + target centers (`abs(dx) >= abs(dy)` -> horizontal; else
  * vertical). Exit the source on the edge facing the target + enter
  * the target on the opposite edge. Insert two intermediate waypoints
  * at the half-way point on the dominant axis to produce a single
@@ -70,7 +70,7 @@ function bbox(element: BpmnElement): Bbox {
 /**
  * Vertical clearance below the lower of source / target bottoms
  * when routing a backward edge via the U-route below the row. Hand-
- * picked to look right for the default 100×80 task + ~80px
+ * picked to look right for the default 100x80 task + ~80px
  * task-row gutters; lifts the corridor a hair below the row so the
  * backward edge doesn't kiss any forward flow's bottom waypoint.
  */
@@ -85,15 +85,15 @@ const BACKWARD_EDGE_DROP_PADDING_PX = 40;
  * **F-7.3 backward-edge handling**: when the dominant axis is
  * horizontal AND the target sits to the LEFT of the source
  * (dx < 0), the algorithm routes the edge via the BOTTOM of the row
- * — exit source-bottom, drop below `max(s.bottom, t.bottom) +
+ * -- exit source-bottom, drop below `max(s.bottom, t.bottom) +
  * {@link BACKWARD_EDGE_DROP_PADDING_PX}`, travel left under the row,
  * climb back up into target-bottom. The waypoint chain becomes a
  * U-shape rather than a straight-through Z. This avoids overlapping
  * the forward flow that almost certainly lives between source and
- * target in the same row (a verification spine's `gw →
+ * target in the same row (a verification spine's `gw ->
  * task.enter_otp` retry loop was the surfacing case: the auto-router's
  * pre-F-7.3 straight-Z route ran the retry edge directly through the
- * forward `task → gw` flow, making the loop visually unreadable). The
+ * forward `task -> gw` flow, making the loop visually unreadable). The
  * heuristic is "leftward edge = feedback loop"; legitimate left-arrow
  * flows (rare in BPMN; usually a cancellation or compensation pattern)
  * can opt out by setting manual waypoints via the

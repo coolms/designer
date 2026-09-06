@@ -7,13 +7,13 @@ import type { SmPlace, SmTransition, StateMachineModel } from './types.js';
  * Converts the designer's {@link StateMachineModel} to/from the
  * `framework.workflows.{name}` config shape Symfony's Workflow
  * component consumes. The canonical, dependency-free round-trip is
- * **model ↔ config object** (a plain JSON-serializable structure);
+ * **model <-> config object** (a plain JSON-serializable structure);
  * the deployed YAML file is emitted server-side by Symfony's Yaml
  * component so escaping stays canonical. A small
  * {@link stateMachineModelToYaml} preview emitter is provided for the
- * designer's live YAML pane — it is **preview-grade**, not the deploy path.
+ * designer's live YAML pane -- it is **preview-grade**, not the deploy path.
  *
- * **The key transform — coalesce edges by transition name.** The model
+ * **The key transform -- coalesce edges by transition name.** The model
  * holds one {@link SmTransition} per drawn edge (single `from`, single
  * `to`). Symfony groups transitions by NAME: a `cancel` reachable from
  * `draft`, `submitted`, AND `approved` is ONE transition with
@@ -23,13 +23,13 @@ import type { SmPlace, SmTransition, StateMachineModel } from './types.js';
  * (many). The reverse expands a list `from` back into one edge per source.
  */
 
-/** Symfony `marking_store` config — always `method` (the subject owns its `status`). */
+/** Symfony `marking_store` config -- always `method` (the subject owns its `status`). */
 export interface WorkflowMarkingStore {
     readonly type: 'method';
     readonly property: string;
 }
 
-/** One Symfony Workflow transition (coalesced — `from` may fan in from many places). */
+/** One Symfony Workflow transition (coalesced -- `from` may fan in from many places). */
 export interface WorkflowTransitionConfig {
     readonly from: string | string[];
     readonly to: string;
@@ -44,7 +44,7 @@ export interface StateMachineWorkflowConfig {
     readonly initial_marking?: string;
     readonly places: string[];
     readonly transitions: Record<string, WorkflowTransitionConfig>;
-    /** Symfony `audit_trail` — emitted only when the model flags it enabled. */
+    /** Symfony `audit_trail` -- emitted only when the model flags it enabled. */
     readonly audit_trail?: { readonly enabled: boolean };
 }
 
@@ -60,7 +60,7 @@ export interface FrameworkWorkflowsConfig {
  * Places keep their declared order; transitions coalesce by name in
  * first-appearance order. Self-transitions and dangling endpoints are
  * preserved verbatim (a transition references whatever place names it
- * holds — the validator / Symfony compiler surface bad refs on
+ * holds -- the validator / Symfony compiler surface bad refs on
  * deploy, not here).
  */
 export function stateMachineModelToConfig(
@@ -162,7 +162,7 @@ function coalesceTransitions(
 /**
  * Deserialize a Symfony `framework.workflows.{name}` body back into a
  * {@link StateMachineModel}. Places come back at the origin with the
- * default size (the config carries no diagram geometry) — the
+ * default size (the config carries no diagram geometry) -- the
  * StateMachineEditor's load path runs auto-layout to position
  * them. A list `from` expands into one {@link SmTransition} per source,
  * id `{name}__{from}`; a single `from` keeps id `{name}`.
@@ -217,9 +217,9 @@ export function frameworkConfigToStateMachineModel(
     return stateMachineConfigToModel(first[0], first[1]);
 }
 
-// ─── Preview-grade YAML emitter ─────────────────────────────────────────
+// --- Preview-grade YAML emitter -----------------------------------------
 // Dependency-free, tuned for the constrained state_machine config shape.
-// NOT the deploy path — the backend emits canonical YAML via Symfony Yaml.
+// NOT the deploy path -- the backend emits canonical YAML via Symfony Yaml.
 
 const INDENT = '    ';
 

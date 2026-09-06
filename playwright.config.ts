@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
  * Playwright config for `@coolms/designer` visual regression.
  *
  * **Scope**: a small, deterministic set of mount scenarios for the
- * DMN table editor — empty mount + populated table — pin
+ * DMN table editor -- empty mount + populated table -- pin
  * the rendered pixel output against committed goldens. The aim is to
  * catch unintended UI drift in the canvas substrate, shell
  * chrome, property-panel layout, or table view

@@ -20,7 +20,7 @@
 export interface FieldDescriptorBase {
     /** Property key under `element.properties` this field reads + writes. */
     readonly key: string;
-    /** Field type discriminator — looked up against the {@link FieldRegistry}. */
+    /** Field type discriminator -- looked up against the {@link FieldRegistry}. */
     readonly type: string;
     /** Human-readable label rendered above the input. */
     readonly label: string;
@@ -65,7 +65,7 @@ export interface SelectFieldDescriptor extends FieldDescriptorBase {
      */
     readonly xrefScope?: string;
     /**
-     * Whether the empty/null value is allowed (rendered as an "—" option).
+     * Whether the empty/null value is allowed (rendered as an "--" option).
      * Default `true`. Set false for required selects so the user MUST pick
      * one of the listed options.
      */

@@ -15,12 +15,12 @@ import type {
  *
  * Simpler than the state-machine commands: a DRD element's `id` is
  * stable canvas identity (its `name` is a separate field), so there's no
- * rename-and-cascade command — editing `name` is a plain property update.
+ * rename-and-cascade command -- editing `name` is a plain property update.
  */
 
 /**
  * Editable element property keys the panel surfaces. `id`/`kind` are
- * deliberately absent — `id` is stable canvas identity (referenced by
+ * deliberately absent -- `id` is stable canvas identity (referenced by
  * requirement edges) and `kind` is fixed by how the node was created.
  */
 export type EditableElementPropertyKey = 'name' | 'decisionLogicRef';
@@ -34,7 +34,7 @@ export type EditableDiagramPropertyKey = 'name';
 /**
  * Update one editable property on an element (`name` / `decisionLogicRef`).
  * Captures the previous value at construction so revert round-trips
- * exactly — including `decisionLogicRef` going back to `undefined` (the
+ * exactly -- including `decisionLogicRef` going back to `undefined` (the
  * editor drops a blank ref).
  */
 export class UpdateElementPropertyCommand implements Command {
@@ -62,7 +62,7 @@ export class UpdateElementPropertyCommand implements Command {
         this.editor.updateElementProperty(this.elementId, this.propertyKey, this.previousValue);
     }
 
-    /** Test affordance — the element id this command targets. */
+    /** Test affordance -- the element id this command targets. */
     get targetId(): string {
         return this.elementId;
     }
@@ -97,7 +97,7 @@ export class UpdateRequirementPropertyCommand implements Command {
         this.editor.updateRequirementProperty(this.requirementId, this.propertyKey, this.previousValue);
     }
 
-    /** Test affordance — the requirement id this command targets. */
+    /** Test affordance -- the requirement id this command targets. */
     get targetId(): string {
         return this.requirementId;
     }
@@ -133,14 +133,14 @@ export class UpdateDiagramPropertyCommand implements Command {
 }
 
 /**
- * Structural editing commands — add / remove / move a
+ * Structural editing commands -- add / remove / move a
  * node, add / remove a requirement edge. These back the (future) palette,
  * connect-mode, drag, and delete-key affordances; each is a single undo
  * step. A {@link RemoveElementCommand} snapshots the node's incident
  * requirements so undo restores the whole sub-graph, not just the box.
  */
 
-/** Add a node. Reverts by removing it (which also drops any edges it gained — none on a fresh add). */
+/** Add a node. Reverts by removing it (which also drops any edges it gained -- none on a fresh add). */
 export class AddElementCommand implements Command {
     readonly label: string;
 
@@ -225,7 +225,7 @@ export class MoveElementCommand implements Command {
         }
     }
 
-    /** Test affordance — the element id this command targets. */
+    /** Test affordance -- the element id this command targets. */
     get targetId(): string {
         return this.elementId;
     }

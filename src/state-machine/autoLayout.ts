@@ -6,10 +6,10 @@ import type { SmPlace, SmTransition } from './types.js';
  * without diagram geometry.
  *
  * **The problem (the BPMN-Lite layout solves the same one).** A Symfony Workflow
- * `state_machine` config carries only semantics — `places: [...]` +
+ * `state_machine` config carries only semantics -- `places: [...]` +
  * `transitions: {name: {from, to}}`. There is no diagram sidecar, so a
  * model deserialized from a hand-authored / module-shipped workflow YAML
- * (the path) has every place at the origin `{x: 0, y: 0}` — one
+ * (the path) has every place at the origin `{x: 0, y: 0}` -- one
  * fuzzy pile in the top-left. This lays them out into readable columns.
  *
  * **The algorithm.** Identical cycle-aware longest-path layering to the
@@ -17,8 +17,8 @@ import type { SmPlace, SmTransition } from './types.js';
  * coloring, strip them, then BFS the forward-only DAG assigning each
  * place `column = max(current, source.column + 1)` so converging
  * branches align. Places cascade left-to-right by depth; siblings stack
- * vertically. This matters more for state machines than for BPMN — a
- * lifecycle like `draft → submitted → approved` with a `rejected →
+ * vertically. This matters more for state machines than for BPMN -- a
+ * lifecycle like `draft -> submitted -> approved` with a `rejected ->
  * draft` re-open edge is a cycle, and without the back-edge skip the
  * re-open edge would shove `draft` to the far right.
  *
@@ -26,13 +26,13 @@ import type { SmPlace, SmTransition } from './types.js';
  * same state) are back-edges by definition and contribute nothing to
  * column assignment.
  *
- * **Dangling transitions** (a `from`/`to` naming no existing place — the
+ * **Dangling transitions** (a `from`/`to` naming no existing place -- the
  * model may be mid-edit) are ignored when building the graph; they
  * neither create phantom columns nor crash the walk.
  *
  * **All-or-nothing, like BPMN.** If ANY place already sits off the
  * origin, the model is treated as already-positioned + returned
- * untouched — we never clobber an author's manual placement.
+ * untouched -- we never clobber an author's manual placement.
  *
  * @returns the same array identity (spread copy) when no layout is
  *          applied; a new array of repositioned places when it fires.
@@ -44,7 +44,7 @@ export function autoLayoutStateMachine(
     if (places.length === 0) {
         return [...places];
     }
-    // Bail out if ANY place is already positioned — respect an existing
+    // Bail out if ANY place is already positioned -- respect an existing
     // diagram. The deserialized default is exactly `{x: 0, y: 0}`.
     const anyPositioned = places.some(
         (p) => p.position.x !== 0 || p.position.y !== 0,
@@ -71,7 +71,7 @@ export function autoLayoutStateMachine(
 
 /**
  * Layout constants tuned for the {@link DEFAULT_PLACE_SIZE} place box
- * (132 × 48). COL_WIDTH leaves room for the transition arrow + its name
+ * (132 x 48). COL_WIDTH leaves room for the transition arrow + its name
  * label between columns; ROW_HEIGHT keeps stacked siblings clear of each
  * other's labels. MARGIN_X is generous so the initial-state entry marker
  * (which paints ~18px LEFT of the first column's place box) stays on-canvas.
@@ -92,7 +92,7 @@ function positionFor(col: number, row: number): { x: number; y: number } {
 }
 
 /**
- * Cycle-aware column assignment — the same shape as the BPMN-Lite
+ * Cycle-aware column assignment -- the same shape as the BPMN-Lite
  * `computeColumns`, narrowed to the place/transition model.
  *
  * Root = a place with no incoming forward transition. Each successor's
@@ -161,7 +161,7 @@ function computeColumns(
 
 /**
  * DFS-coloring back-edge classifier (WHITE / GRAY / BLACK). An edge
- * (s, t) is a back-edge iff `t` is GRAY when reached from `s` — i.e. `t`
+ * (s, t) is a back-edge iff `t` is GRAY when reached from `s` -- i.e. `t`
  * is an ancestor of `s` on the recursion stack, so the edge closes a
  * cycle. Seeds from in-degree-0 places first (so lifecycle entry states
  * become DFS roots + re-open edges become back-edges), then sweeps any
@@ -254,7 +254,7 @@ function computeInDegree(
 
 /**
  * Build the forward adjacency from transitions. Only edges between two
- * KNOWN places are kept — dangling endpoints (mid-edit) and self-loops
+ * KNOWN places are kept -- dangling endpoints (mid-edit) and self-loops
  * are dropped here (a self-loop would otherwise register as its own
  * back-edge, which is harmless, but skipping it keeps the graph clean).
  */

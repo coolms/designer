@@ -23,7 +23,7 @@ export interface ToJsonOptions {
  * The BPMN-Lite editor's wire-format serializer. Projects the
  * editor's internal {@link BpmnLiteModel} onto the engine's
  * BPMN-Lite parser JSON shape, so the round-trip
- *   editor → draft storage → deployer → parser → engine
+ *   editor -> draft storage -> deployer -> parser -> engine
  * has no translation layer at any seam.
  *
  * **Wire shape**:
@@ -76,7 +76,7 @@ export interface ToJsonOptions {
  *     mutators + paint loops. `toJson` interleaves elements first,
  *     then flows (the engine parser is order-agnostic on the wire).
  *     `fromJson` buckets them back out.
- *  2. **`isDefault` ⇄ `default` migration** -- the editor's flow
+ *  2. **`isDefault` <-> `default` migration** -- the editor's flow
  *     model carries `isDefault: true` on the flow itself. The wire
  *     shape puts `default: <flowId>` on the SOURCE element (the
  *     gateway). `toJson` scans flows with `isDefault === true` +
@@ -166,7 +166,7 @@ export function bpmnLiteModelToWire(
 
     for (const element of model.elements) {
         /**
-         * **Task-variant ⇄ wire-type encoding**.
+         * **Task-variant <-> wire-type encoding**.
          *
          * The engine's BPMN-Lite parser dispatches the task family on
          * the full wire `type` string (`userTask`, `serviceTask`,
@@ -248,7 +248,7 @@ export function bpmnLiteModelToWire(
         if (element.message !== undefined && element.message.name !== '') {
             out['message'] = {
                 name: element.message.name,
-                // ⚠️ wire key is `correlation`, NOT `correlationKey`.
+                // !! wire key is `correlation`, NOT `correlationKey`.
                 ...(element.message.correlation !== undefined &&
                 element.message.correlation !== ''
                     ? { correlation: element.message.correlation }
@@ -298,7 +298,7 @@ export function bpmnLiteModelToWire(
         /**
          * Scope membership. Absent means the root scope, and the engine
          * treats a missing `parent` exactly that way, so an empty value
-         * is omitted rather than written as `""` — which
+         * is omitted rather than written as `""` -- which
          * `SubProcessScopeRule` would then reject as an unknown parent.
          */
         if (element.parent !== undefined && element.parent !== '') {
@@ -415,7 +415,7 @@ const RESERVED_ELEMENT_KEYS = new Set([
 ]);
 
 /**
- * ⚠️ `subtype` / `timer` / `message` / `signal` / `condition` are
+ * !! `subtype` / `timer` / `message` / `signal` / `condition` are
  * deliberately NOT reserved here.
  *
  * Reserving a key strips it from `extras` on the way out. For an

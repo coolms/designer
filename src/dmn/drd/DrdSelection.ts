@@ -1,7 +1,7 @@
 import { Emitter } from '../../internal/Emitter.js';
 
 /**
- * What's currently selected in the DMN DRD editor — an element (a
+ * What's currently selected in the DMN DRD editor -- an element (a
  * Decision or InputData node) or a requirement (an arrow). `null` means
  * "nothing selected", which the future property panel treats as the
  * **diagram scope** (it surfaces the DRG-level fields: name / extras).
@@ -17,7 +17,7 @@ interface DrdSelectionEvents extends Record<string, unknown> {
 }
 
 /**
- * Per-editor selection state — the single source of truth for "what is
+ * Per-editor selection state -- the single source of truth for "what is
  * the user focused on" within one DRD editor instance. `select(null)`
  * is the explicit clear path; the editor clears selection on
  * `load(model)` so a fresh model keeps no stale references.
@@ -52,7 +52,7 @@ export class DrdSelection {
         this.emitter.emit('change', target);
     }
 
-    /** Clear the selection — shorthand for `select(null)` (diagram scope). */
+    /** Clear the selection -- shorthand for `select(null)` (diagram scope). */
     clear(): void {
         this.select(null);
     }

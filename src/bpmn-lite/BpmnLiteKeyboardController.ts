@@ -11,10 +11,10 @@ import { DeleteFlowCommand } from './DeleteFlowCommand.js';
 export interface BpmnLiteKeyboardControllerOptions {
     /** The editor whose selection / command stack the controller drives. */
     readonly editor: BpmnLiteEditor;
-    /** The shared command stack — same one the toolbar's undo/redo wires through. */
+    /** The shared command stack -- same one the toolbar's undo/redo wires through. */
     readonly commands: CommandStack;
     /**
-     * The viewport for arrow-key pan + +/-/0 zoom hotkeys. Optional —
+     * The viewport for arrow-key pan + +/-/0 zoom hotkeys. Optional --
      * omitting it disables the F-5 navigation bindings while keeping
      * F-4's Delete/Backspace bindings live. Useful for tests +
      * read-only mounts that don't want keyboard nav.
@@ -36,7 +36,7 @@ export interface BpmnLiteKeyboardControllerOptions {
      * Read-only mode. When true, Delete / Backspace
      * become no-ops; arrow-key pan + +/-/0 zoom hotkeys still work
      * (viewing a read-only diagram still benefits from navigation).
-     * Mirrors the shell Toolbar's `readOnly` flag — same intent.
+     * Mirrors the shell Toolbar's `readOnly` flag -- same intent.
      */
     readonly readOnly?: boolean;
     /**
@@ -47,19 +47,19 @@ export interface BpmnLiteKeyboardControllerOptions {
 }
 
 /**
- * polish-bundle (F-4) — listens for document-level keydown
+ * polish-bundle (F-4) -- listens for document-level keydown
  * events and dispatches the matching command for the current
  * selection.
  *
  * **Bindings** (the minimum viable set; future ships extend):
- *  - `Delete` / `Backspace` → if a flow is selected, dispatch a
+ *  - `Delete` / `Backspace` -> if a flow is selected, dispatch a
  *    {@link DeleteFlowCommand}; if an element is selected, dispatch
  *    a {@link DeleteElementCommand} (which cascades incident flows).
  *    No-op when nothing is selected.
  *
  * **Why document-level, not canvas-SVG-level**: when the user
  * clicks on an element, the SVG group captures focus only briefly
- * — once the pointer moves anywhere outside the SVG, the canvas
+ * -- once the pointer moves anywhere outside the SVG, the canvas
  * isn't the focused element anymore and SVG keydown listeners
  * don't fire. The document-level listener fires regardless of
  * focus location. The trade-off is we have to ignore keystrokes
@@ -125,7 +125,7 @@ export class BpmnLiteKeyboardController {
         if (this.disposed) return;
         if (isEditableTarget(ev.target)) return;
 
-        // F-4 delete bindings — Delete / Backspace on selected
+        // F-4 delete bindings -- Delete / Backspace on selected
         // element/flow. Suppressed in read-only (F-5) mode so the
         // canvas behaves like a viewer the user can navigate but
         // not edit.
@@ -175,7 +175,7 @@ export class BpmnLiteKeyboardController {
             return;
         }
 
-        // Zoom hotkeys — matches the Figma / draw.io / VSCode
+        // Zoom hotkeys -- matches the Figma / draw.io / VSCode
         // editor convention. '+' (with Shift) and '=' (without
         // Shift) both zoom in so the user doesn't need to think
         // about whether to press Shift. '0' resets to 100%.
@@ -225,7 +225,7 @@ export class BpmnLiteKeyboardController {
  * the user is editing text. Lets `Delete` / `Backspace` reach the
  * input naturally instead of nuking the canvas selection.
  *
- * Exported for testability — DOM helpers like this are easier to
+ * Exported for testability -- DOM helpers like this are easier to
  * test in isolation than via a full keyboard-controller mount.
  */
 export function isEditableTarget(target: EventTarget | null): boolean {

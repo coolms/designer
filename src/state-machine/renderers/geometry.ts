@@ -6,7 +6,7 @@ import type { SmPlace, SmPosition } from '../types.js';
  * State machines render as a directed graph of place rectangles joined
  * by transition arrows. Unlike the BPMN editor (which uses an
  * orthogonal Z-router), transitions draw as **straight
- * segments trimmed to the place borders** — simple, decoupled from
+ * segments trimmed to the place borders** -- simple, decoupled from
  * bpmn-lite's router, and the right baseline for a state diagram.
  * Orthogonal / self-loop routing can layer on later without changing
  * the renderer contract.
@@ -45,7 +45,7 @@ export interface TransitionSegment {
     readonly start: SmPosition;
     readonly end: SmPosition;
     readonly mid: SmPosition;
-    /** True when source === target (a self-transition) — the renderer draws a loop instead. */
+    /** True when source === target (a self-transition) -- the renderer draws a loop instead. */
     readonly selfLoop: boolean;
 }
 

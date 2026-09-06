@@ -50,7 +50,7 @@ export class UnknownElementKindError extends Error {
 }
 
 /**
- * Lookup table from {@link BpmnElementKind} → {@link ElementRenderer}.
+ * Lookup table from {@link BpmnElementKind} -> {@link ElementRenderer}.
  * Used by {@link BpmnLiteEditor} to paint each model element via the
  * appropriate shape function. The registry is lazy in the usual
  * way: it holds plain references and only instantiates if needed.

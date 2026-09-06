@@ -97,7 +97,7 @@ const gatewayDirectionField = (t: Translator): FieldDescriptor => ({
         { value: 'diverging', label: t('designer.option.diverging', 'Diverging (fork)') },
         { value: 'converging', label: t('designer.option.converging', 'Converging (join)') },
     ],
-    // ⚠️ `allowEmpty` DEFAULTS TO TRUE in SelectField -- it must be
+    // !! `allowEmpty` DEFAULTS TO TRUE in SelectField -- it must be
     // switched off explicitly or the control offers a blank option.
     allowEmpty: false,
 });
@@ -215,7 +215,7 @@ const catchEventCommon = (t: Translator): FieldDescriptor[] => [
  * **No "parallel" toggle.** The engine rejects parallel multi-instance
  * at deploy (`WF.MI_PARALLEL_UNSUPPORTED`) because concurrent
  * iterations would each need their own `elementVariable` and process
- * variables are shared per instance — so offering the checkbox would
+ * variables are shared per instance -- so offering the checkbox would
  * only let an author build something that cannot ship.
  *
  * Leaving the collection blank turns the activity back into a plain
@@ -612,7 +612,7 @@ const defaultSchemas = (t: Translator): Record<BpmnLiteSchemaKey, FieldDescripto
     ],
     /**
      * A subprocess carries only a label. Everything that makes it a
-     * scope — which elements are inside it — is authored by DROPPING
+     * scope -- which elements are inside it -- is authored by DROPPING
      * them in the container, not typed into a field here, so a
      * "children" or "parent" input would be a second, contradictory way
      * to say the same thing.

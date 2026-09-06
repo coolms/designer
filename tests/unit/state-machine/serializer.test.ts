@@ -16,7 +16,7 @@ import type {
 } from '../../../src/state-machine/index.js';
 
 /**
- * Serializer tests — an order-lifecycle example end-to-end: model →
+ * Serializer tests -- an order-lifecycle example end-to-end: model ->
  * Symfony config (with by-name coalescing), the reverse expansion,
  * the semantic round-trip, the framework envelope, and the preview
  * YAML emitter.
@@ -54,7 +54,7 @@ function orderLifecycle(): StateMachineModel {
             tr('approve', 'approve', 'submitted', 'approved', "is_granted('ROLE_MANAGER')"),
             tr('fulfill', 'fulfill', 'approved', 'fulfilled'),
             tr('deliver', 'deliver', 'fulfilled', 'delivered'),
-            // The fan-in `cancel` — three per-edge transitions sharing a name.
+            // The fan-in `cancel` -- three per-edge transitions sharing a name.
             tr('cancel__draft', 'cancel', 'draft', 'cancelled'),
             tr('cancel__submitted', 'cancel', 'submitted', 'cancelled'),
             tr('cancel__approved', 'cancel', 'approved', 'cancelled'),
@@ -138,7 +138,7 @@ describe('round-trip (semantic)', () => {
         expect(round.places.map((p) => ({ id: p.id, initial: p.initial ?? false }))).toEqual(
             original.places.map((p) => ({ id: p.id, initial: p.initial ?? false })),
         );
-        // Transitions compared on the (name, from, to, guard) tuple — ids are internal.
+        // Transitions compared on the (name, from, to, guard) tuple -- ids are internal.
         const tuple = (t: SmTransition) => ({ name: t.name, from: t.from, to: t.to, guard: t.guard });
         expect(round.transitions.map(tuple)).toEqual(original.transitions.map(tuple));
 
