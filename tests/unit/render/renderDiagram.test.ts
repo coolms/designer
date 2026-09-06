@@ -61,7 +61,7 @@ function bpmnModel(): BpmnLiteModel {
 function stateMachineModel(): StateMachineModel {
     return {
         workflowName: 'article',
-        supports: ['App\\Entity\\Article'],
+        supports: ['Acme\\Entity\\Article'],
         markingProperty: 'status',
         places: [
             { id: 'draft', position: { x: 0, y: 0 }, size: { width: 120, height: 60 }, initial: true },
