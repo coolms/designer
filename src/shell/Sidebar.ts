@@ -51,7 +51,7 @@ interface SidebarEvents extends Record<string, unknown> {
  * DOM structure (post-F-8):
  *
  *   <aside class="coolms-designer__sidebar coolms-designer__sidebar--right">
- *     <button class="coolms-designer__sidebar-toggle">‹</button>
+ *     <button class="coolms-designer__sidebar-toggle"><</button>
  *     <div class="coolms-designer__sidebar-body">
  *       <section class="coolms-designer__sidebar-properties" data-section="properties"/>
  *     </div>
@@ -170,8 +170,8 @@ export class Sidebar {
         // slide so re-entry doesn't flicker.
         this.host.style.width = `${this.expandedWidth}px`;
         // Arrow direction toggles based on position + collapse state.
-        // right + expanded → ›, right + collapsed → ‹
-        // left  + expanded → ‹, left  + collapsed → ›
+        // right + expanded -> >, right + collapsed -> <
+        // left  + expanded -> <, left  + collapsed -> >
         const expandedArrow = this.position === 'right' ? '›' : '‹';
         const collapsedArrow = this.position === 'right' ? '‹' : '›';
         this.toggle.textContent = this.collapsed ? collapsedArrow : expandedArrow;

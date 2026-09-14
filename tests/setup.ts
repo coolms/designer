@@ -1,5 +1,5 @@
 /**
- * Vitest setup — polyfill DOM globals jsdom 25 doesn't expose.
+ * Vitest setup -- polyfill DOM globals jsdom 25 doesn't expose.
  *
  * **PointerEvent.** jsdom ships the prototype but doesn't surface it as a
  * window/global, so `new PointerEvent('pointerdown', {...})` throws

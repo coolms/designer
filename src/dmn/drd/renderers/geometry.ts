@@ -6,14 +6,14 @@ import type { DmnDrdElement, DmnDrdPosition } from '../types.js';
  * A DRD renders as a directed graph of node boxes joined by
  * information-requirement arrows. Mirroring the state-machine
  * geometry, requirements draw as **straight segments trimmed to
- * the node borders** — simple, decoupled from the bpmn-lite orthogonal
+ * the node borders** -- simple, decoupled from the bpmn-lite orthogonal
  * router, and the right baseline for a requirements diagram. Orthogonal
  * routing can layer on later without changing the renderer contract.
  *
  * The border trim treats every node as its bounding rectangle. For an
  * InputData stadium that's a hair off near the rounded ends, but the
  * difference is sub-pixel at these sizes + invisible behind the
- * arrowhead — a true stadium intersection isn't worth the math.
+ * arrowhead -- a true stadium intersection isn't worth the math.
  */
 
 /** The world-space center of a node's bounding box. */
@@ -54,7 +54,7 @@ export interface RequirementSegment {
  * Compute the rendered geometry for a requirement between two nodes:
  * the segment between centers, trimmed to each border, plus its
  * midpoint. Information requirements never self-reference (a decision
- * can't require itself), so there's no self-loop case to handle — the
+ * can't require itself), so there's no self-loop case to handle -- the
  * editor skips any `from === to` edge before reaching here.
  */
 export function requirementSegment(

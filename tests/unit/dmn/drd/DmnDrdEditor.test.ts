@@ -13,7 +13,7 @@ import type {
 } from '../../../../src/dmn/drd/index.js';
 
 /**
- * DmnDrdEditor tests — the render half: paint-on-construct, the
+ * DmnDrdEditor tests -- the render half: paint-on-construct, the
  * Decision/InputData node SVG, the requirement path + arrowhead,
  * dangling-endpoint skip, self-reference skip, selection on click,
  * load() replace, and the empty-model banner. Mirrors the

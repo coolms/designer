@@ -12,7 +12,7 @@ import type {
 } from '../../../src/bpmn-lite/types.js';
 
 /**
- * polish-bundle (F-4) — pins the cascade semantics + undo
+ * polish-bundle (F-4) -- pins the cascade semantics + undo
  * roundtrip for {@link DeleteElementCommand}.
  */
 describe('DeleteElementCommand', () => {

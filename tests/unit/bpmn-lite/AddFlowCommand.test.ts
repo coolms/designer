@@ -14,7 +14,7 @@ import type {
 /**
  * AddFlowCommand tests. Pins:
  *   - apply() appends + revert() removes the flow verbatim
- *   - label is `Connect <sourceId> → <targetId>`
+ *   - label is `Connect <sourceId> -> <targetId>`
  *   - target getter exposes the held flow
  *   - integrates with CommandStack
  */

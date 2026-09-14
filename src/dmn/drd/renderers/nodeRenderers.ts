@@ -2,7 +2,7 @@ import type { DmnDrdElement } from '../types.js';
 import { svgEl, SVG_NS } from './svg.js';
 
 /**
- * DRD node renderers — one pure function per {@link
+ * DRD node renderers -- one pure function per {@link
  * DmnDrdElement} kind. Same contract as the place renderer: take a
  * node + the document the SVG is created in, return the root `<g>` the
  * editor appends into the elements paint group. No state; geometry +
@@ -41,7 +41,7 @@ function appendLabel(g: SVGGElement, doc: Document, el: DmnDrdElement): void {
     g.appendChild(label);
 }
 
-/** Decision — a sharp-cornered rectangle. */
+/** Decision -- a sharp-cornered rectangle. */
 export const renderDecision: NodeRenderer = (el, doc) => {
     const g = baseGroup(el, doc);
     const { width, height } = el.size;
@@ -57,7 +57,7 @@ export const renderDecision: NodeRenderer = (el, doc) => {
     return g;
 };
 
-/** InputData — a stadium (rectangle with fully rounded ends). */
+/** InputData -- a stadium (rectangle with fully rounded ends). */
 export const renderInputData: NodeRenderer = (el, doc) => {
     const g = baseGroup(el, doc);
     const { width, height } = el.size;

@@ -4,7 +4,7 @@ import { svgEl, SVG_NS } from './svg.js';
 /**
  * place (state) renderer.
  *
- * A pure function — same contract as the bpmn-lite element renderer:
+ * A pure function -- same contract as the bpmn-lite element renderer:
  * takes a place + the document the SVG nodes are created in, returns
  * the root `<g>` the editor appends into the places paint group. No
  * state; geometry + name flow in via the `place` argument.

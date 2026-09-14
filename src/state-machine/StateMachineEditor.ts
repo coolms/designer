@@ -19,7 +19,7 @@ import type {
     StateMachineModel,
 } from './types.js';
 
-/** Process-wide instance counter — gives each editor a unique arrowhead `<marker>` id. */
+/** Process-wide instance counter -- gives each editor a unique arrowhead `<marker>` id. */
 let stateMachineEditorInstanceCounter = 0;
 
 /** Construction options for {@link StateMachineEditor}. */
@@ -47,18 +47,18 @@ interface StateMachineEvents extends Record<string, unknown> {
 }
 
 /**
- * State Machine editor — the third editor on the `@coolms/designer`
+ * State Machine editor -- the third editor on the `@coolms/designer`
  * substrate, after the DMN table and BPMN-Lite. It owns the render
  * half: an immutable {@link StateMachineModel} painted onto the
  * shared canvas. The palette, commands, selection, property panel,
  * auto-layout and the config serializer all compose around it.
  *
  * **Two paint groups inside `svgGroup`, in document order** (mirroring
- * the bpmn-lite editor): a `…__sm-transitions` group (edges + the
+ * the bpmn-lite editor): a `...__sm-transitions` group (edges + the
  * `<defs>` arrowhead marker) appended FIRST so it paints UNDER the
- * `…__sm-places` group, so place rectangles cover the arrowhead tips
+ * `...__sm-places` group, so place rectangles cover the arrowhead tips
  * arriving at them. Dangling transition endpoints (a `from`/`to` that
- * resolves to no place) are skipped silently — the model may hold draft
+ * resolves to no place) are skipped silently -- the model may hold draft
  * state mid-edit; the serializer + the Symfony Workflow
  * compiler surface that on deploy.
  */
@@ -115,7 +115,7 @@ export class StateMachineEditor {
     /**
      * Replace the model + repaint + emit `change`. Used by the
      * host's load flow. A model that arrives fully at the origin
-     * (the deserialize case — workflow YAML carries no diagram
+     * (the deserialize case -- workflow YAML carries no diagram
      * geometry) is
      * auto-laid-out into columns; a model that already carries positions
      * is respected verbatim.
@@ -179,7 +179,7 @@ export class StateMachineEditor {
     /**
      * Mint a free place id for a new state.
      *
-     * ⚠️ A place's `id` IS its Symfony place name — it lands verbatim in
+     * !! A place's `id` IS its Symfony place name -- it lands verbatim in
      * `framework.workflows.<name>.places`, so it must read as a state
      * ("draft", "published"), not as a surrogate key. `state_1` is a
      * placeholder the author is expected to rename via the property
@@ -197,7 +197,7 @@ export class StateMachineEditor {
         return id;
     }
 
-    /** Mint a free transition id (`t_1`, …) for a new edge. */
+    /** Mint a free transition id (`t_1`, ...) for a new edge. */
     suggestTransitionId(): string {
         const taken = new Set(this.state_.transitions.map((t) => t.id));
         let n = this.state_.transitions.length + 1;
@@ -213,7 +213,7 @@ export class StateMachineEditor {
      * Where to drop the next new place.
      *
      * Places are laid out in columns by {@link autoLayoutStateMachine},
-     * but that BAILS once anything is positioned — so a new place needs
+     * but that BAILS once anything is positioned -- so a new place needs
      * a sane spot of its own rather than landing on top of an existing
      * one. Right of the current content, vertically aligned with it.
      */
@@ -244,10 +244,10 @@ export class StateMachineEditor {
         return { left: left - 24, top: top - 8, right: right + 8, bottom: bottom + 8 };
     }
 
-    // ─── Mutator seam (the commands call these) ───────────────────────────
+    // --- Mutator seam (the commands call these) ---------------------------
 
     /**
-     * Rename a place — its id IS the Symfony place name — and cascade the
+     * Rename a place -- its id IS the Symfony place name -- and cascade the
      * new id to every incident transition's `from`/`to`. Symmetric, so the
      * {@link RenamePlaceCommand} reverts by calling this with the ids swapped.
      * No-op when `fromId === toId`.
@@ -319,7 +319,7 @@ export class StateMachineEditor {
     }
 
     /**
-     * delete seam — swap the places + transitions arrays wholesale,
+     * delete seam -- swap the places + transitions arrays wholesale,
      * then repaint + emit `change`. Unlike {@link load} this does NOT clear
      * the selection or the command stack (so it stays an undoable step), and
      * unlike the field mutators it touches both arrays at once. The
@@ -340,7 +340,7 @@ export class StateMachineEditor {
      * Update one workflow-scope property. `supports` accepts the panel's
      * newline/comma-joined string (split into a class list); `auditTrail`
      * accepts a boolean (written to `workflowExtras.audit_trail`). No
-     * repaint — these don't touch the canvas — but still emits `change`.
+     * repaint -- these don't touch the canvas -- but still emits `change`.
      */
     updateWorkflowProperty(key: string, value: unknown): void {
         if (this.disposed) return;
@@ -366,8 +366,8 @@ export class StateMachineEditor {
     /**
      * Read a workflow-scope property in the DISPLAY shape the property
      * panel's field reads + writes (so the field seed + the command's
-     * inverse value match): `supports` → newline-joined string, `auditTrail`
-     * → boolean, others → their string value.
+     * inverse value match): `supports` -> newline-joined string, `auditTrail`
+     * -> boolean, others -> their string value.
      */
     readWorkflowDisplayValue(key: string): unknown {
         switch (key) {
@@ -421,7 +421,7 @@ export class StateMachineEditor {
     }
 
     /**
-     * Delegated canvas click → selection. Walks up from the event target to
+     * Delegated canvas click -> selection. Walks up from the event target to
      * the nearest painted place/transition `<g>` (keyed by the
      * `data-place-id` / `data-transition-id` the renderers stamp); a click
      * on empty canvas clears the selection (workflow scope).
@@ -475,17 +475,17 @@ export class StateMachineEditor {
         this.emitter.dispose();
     }
 
-    /** Test affordance — the painted `<g>` holding the place shapes. */
+    /** Test affordance -- the painted `<g>` holding the place shapes. */
     get paintedPlacesElement(): SVGGElement | null {
         return this.paintedPlaces;
     }
 
-    /** Test affordance — the painted `<g>` holding the transition paths + `<defs>`. */
+    /** Test affordance -- the painted `<g>` holding the transition paths + `<defs>`. */
     get paintedTransitionsElement(): SVGGElement | null {
         return this.paintedTransitions;
     }
 
-    /** Test affordance — the per-instance arrowhead marker id. */
+    /** Test affordance -- the per-instance arrowhead marker id. */
     get arrowheadMarkerId(): string {
         return smArrowheadMarkerId(this.instanceId);
     }
@@ -531,7 +531,7 @@ export class StateMachineEditor {
             const source = placesById.get(transition.from);
             const target = placesById.get(transition.to);
             if (source === undefined || target === undefined) {
-                // Dangling endpoint — model is mid-edit. Skip silently;
+                // Dangling endpoint -- model is mid-edit. Skip silently;
                 // + the Symfony compiler catch it on deploy.
                 continue;
             }
@@ -585,8 +585,8 @@ export class StateMachineEditor {
 }
 
 /**
- * Parse the property panel's `supports` field — a newline/comma-separated
- * list of entity FQCNs — into the model's `string[]`. Blanks are dropped.
+ * Parse the property panel's `supports` field -- a newline/comma-separated
+ * list of entity FQCNs -- into the model's `string[]`. Blanks are dropped.
  */
 function splitSupports(value: string): string[] {
     return value
@@ -597,7 +597,7 @@ function splitSupports(value: string): string[] {
 
 /**
  * Rebuild a place with the `initial` flag omitted (not set to `undefined`)
- * while preserving any `extras` passthrough — `exactOptionalPropertyTypes`
+ * while preserving any `extras` passthrough -- `exactOptionalPropertyTypes`
  * forbids assigning `undefined` to an optional slot, so we omit the key.
  */
 function withoutInitial(p: SmPlace): SmPlace {

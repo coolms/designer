@@ -5,7 +5,7 @@
  * frame into ONE invocation of the render callback.
  *
  * This is what keeps a multi-event flurry (e.g. a wheel-zoom that fires
- * viewport.change → renderer should redraw, plus a pointer-move that
+ * viewport.change -> renderer should redraw, plus a pointer-move that
  * also pings render) from rendering N times per frame. Coalesce now,
  * paint once.
  *
@@ -25,7 +25,7 @@ export class RenderLoop {
 
     /**
      * Schedule a render on the next animation frame. Subsequent calls
-     * within the same frame are no-ops — the loop fires the render
+     * within the same frame are no-ops -- the loop fires the render
      * callback exactly once per frame regardless of how many requests
      * arrived.
      */

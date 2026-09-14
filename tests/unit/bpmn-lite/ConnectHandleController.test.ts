@@ -20,7 +20,7 @@ import type { BpmnElement } from '../../../src/bpmn-lite/index.js';
  *   - dispose tears down cleanly
  *
  * **jsdom note**: like the ConnectMode + Palette suites, we stub
- * `getBoundingClientRect` on the SVG so the editor's client→world
+ * `getBoundingClientRect` on the SVG so the editor's client->world
  * hit-test sees the cursor inside the canvas.
  */
 describe('ConnectHandleController', () => {

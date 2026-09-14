@@ -10,11 +10,11 @@
  *     emitter object itself need careful detach on destroy or they leak.
  *     A standalone Emitter has a single `dispose()` that drops every
  *     subscriber.
- *  3. **Composition.** Emitter is internal — surface-specific code that
+ *  3. **Composition.** Emitter is internal -- surface-specific code that
  *     wants to expose events to public consumers can wrap an internal
  *     Emitter without committing to DOM-event semantics in the API.
  *
- * Subscribers can subscribe/unsubscribe DURING an emit cycle — we
+ * Subscribers can subscribe/unsubscribe DURING an emit cycle -- we
  * iterate a snapshot of the listener set so mutations to the live set
  * during dispatch don't drop the in-flight pass.
  */
@@ -63,7 +63,7 @@ export class Emitter<T extends Record<string, unknown>> {
         if (errors.length === 1) {
             throw errors[0];
         } else if (errors.length > 1) {
-            // Multiple listener errors are exceptional — surface them all together
+            // Multiple listener errors are exceptional -- surface them all together
             // rather than silently swallowing all but the first.
             throw new AggregateError(errors, '[@coolms/designer] multiple listener errors');
         }

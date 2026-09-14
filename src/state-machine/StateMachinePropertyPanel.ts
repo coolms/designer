@@ -48,14 +48,14 @@ interface MountedField {
 }
 
 /**
- * State Machine property panel — the editing surface. Mounts field
+ * State Machine property panel -- the editing surface. Mounts field
  * renderers based on the current {@link SmSelection} and dispatches single-
  * property commands through the editor's {@link CommandStack} on every
  * field change. Three scopes:
  *
- *  - **place** selected → name + initial fields.
- *  - **transition** selected → name + from/to + guard fields.
- *  - **nothing** selected → the workflow scope (name / marking property /
+ *  - **place** selected -> name + initial fields.
+ *  - **transition** selected -> name + from/to + guard fields.
+ *  - **nothing** selected -> the workflow scope (name / marking property /
  *    supports / audit).
  *
  * Parallels {@link BpmnLitePropertyPanel}: reuses the field
@@ -66,7 +66,7 @@ interface MountedField {
  *
  * **Echo guard.** When the panel itself dispatches a command, the
  * resulting editor `change` event would otherwise prompt a `setValue` on
- * every mounted field — including the one the user just edited (cursor
+ * every mounted field -- including the one the user just edited (cursor
  * jump). A boolean `inFlight` flag short-circuits the refresh while a
  * panel-sourced command is executing. A place rename is the exception: it
  * re-points the selection (the old id no longer exists), which fires a
@@ -97,12 +97,12 @@ export class StateMachinePropertyPanel {
         this.rebuild();
     }
 
-    /** Test affordance — the keys of the currently mounted fields, in mount order. */
+    /** Test affordance -- the keys of the currently mounted fields, in mount order. */
     get fieldKeys(): ReadonlyArray<string> {
         return this.mountedFields.map((f) => f.descriptor.key);
     }
 
-    /** Test affordance — the current panel scope. */
+    /** Test affordance -- the current panel scope. */
     get scope(): PanelScope {
         return this.scopeOf(this.editor.selection.target);
     }
@@ -280,7 +280,7 @@ export class StateMachinePropertyPanel {
 
         if (key === 'name') {
             const newId = String(next ?? '').trim();
-            // Reject empty / unchanged / colliding ids — restore the field
+            // Reject empty / unchanged / colliding ids -- restore the field
             // to the live id via a rebuild rather than minting a bad rename.
             if (newId === '' || newId === currentId || this.editor.findPlace(newId) !== null) {
                 this.rebuild();
@@ -289,7 +289,7 @@ export class StateMachinePropertyPanel {
             this.editor.commandStack.execute(
                 new RenamePlaceCommand(this.editor, currentId, newId),
             );
-            // The old id is gone — re-point the selection so the panel
+            // The old id is gone -- re-point the selection so the panel
             // rebuilds on the renamed place (and stays focused on it).
             this.editor.selection.select({ kind: 'place', id: newId });
             return;
@@ -304,7 +304,7 @@ export class StateMachinePropertyPanel {
 
     private onEditorChange(): void {
         if (this.disposed) return;
-        // Echo: the panel sourced this change — leave the user's field alone
+        // Echo: the panel sourced this change -- leave the user's field alone
         // (a place rename re-selects, which rebuilds cleanly on its own).
         if (this.inFlight) return;
 
@@ -312,7 +312,7 @@ export class StateMachinePropertyPanel {
         const scope = this.scopeOf(target);
         const values = this.lookupValues(scope, target);
         if (values === null) {
-            // The selected place/transition was deleted — drop to workflow scope.
+            // The selected place/transition was deleted -- drop to workflow scope.
             this.editor.selection.clear();
             return;
         }

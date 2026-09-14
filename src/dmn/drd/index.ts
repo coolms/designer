@@ -1,5 +1,5 @@
 /**
- * DMN DRD (Decision Requirements Diagram) editor — internal module.
+ * DMN DRD (Decision Requirements Diagram) editor -- internal module.
  *
  * NOT re-exported from the package root: the public surface is
  * `createEditor({surface: 'dmn-drd'})`, parallel to the other three

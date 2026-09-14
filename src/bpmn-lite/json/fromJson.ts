@@ -124,11 +124,11 @@ const SUPPORTED_EVENT_SUBTYPES: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * Wire `timer` block ⇄ editor {@link BpmnTimerDefinition}.
+ * Wire `timer` block <-> editor {@link BpmnTimerDefinition}.
  *
  * The wire keys by kind (`{"duration": "PT15M"}`); the parser takes the
  * first non-empty {@see TimerKind} case it finds, in enum order
- * (duration → date → cycle). This mirrors that precedence so a
+ * (duration -> date -> cycle). This mirrors that precedence so a
  * hand-authored body carrying more than one key round-trips to the same
  * timer the engine would build.
  */
@@ -144,15 +144,15 @@ function readTimerDefinition(raw: unknown): BpmnTimerDefinition | null {
 }
 
 /**
- * **Wire-task-type → editor-variant translation table.**
+ * **Wire-task-type -> editor-variant translation table.**
  *
  * The engine-side BPMN-Lite parser dispatches on the FULL wire
  * `type` string for the task family:
- *   - `type: "userTask"`    → `UserTaskAst`    (engine parks token, mints
+ *   - `type: "userTask"`    -> `UserTaskAst`    (engine parks token, mints
  *                             a TaskInstance, awaits Inbox claim/complete)
- *   - `type: "serviceTask"` → `ServiceTaskAst` (engine invokes the
+ *   - `type: "serviceTask"` -> `ServiceTaskAst` (engine invokes the
  *                             registered service-task handler)
- *   - `type: "task"`        → `TaskAst`        (plain pass-through, no
+ *   - `type: "task"`        -> `TaskAst`        (plain pass-through, no
  *                             engine-side side effect)
  *
  * The engine parser does NOT consult a `variant` field on task elements
@@ -167,9 +167,9 @@ function readTimerDefinition(raw: unknown): BpmnTimerDefinition | null {
  * slot in the EDITOR model. This map is the translation layer at the
  * serializer seam that bridges the two shapes:
  *
- *   wire `type: "userTask"`        ⇄ editor `{type: "task", variant: "userTask"}`
- *   wire `type: "serviceTask"`     ⇄ editor `{type: "task", variant: "serviceTask"}`
- *   wire `type: "task"`            ⇄ editor `{type: "task"}` (no variant)
+ *   wire `type: "userTask"`        <-> editor `{type: "task", variant: "userTask"}`
+ *   wire `type: "serviceTask"`     <-> editor `{type: "task", variant: "serviceTask"}`
+ *   wire `type: "task"`            <-> editor `{type: "task"}` (no variant)
  *
  * Both `fromJson` (this file) + `toJson` (the inverse path) consult
  * this map. Adding a new task subtype (e.g. `manualTask`,
@@ -227,7 +227,7 @@ const WIRE_TASK_TYPE_TO_VARIANT: Readonly<Record<string, string>> = {
  *    + not `sequenceFlow`): preserved as `processExtras.unsupportedElements`
  *    in input order. Re-emitted by toJson.
  *
- * **`default` → `isDefault` migration**: when an element carries
+ * **`default` -> `isDefault` migration**: when an element carries
  * `default: <flowId>`, the parser stamps `isDefault: true` on the
  * matching flow. If the flow id doesn't exist in the elements array
  * (orphan default), the stamp is silently skipped + the flow ref
@@ -323,7 +323,7 @@ export function bpmnLiteWireToModel(input: unknown): BpmnLiteModel {
             continue;
         }
         /**
-         * §2.4 DUAL SPELLING: an `intermediateCatchEvent` carrying
+         * section 2.4 DUAL SPELLING: an `intermediateCatchEvent` carrying
          * `attachedTo` IS a boundary event -- the engine parser routes
          * it to `buildBoundaryEvent`, not to the catch builder. Normalise
          * to the editor's `boundaryEvent` kind here so one wire shape
@@ -556,7 +556,7 @@ function readElement(
      * a `subtype` discriminator -- currently only
      * `intermediateCatchEvent`.
      *
-     * ⚠️ Do NOT widen this to every kind. `message` + `timer` also
+     * !! Do NOT widen this to every kind. `message` + `timer` also
      * appear on message/timer START events, where they pair with the
      * wire's `variant` slot rather than `subtype`. Promoting them
      * unconditionally would move a message-start's block out of
@@ -634,7 +634,7 @@ function readElement(
 
     /**
      * Scope membership. Unlike every other promoted field this is
-     * kind-INDEPENDENT — any element can sit in a scope — so it is
+     * kind-INDEPENDENT -- any element can sit in a scope -- so it is
      * promoted (and therefore reserved) unconditionally whenever it is
      * a non-empty string.
      */

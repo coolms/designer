@@ -15,9 +15,9 @@ import {
 import type { StateMachineModel } from '../../../src/state-machine/index.js';
 
 /**
- * interaction-layer tests — click-to-select, the three property-
+ * interaction-layer tests -- click-to-select, the three property-
  * panel scopes, the editing commands (rename cascade / single-initial /
- * guard / workflow marking + audit) with undo, and the panel→command
+ * guard / workflow marking + audit) with undo, and the panel->command
  * end-to-end wiring through real field-change events.
  */
 describe('StateMachineEditor interaction layer', () => {
@@ -62,7 +62,7 @@ describe('StateMachineEditor interaction layer', () => {
         document.body.innerHTML = '';
     });
 
-    // ─── click-to-select ──────────────────────────────────────────────────
+    // --- click-to-select --------------------------------------------------
 
     it('selects a place when a painted place is clicked', () => {
         const label = editor.paintedPlacesElement!.querySelector(
@@ -86,7 +86,7 @@ describe('StateMachineEditor interaction layer', () => {
         expect(editor.selection.target).toBeNull();
     });
 
-    // ─── property-panel scopes ────────────────────────────────────────────
+    // --- property-panel scopes --------------------------------------------
 
     it('renders the workflow scope when nothing is selected', () => {
         const panel = new StateMachinePropertyPanel({ host: panelHost, editor });
@@ -116,7 +116,7 @@ describe('StateMachineEditor interaction layer', () => {
         panel.dispose();
     });
 
-    // ─── editing commands (direct) + undo ─────────────────────────────────
+    // --- editing commands (direct) + undo ---------------------------------
 
     it('renames a place + cascades to transitions, and undoes', () => {
         editor.commandStack.execute(new RenamePlaceCommand(editor, 'draft', 'created'));
@@ -174,13 +174,13 @@ describe('StateMachineEditor interaction layer', () => {
         expect(editor.state.workflowExtras).toBeUndefined();
     });
 
-    // ─── remove (delete) + undo ───────────────────────────────────────────
+    // --- remove (delete) + undo -------------------------------------------
 
     it('removes a place + cascades its incident transitions, and undoes', () => {
         editor.commandStack.execute(new RemovePlaceCommand(editor, 'draft'));
         expect(editor.findPlace('draft')).toBeNull();
         expect(editor.findPlace('submitted')).not.toBeNull();
-        // The 'submit' transition referenced 'draft' on its `from` — cascade-removed.
+        // The 'submit' transition referenced 'draft' on its `from` -- cascade-removed.
         expect(editor.findTransition('submit')).toBeNull();
         expect(editor.state.transitions).toHaveLength(0);
 
@@ -201,7 +201,7 @@ describe('StateMachineEditor interaction layer', () => {
         expect(editor.findTransition('submit')!.to).toBe('submitted');
     });
 
-    // ─── panel → command end-to-end (real field events) ───────────────────
+    // --- panel -> command end-to-end (real field events) -------------------
 
     it('marks a place initial when the panel checkbox is toggled', () => {
         const panel = new StateMachinePropertyPanel({ host: panelHost, editor });
@@ -237,7 +237,7 @@ describe('StateMachineEditor interaction layer', () => {
         editor.selection.select({ kind: 'place', id: 'draft' });
         expect(editor.selection.target).not.toBeNull();
 
-        // Rename NOT via the panel — the editor emits change; onEditorChange
+        // Rename NOT via the panel -- the editor emits change; onEditorChange
         // sees the selected id is gone and clears the selection.
         editor.renamePlace('draft', 'gone');
         expect(editor.selection.target).toBeNull();

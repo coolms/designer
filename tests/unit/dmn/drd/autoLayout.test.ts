@@ -13,8 +13,8 @@ import type {
 } from '../../../../src/dmn/drd/index.js';
 
 /**
- * Auto-layout tests — columnar topological layering following the
- * information-requirement direction (from → to), the all-or-nothing
+ * Auto-layout tests -- columnar topological layering following the
+ * information-requirement direction (from -> to), the all-or-nothing
  * bail, cycle-aware back-edge skipping, converging-dependency
  * alignment, dangling/self-reference tolerance, and the DmnDrdEditor
  * wiring (auto-apply on load + the explicit re-arrange affordance).
@@ -43,7 +43,7 @@ describe('autoLayoutDmnDrd', () => {
         );
         expect(out.get('age')!.position.x).toBeLessThan(out.get('eligible')!.position.x);
         expect(out.get('eligible')!.position.x).toBeLessThan(out.get('offer')!.position.x);
-        // Linear chain — each node is alone in its column, so they share a row.
+        // Linear chain -- each node is alone in its column, so they share a row.
         expect(out.get('age')!.position.y).toBe(out.get('eligible')!.position.y);
         expect(out.get('eligible')!.position.y).toBe(out.get('offer')!.position.y);
     });
@@ -65,7 +65,7 @@ describe('autoLayoutDmnDrd', () => {
     });
 
     it('skips a back-edge so the forward chain is not inflated', () => {
-        // a → b → c, plus c → a (a cycle the DRD shouldn't have, but be safe).
+        // a -> b -> c, plus c -> a (a cycle the DRD shouldn't have, but be safe).
         const out = byId(
             autoLayoutDmnDrd(
                 [origin('a'), origin('b'), origin('c')],
@@ -179,7 +179,7 @@ describe('DmnDrdEditor auto-layout wiring', () => {
         editor.autoLayout();
 
         expect(emitted).toBe(1);
-        // a is the forward root → its column is left of b's.
+        // a is the forward root -> its column is left of b's.
         expect(editor.findElement('a')!.position.x).toBeLessThan(editor.findElement('b')!.position.x);
         editor.dispose();
     });

@@ -76,14 +76,14 @@ interface DragState {
      * ARMED (which is later than pointerdown by at least 120ms +
      * 8px of motion). The element's working position is computed
      * from this anchor, NOT from `startClientX/Y`, so any motion
-     * accumulated DURING the dead-zone is discarded — no teleport-
+     * accumulated DURING the dead-zone is discarded -- no teleport-
      * on-arm. Set to (NaN, NaN) until armed.
      */
     armedClientX: number;
     armedClientY: number;
     /**
      * The viewport zoom at the time the drag started (F-7.6). Cached so
-     * the screen→world conversion stays consistent through the drag
+     * the screen->world conversion stays consistent through the drag
      * even if the viewport is mutated mid-drag (rare).
      */
     readonly startZoom: number;
@@ -206,7 +206,7 @@ export class MoveElementController {
      * that inject motion between mousedown + mouseup, (c) high-DPI
      * mice that emit sub-pixel jitter as full-pixel deltas.
      *
-     * 120ms is the canonical lower bound for "deliberate hold" — fast
+     * 120ms is the canonical lower bound for "deliberate hold" -- fast
      * enough that intentional drags feel responsive, slow enough that
      * a casual single click never crosses it.
      */

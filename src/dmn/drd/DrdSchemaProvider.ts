@@ -8,16 +8,16 @@ import type { DmnDrdElementKind } from './types.js';
  * the field descriptors the {@link DmnDrdPropertyPanel} mounts for each
  * selection scope:
  *
- *  - **element** — `name` for any node; plus `decisionLogicRef` for a
+ *  - **element** -- `name` for any node; plus `decisionLogicRef` for a
  *    Decision (the decision-table key its logic comes from). An InputData
  *    has no logic, so it gets only `name`.
- *  - **requirement** — `from` / `to` element selects (the dependency +
+ *  - **requirement** -- `from` / `to` element selects (the dependency +
  *    the dependent decision).
- *  - **diagram** (nothing selected) — `name` (the DRG / definition key).
+ *  - **diagram** (nothing selected) -- `name` (the DRG / definition key).
  *
  * The requirement `from`/`to` selects are computed from the current
  * element list, so that schema is a method (not a constant). Reuses the
- * built-in field types verbatim (text / select) — no custom field
+ * built-in field types verbatim (text / select) -- no custom field
  * renderer needed.
  */
 export class DrdSchemaProvider {

@@ -24,12 +24,12 @@ import type { BpmnElement } from './types.js';
  * widened to cover the variant + variant-specific fields
  * the property panel's variant-aware schema now surfaces:
  *
- *  - `'variant'` — picks the task subkind (`undefined` /
+ *  - `'variant'` -- picks the task subkind (`undefined` /
  *    `'task'` / `'userTask'` / `'serviceTask'`). Changing it pivots
  *    the schema so the panel re-mounts with the variant's fields.
- *  - `'implementation'` — service-task dispatch key (the XRefs
+ *  - `'implementation'` -- service-task dispatch key (the XRefs
  *    scope `'workflow.handlers'`).
- *  - `'formKey'` — user-task form id (the XRefs scope
+ *  - `'formKey'` -- user-task form id (the XRefs scope
  *    `'workflow.forms'`).
  */
 export type EditableElementPropertyKey =

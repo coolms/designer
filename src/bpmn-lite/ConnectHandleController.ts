@@ -44,7 +44,7 @@ interface HandleDragState {
  * always-on counterpart to the modal {@link ConnectMode}.
  *
  * **Why this exists.** {@link ConnectMode} is *modal*: the user must
- * first click the toolbar's Connect (⬈) button to arm it, then drag
+ * first click the toolbar's Connect (NE) button to arm it, then drag
  * from a source element to a target. That is invisible to anyone who
  * reaches for the industry-standard gesture -- hover an element, grab
  * the little arrow that appears, drag to the target -- and instead

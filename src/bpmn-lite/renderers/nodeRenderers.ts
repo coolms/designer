@@ -16,9 +16,9 @@ import { SVG_NS, svgEl } from './svg.js';
  *
  * **Geometry conventions** (matching BPMN modeler convention):
  *  - `position` is the top-left of the element's bounding box
- *  - `size` is the bounding-box width × height
- *  - Events are positioned in a 36×36 bbox by default (BPMN spec
- *    "small icon" sizing); tasks use 100×80; gateways use 50×50.
+ *  - `size` is the bounding-box width x height
+ *  - Events are positioned in a 36x36 bbox by default (BPMN spec
+ *    "small icon" sizing); tasks use 100x80; gateways use 50x50.
  *    Defaults aren't enforced here -- the model carries explicit
  *    sizes + the renderers paint whatever's in the element. The
  *    palette will set conventional defaults at create time.
@@ -48,14 +48,14 @@ import { SVG_NS, svgEl } from './svg.js';
  *
  * **Why an estimated glyph width instead of measuring**:
  * `getComputedTextLength()` needs a laid-out SVG, so it returns 0 under
- * jsdom — wrapping would then behave differently in tests than in the
+ * jsdom -- wrapping would then behave differently in tests than in the
  * browser, which is precisely the class of bug this epic kept hitting.
  * A fixed average keeps wrapping deterministic and unit-testable; being
  * a glyph or two out just shifts a break point.
  */
 const LABEL_FONT_SIZE = 12;
 const LABEL_LINE_HEIGHT = LABEL_FONT_SIZE * 1.2;
-/** ≈0.54em — measured average for this UI font at 500 weight. */
+/** ~=0.54em -- measured average for this UI font at 500 weight. */
 const LABEL_CHAR_WIDTH = 6.5;
 /** Breathing room so glyphs never touch the shape's stroke. */
 const LABEL_PADDING = 6;
@@ -101,7 +101,7 @@ function wrapLabel(label: string, maxChars: number): string[] {
  * task). SVG has no auto-wrap, so the lines are computed here and
  * emitted as `<tspan>`s.
  *
- * `inside` (tasks) wraps to the element's own width — the label must
+ * `inside` (tasks) wraps to the element's own width -- the label must
  * stay within the box. `below` (events / gateways) wraps to a generous
  * floor instead, because a 36 px event legitimately carries a wider
  * caption underneath it; clamping those to 36 px would stack every
@@ -301,14 +301,14 @@ export const renderTask: ElementRenderer = (element, doc, t) => {
  * elements (see `BpmnLiteEditor.paintElementsGroup`, which paints
  * containers first).
  *
- * **No `⊞` marker.** In BPMN that marker means COLLAPSED, and this
+ * **No `[+]` marker.** In BPMN that marker means COLLAPSED, and this
  * canvas always shows the scope's contents; drawing it would tell the
  * author the opposite of what they are looking at. What distinguishes
  * the shape instead is the thin double-stroke border and the top-left
  * label, both of which stay out of the area the children occupy.
  *
  * **The label is top-left, not centred.** A centred label would sit
- * underneath whatever the author drops in the middle of the scope —
+ * underneath whatever the author drops in the middle of the scope --
  * which is exactly where a start event lands.
  */
 export const renderSubProcess: ElementRenderer = (element, doc, t) => {
@@ -491,7 +491,7 @@ export const renderEventBasedGateway: ElementRenderer = (element, doc, t) => {
  * painted node all read the same: clock = timer, envelope = message,
  * triangle = signal, lined page = conditional.
  *
- * Coordinates are expressed as fractions of the 36×36 default event box
+ * Coordinates are expressed as fractions of the 36x36 default event box
  * then scaled, so a resized event keeps its marker proportional.
  * Returns nothing for an untyped event -- a bare double ring is the
  * BPMN 2.0 untyped intermediate event, not an error state.
@@ -508,7 +508,7 @@ function appendEventMarker(
     const h = element.size.height;
     const cx = w / 2;
     const cy = h / 2;
-    // Marker half-extent: the inner ring is at 0.39·min, so 0.22 keeps
+    // Marker half-extent: the inner ring is at 0.39-min, so 0.22 keeps
     // the glyph clear of it at every size.
     const m = Math.min(w, h) * 0.22;
 
@@ -573,8 +573,8 @@ function appendEventMarker(
  *
  * The double ring is the BPMN 2.0 "intermediate" band: a start event is
  * one thin ring, an end event one thick ring, an intermediate event two
- * thin rings. The inner ring sits at 0.78·r so the band reads clearly
- * at the default 36×36 without the two circles merging.
+ * thin rings. The inner ring sits at 0.78-r so the band reads clearly
+ * at the default 36x36 without the two circles merging.
  */
 export const renderIntermediateCatchEvent: ElementRenderer = (element, doc, t) =>
     renderDoubleRingEvent(

@@ -15,7 +15,7 @@ import type {
 
 /**
  * Build a `BpmnElement` of the given kind. Default geometry matches
- * BPMN modeler convention (events 36×36, tasks 100×80, gateways 50×50).
+ * BPMN modeler convention (events 36x36, tasks 100x80, gateways 50x50).
  */
 function elementOf(
     kind: BpmnElementKind,

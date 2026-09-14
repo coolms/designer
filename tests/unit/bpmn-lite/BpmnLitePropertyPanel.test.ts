@@ -90,7 +90,7 @@ describe('BpmnLitePropertyPanel + SelectionController', () => {
         svg.remove();
     });
 
-    /* ────────────────── Property panel lifecycle pins ────────────────── */
+    /* ------------------ Property panel lifecycle pins ------------------ */
 
     it('mounts no fields when no selection', () => {
         const panel = new BpmnLitePropertyPanel({ host: panelHost, editor });
@@ -238,7 +238,7 @@ describe('BpmnLitePropertyPanel + SelectionController', () => {
         expect(panelHost.children).toHaveLength(0);
     });
 
-    /* ─────────────── SelectionController canvas wiring pins ─────────────── */
+    /* --------------- SelectionController canvas wiring pins --------------- */
 
     it('canvas click on element <g> selects that element', () => {
         const controller = new BpmnLiteSelectionController({ editor });
@@ -328,7 +328,7 @@ describe('BpmnLitePropertyPanel + SelectionController', () => {
         expect(editor.selection.target).toBeNull();
     });
 
-    /* ─────────── Selection-driven highlight in the editor pin ─────────── */
+    /* ----------- Selection-driven highlight in the editor pin ----------- */
 
     it('selecting an element adds the selected modifier class', () => {
         editor.selection.select({ kind: 'element', id: 'a' });

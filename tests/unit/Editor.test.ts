@@ -161,7 +161,7 @@ describe('createEditor — package smoke test', () => {
             const editors: Editor[] = surfaces.map((surface) =>
                 createEditor(host, { surface }),
             );
-            // jsdom doesn't fire layout — just confirm each mount produced a root.
+            // jsdom doesn't fire layout -- just confirm each mount produced a root.
             expect(host.querySelectorAll('.coolms-designer')).toHaveLength(surfaces.length);
             editors.forEach((e) => e.destroy());
         });

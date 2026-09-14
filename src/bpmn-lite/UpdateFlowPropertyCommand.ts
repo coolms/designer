@@ -25,7 +25,7 @@ export type EditableFlowPropertyKey = 'condition' | 'isDefault';
  * **Why separate from {@link UpdateFlowWaypointsCommand}**:
  * waypoints are an ordered geometry chain, not a scalar property;
  * the waypoint command captures + restores the full chain + handles
- * the auto-route ⇄ manual-route promotion. The property command
+ * the auto-route <-> manual-route promotion. The property command
  * handles scalar conditions / boolean flags / future strings.
  *
  * **Label format**: `Edit flow <propertyKey>` -- there's no element-

@@ -97,9 +97,9 @@ export function autoLayoutBpmnLite(
 /**
  * Layout constants tuned for the default kind sizes.
  *
- *  - Events render at 36×36 (startEvent / endEvent).
- *  - Tasks render at 100×80.
- *  - Gateways render at 50×50.
+ *  - Events render at 36x36 (startEvent / endEvent).
+ *  - Tasks render at 100x80.
+ *  - Gateways render at 50x50.
  *
  * COL_WIDTH = task-width (100) + ~80 gap leaves enough room for
  * the orthogonal router's elbow corners + condition labels
@@ -118,7 +118,7 @@ function positionFor(
     kind: BpmnElementKind,
 ): BpmnPosition {
     const geo = defaultGeometryFor(kind);
-    // Centre each kind's box within its (COL_WIDTH × ROW_HEIGHT)
+    // Centre each kind's box within its (COL_WIDTH x ROW_HEIGHT)
     // slot so events + tasks + gateways align on the same row
     // baseline even though their sizes differ.
     const slotCenterX = MARGIN_X + col * COL_WIDTH + COL_WIDTH / 2;
@@ -141,10 +141,10 @@ function positionFor(
  * each flow as either a forward edge or a **back-edge** (the target is
  * an ancestor of the source in the DFS tree from roots). Back-edges
  * are EXCLUDED from column assignment. The verify spine fixture's
- * `gw.email_result → task.email.enter_otp` retry edge is exactly this
+ * `gw.email_result -> task.email.enter_otp` retry edge is exactly this
  * case: without the skip it pushed `enter_otp`'s column from 2 (its
  * true forward position right after `svc.email.sendCode`) up to 5
- * (one past the gateway), which made the forward edge `sendCode →
+ * (one past the gateway), which made the forward edge `sendCode ->
  * enter_otp` traverse the whole row and pass visually THROUGH the
  * intermediate `svc.email.verify` task. The skip restores the
  * topological forward chain.
@@ -261,7 +261,7 @@ function computeColumns(
  *
  * The DFS starts from in-degree-0 nodes first (proper forward roots),
  * then sweeps any unvisited remainders so SCCs without an external
- * entry point still get classified. Self-loops (s → s) are
+ * entry point still get classified. Self-loops (s -> s) are
  * back-edges by definition.
  *
  * **Output** -- a Set of "{source}\u0000{target}" strings; lookup is
@@ -399,7 +399,7 @@ function buildAdjacency(
     return out;
 }
 
-// Silence "unused import" — `BpmnSize` is used by the inferred
+// Silence "unused import" -- `BpmnSize` is used by the inferred
 // return type of `defaultGeometryFor` + via the `size: BpmnSize`
 // shape elsewhere. The explicit re-export keeps the module's
 // public type surface ergonomic.

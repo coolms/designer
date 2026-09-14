@@ -47,7 +47,7 @@ export interface WheelInputEvent {
     readonly dom: Point;
     /** Vertical scroll delta. Positive = scroll down (zoom out by convention). */
     readonly deltaY: number;
-    /** ctrl held — trackpad pinch-zoom convention. Canvas uses this to escalate to zoom even when wheelZoom is off. */
+    /** ctrl held -- trackpad pinch-zoom convention. Canvas uses this to escalate to zoom even when wheelZoom is off. */
     readonly ctrlKey: boolean;
     readonly raw: WheelEvent;
 }
@@ -61,7 +61,7 @@ interface PointerEvents extends Record<string, unknown> {
 
 export interface PointerInputOptions {
     /**
-     * Movement threshold in DOM pixels — pointer travel smaller than this
+     * Movement threshold in DOM pixels -- pointer travel smaller than this
      * between down and up is treated as a click, not a drag. Default 4.
      * Set to 0 to fire drag events immediately on any movement.
      */

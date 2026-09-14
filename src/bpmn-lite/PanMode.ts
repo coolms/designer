@@ -13,13 +13,13 @@ export interface PanModeOptions {
 }
 
 /**
- * polish-bundle (F-4) — explicit "hand tool" pan mode.
+ * polish-bundle (F-4) -- explicit "hand tool" pan mode.
  *
  * **Why this exists**: the {@link Canvas} already binds middle-click
  * drag (`button === 1`) to `viewport.panBy`, but two real
  * problems made that affordance discoverability-blind:
  *  1. Trackpad users on Mac don't have a middle button at all
- *     unless they hold a modifier — middle-click pan is invisible
+ *     unless they hold a modifier -- middle-click pan is invisible
  *     to them.
  *  2. Mouse users don't know the affordance exists. The user
  *     surfaced exactly this gap: "when I zoom in - how do I move
@@ -44,12 +44,12 @@ export interface PanModeOptions {
  * state mutation, not a model mutation. The CommandStack records
  * undoable model edits (add/remove element, edit property, etc).
  * Re-doing a pan after "undo last edit, redo last edit" would
- * surprise the user — they'd expect the canvas to stay where they
+ * surprise the user -- they'd expect the canvas to stay where they
  * left it. So pan never touches the stack.
  *
  * **Mouse-only**: while active, suppresses left-click selection on
  * the canvas (the SelectionController checks for the active class
- * is NOT YET wired — F-4 ships PanMode + the toggle; future ship
+ * is NOT YET wired -- F-4 ships PanMode + the toggle; future ship
  * adds the selection-controller guard if users find dual-mode
  * confusing). Today the SelectionController still runs, so a click
  * on an element WHILE PanMode is active still selects + then pans
@@ -86,7 +86,7 @@ export class PanMode {
         return this.active_;
     }
 
-    /** Test affordance — the current drag state, or null if idle. */
+    /** Test affordance -- the current drag state, or null if idle. */
     get dragging(): boolean {
         return this.dragState !== null;
     }

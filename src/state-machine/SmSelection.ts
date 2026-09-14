@@ -1,7 +1,7 @@
 import { Emitter } from '../internal/Emitter.js';
 
 /**
- * What's currently selected in the State Machine editor — a place
+ * What's currently selected in the State Machine editor -- a place
  * (state) or a transition (arrow). `null` means "nothing selected",
  * which the property panel treats as the **workflow scope**
  * (it surfaces the machine-level fields: name / marking property /
@@ -17,7 +17,7 @@ interface SmSelectionEvents extends Record<string, unknown> {
 }
 
 /**
- * Per-editor selection state — the single source of truth for "what is
+ * Per-editor selection state -- the single source of truth for "what is
  * the user focused on" within one State Machine editor instance.
  * `select(null)` is the explicit clear path; the panel responds by
  * swapping to the workflow-scope fields. The editor clears selection on
@@ -54,7 +54,7 @@ export class SmSelection {
         this.emitter.emit('change', target);
     }
 
-    /** Clear the selection — shorthand for `select(null)` (workflow scope). */
+    /** Clear the selection -- shorthand for `select(null)` (workflow scope). */
     clear(): void {
         this.select(null);
     }

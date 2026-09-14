@@ -3,7 +3,7 @@ import { Emitter } from '../internal/Emitter.js';
 /**
  * A reversible operation against the editor's model. Surface-specific
  * code (BPMN add-element, DMN add-row, etc.) ships its own Command
- * implementations against the CommandStack — each must round-trip
+ * implementations against the CommandStack -- each must round-trip
  * `apply()` + `revert()` cleanly without side effects in the wrong
  * direction.
  *
@@ -13,7 +13,7 @@ import { Emitter } from '../internal/Emitter.js';
  * payload internally to restore it on `revert()`.
  */
 export interface Command {
-    /** Apply the command. Called on initial execute + redo. Must be idempotent w.r.t. apply→revert→apply. */
+    /** Apply the command. Called on initial execute + redo. Must be idempotent w.r.t. apply->revert->apply. */
     apply(): void;
     /** Revert the command. Must restore the state apply() mutated. */
     revert(): void;
@@ -22,7 +22,7 @@ export interface Command {
 }
 
 interface CommandStackEvents extends Record<string, unknown> {
-    /** Fired after every execute/undo/redo/clear. Carries no payload — subscribers read state via the getters. */
+    /** Fired after every execute/undo/redo/clear. Carries no payload -- subscribers read state via the getters. */
     change: void;
 }
 
@@ -31,7 +31,7 @@ interface CommandStackEvents extends Record<string, unknown> {
  * `execute(cmd)` runs apply() + records the command. `undo()` pops + reverts.
  * `redo()` pops the redo stack + re-applies.
  *
- * Any new `execute()` clears the redo stack — once you've branched off
+ * Any new `execute()` clears the redo stack -- once you've branched off
  * the timeline, the future is gone.
  *
  * History size is bounded by `limit` (default 100). When exceeded, the
@@ -107,7 +107,7 @@ export class CommandStack {
         return this.redoStack.length > 0;
     }
 
-    /** Label of the next undo step. `null` when empty — toolbar can render "Undo (Cmd+Z)" disabled. */
+    /** Label of the next undo step. `null` when empty -- toolbar can render "Undo (Cmd+Z)" disabled. */
     get nextUndoLabel(): string | null {
         const top = this.undoStack[this.undoStack.length - 1];
         return top?.label ?? null;

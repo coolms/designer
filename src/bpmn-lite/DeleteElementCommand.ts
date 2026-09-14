@@ -28,7 +28,7 @@ import type { BpmnElement, BpmnSequenceFlow } from './types.js';
  * is responsible for clearing selection before / after delete. Why:
  * commands shouldn't depend on selection state for replayability.
  *
- * **Label format**: "Delete Task" / "Delete Start Event" — uses
+ * **Label format**: "Delete Task" / "Delete Start Event" -- uses
  * the {@link PALETTE_LABELS} title case for symmetry with
  * {@link AddElementCommand}'s "Add Task" label.
  */
@@ -69,7 +69,7 @@ export class DeleteElementCommand implements Command {
 
         // Snapshot incident flows BEFORE the elements disappear so
         // the cascade is deterministic. ReadonlyArray + spread to
-        // copy — the editor's repaint pass may invalidate the
+        // copy -- the editor's repaint pass may invalidate the
         // referenced array between iterations.
         const incident = this.editor.state.flows.filter(
             (f) => doomed.has(f.source) || doomed.has(f.target),
@@ -86,7 +86,7 @@ export class DeleteElementCommand implements Command {
     }
 
     revert(): void {
-        // Restore the host first, then its boundaries, then the flows —
+        // Restore the host first, then its boundaries, then the flows --
         // otherwise a boundary would momentarily reference a missing
         // host, and the flows a missing source/target.
         this.editor.addElement(this.element);
@@ -100,13 +100,13 @@ export class DeleteElementCommand implements Command {
         this.removedBoundaries = [];
     }
 
-    /** Test affordance — the element this command will delete. */
+    /** Test affordance -- the element this command will delete. */
     get target(): BpmnElement {
         return this.element;
     }
 
     /**
-     * Test affordance — the flows captured + slated for cascade
+     * Test affordance -- the flows captured + slated for cascade
      * deletion at the most recent `apply()` call. Empty before
      * `apply()` runs or after `revert()` restores them.
      */

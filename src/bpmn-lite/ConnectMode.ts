@@ -116,7 +116,7 @@ export class ConnectMode {
      * following that instruction pressed and released on one element,
      * which the drag path reads as a self-loop and silently cancels, so
      * NOTHING ever connected. Both gestures are now supported: drag
-     * A→B, or click A then click B.
+     * A->B, or click A then click B.
      */
     private pendingSourceId: string | null = null;
     private disposed = false;
@@ -301,7 +301,7 @@ export class ConnectMode {
         this.createFlow(sourceId, targetId);
     }
 
-    /** Dispatch an undoable AddFlowCommand for a resolved source→target pair. */
+    /** Dispatch an undoable AddFlowCommand for a resolved source->target pair. */
     private createFlow(sourceId: string, targetId: string): void {
         const flow: BpmnSequenceFlow = {
             id: this.editor.nextFlowId(),

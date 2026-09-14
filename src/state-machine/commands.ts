@@ -13,7 +13,7 @@ import type { SmPlace, SmTransition } from './types.js';
 /**
  * Editable transition property keys the panel surfaces. Constrained so a
  * stray key can't write junk onto a transition. `id` is deliberately
- * absent — transition ids are stable canvas identity, not user-editable.
+ * absent -- transition ids are stable canvas identity, not user-editable.
  */
 export type EditableTransitionPropertyKey = 'name' | 'from' | 'to' | 'guard';
 
@@ -29,7 +29,7 @@ export type EditableWorkflowPropertyKey =
     | 'auditTrail';
 
 /**
- * Rename a place — which IS its Symfony place name — and cascade the new
+ * Rename a place -- which IS its Symfony place name -- and cascade the new
  * id to every incident transition's `from`/`to`. Reversible by renaming
  * back. The editor's `renamePlace` is symmetric, so apply/revert are the
  * same call with the ids swapped.
@@ -101,7 +101,7 @@ export class SetInitialPlaceCommand implements Command {
 /**
  * Update one editable property on a transition (name / from / to / guard).
  * Captures the previous value at construction so revert round-trips
- * exactly — including `guard` going back to `undefined` (the editor drops
+ * exactly -- including `guard` going back to `undefined` (the editor drops
  * a blank guard).
  */
 export class UpdateTransitionPropertyCommand implements Command {
@@ -137,7 +137,7 @@ export class UpdateTransitionPropertyCommand implements Command {
         );
     }
 
-    /** Test affordance — the transition id this command targets. */
+    /** Test affordance -- the transition id this command targets. */
     get targetId(): string {
         return this.transitionId;
     }
@@ -178,12 +178,12 @@ export class UpdateWorkflowPropertyCommand implements Command {
  *
  * **Why this did not exist before:** the editor shipped rename /
  * set-initial / property-edit / remove but NO create path at all, so a
- * state machine could be pruned and re-pointed but never BUILT — the
+ * state machine could be pruned and re-pointed but never BUILT -- the
  * blank canvas even said "Add a place to start modelling your state
  * machine" with no affordance to do it. Authoring was VFS-JSON-only.
  *
  * Snapshots before/after and goes through `replaceElements`, matching
- * {@link RemovePlaceCommand} — structural edits on this editor are
+ * {@link RemovePlaceCommand} -- structural edits on this editor are
  * whole-array swaps, which keeps undo a single verbatim restore.
  */
 export class AddPlaceCommand implements Command {
@@ -201,8 +201,8 @@ export class AddPlaceCommand implements Command {
         this.transitions = state.transitions;
         /**
          * The FIRST place becomes the initial one. A `state_machine`
-         * must declare exactly one initial place — `validate()` rejects
-         * a machine without it — so defaulting here means an author who
+         * must declare exactly one initial place -- `validate()` rejects
+         * a machine without it -- so defaulting here means an author who
          * just clicks "+ State" twice still has a deployable model
          * instead of a validation error they have to decode.
          */
@@ -259,7 +259,7 @@ export class AddTransitionCommand implements Command {
 }
 
 /**
- * delete — remove a place and CASCADE-remove every incident transition
+ * delete -- remove a place and CASCADE-remove every incident transition
  * (a `state_machine` transition must reference live places on both ends).
  * Snapshots the full places + transitions arrays at construction so revert
  * restores them verbatim (positions, ids, order, the prior incident edges).
@@ -297,7 +297,7 @@ export class RemovePlaceCommand implements Command {
 }
 
 /**
- * delete — remove a single transition (places untouched). Snapshots the
+ * delete -- remove a single transition (places untouched). Snapshots the
  * transitions array before/after so revert re-adds the edge verbatim.
  */
 export class RemoveTransitionCommand implements Command {

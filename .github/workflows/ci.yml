@@ -69,7 +69,10 @@ jobs:
       - name: The built bundle must not import anything external
         run: |
           npm run build
-          if grep -nE 'from *"[^.]' dist/index.mjs; then
+          # An import STATEMENT, not any text ending in from": the bundle
+          # legitimately contains `key === "from"` and `"data-transition-from"`,
+          # and a pattern that stopped at the word matched both.
+          if grep -nE '^\s*(import|export)\b[^;]*\bfrom *"[^.]|\bimport\( *"[^.]' dist/index.mjs; then
               echo "dist/index.mjs imports a module outside the package."
               exit 1
           fi

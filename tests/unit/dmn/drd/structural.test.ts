@@ -17,7 +17,7 @@ import type {
 } from '../../../../src/dmn/drd/index.js';
 
 /**
- * Structural-editing tests — the add/remove/move element +
+ * Structural-editing tests -- the add/remove/move element +
  * add/remove requirement mutators, their commands with undo (incl. the
  * cascade-restore on element removal), the deterministic id suggesters,
  * and the selection-clear-on-delete behaviour. These back the future
@@ -64,7 +64,7 @@ describe('DmnDrdEditor structural editing', () => {
         document.body.innerHTML = '';
     });
 
-    // ─── add / remove element ─────────────────────────────────────────────
+    // --- add / remove element ---------------------------------------------
 
     it('adds an element via command + paints it, and undoes', () => {
         editor.commandStack.execute(new AddElementCommand(editor, element('income', 'inputData', 40)));
@@ -105,7 +105,7 @@ describe('DmnDrdEditor structural editing', () => {
         expect(editor.selection.target).toBeNull();
     });
 
-    // ─── move element ─────────────────────────────────────────────────────
+    // --- move element -----------------------------------------------------
 
     it('moves an element via command, and undo snaps it back', () => {
         editor.commandStack.execute(new MoveElementCommand(editor, 'age', { x: 500, y: 200 }));
@@ -114,7 +114,7 @@ describe('DmnDrdEditor structural editing', () => {
         expect(editor.findElement('age')!.position).toEqual({ x: 40, y: 40 });
     });
 
-    // ─── add / remove requirement ─────────────────────────────────────────
+    // --- add / remove requirement -----------------------------------------
 
     it('adds + removes a requirement edge via commands, with undo', () => {
         editor.commandStack.execute(new AddElementCommand(editor, element('income', 'inputData', 40)));
@@ -139,7 +139,7 @@ describe('DmnDrdEditor structural editing', () => {
         expect(editor.selection.target).toBeNull();
     });
 
-    // ─── id suggesters ────────────────────────────────────────────────────
+    // --- id suggesters ----------------------------------------------------
 
     it('suggests unique, kind-prefixed element ids and unique requirement ids', () => {
         // Base model has 2 elements (age, eligible) + 1 requirement (ir1).

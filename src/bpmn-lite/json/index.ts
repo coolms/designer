@@ -2,13 +2,13 @@
  * BPMN-Lite JSON round-trip serializer module.
  *
  * Public surface:
- *  - {@link bpmnLiteModelToJson} -- editor model → wire-format JSON
+ *  - {@link bpmnLiteModelToJson} -- editor model -> wire-format JSON
  *    string
- *  - {@link bpmnLiteModelToWire} -- editor model → wire-format
+ *  - {@link bpmnLiteModelToWire} -- editor model -> wire-format
  *    JS-object (test affordance + future direct-fetch consumers)
- *  - {@link bpmnLiteJsonToModel} -- wire-format JSON string → editor
+ *  - {@link bpmnLiteJsonToModel} -- wire-format JSON string -> editor
  *    model
- *  - {@link bpmnLiteWireToModel} -- pre-parsed wire object → editor
+ *  - {@link bpmnLiteWireToModel} -- pre-parsed wire object -> editor
  *    model (used internally by `bpmnLiteJsonToModel` after JSON.parse;
  *    exposed so consumers that already have the parsed
  *    object don't re-parse)

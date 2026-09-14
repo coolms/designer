@@ -61,7 +61,7 @@ describe('BpmnLiteEditor', () => {
         svgGroup.ownerSVGElement?.remove();
     });
 
-    /* ──────────────────────── lifecycle pins ───────────────────────────── */
+    /* ------------------------ lifecycle pins ----------------------------- */
 
     describe('lifecycle invariants', () => {
         it('constructs with default empty model when no initialModel supplied', () => {
@@ -205,7 +205,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ──────────────────────── paint surface ────────────────────────────── */
+    /* ------------------------ paint surface ------------------------------ */
 
     describe('paint', () => {
         it('mounts a painted root group inside svgGroup on construct', () => {
@@ -374,7 +374,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ──────────────────────── flow surface ─────────────────────────────── */
+    /* ------------------------ flow surface ------------------------------- */
 
     describe('flow paint', () => {
         it('mounts the flows group inside svgGroup on construct', () => {
@@ -561,7 +561,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ──────────────────────── mutators + drop ──────────────────────────── */
+    /* ------------------------ mutators + drop ---------------------------- */
 
     describe('mutators + dropElementAt', () => {
         function stubCanvasRect(
@@ -795,7 +795,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ─────────────────── flow mutators + helpers ───────────────────────── */
+    /* ------------------- flow mutators + helpers ------------------------- */
 
     describe('flow mutators + helpers', () => {
         function modelWithFlow(): BpmnLiteModel {
@@ -1054,7 +1054,7 @@ describe('BpmnLiteEditor', () => {
         });
     });
 
-    /* ─────── property mutators + selection + condition paint ───────────── */
+    /* ------- property mutators + selection + condition paint ------------- */
 
     describe('property mutators + selection', () => {
         it('updateElementProperty replaces value + emits change + returns true', () => {

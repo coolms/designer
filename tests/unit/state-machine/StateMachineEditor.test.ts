@@ -13,7 +13,7 @@ import type {
 } from '../../../src/state-machine/index.js';
 
 /**
- * StateMachineEditor tests — the render half: paint-on-construct,
+ * StateMachineEditor tests -- the render half: paint-on-construct,
  * place + transition SVG, the initial marker, guard glyph, dangling-
  * endpoint skip, self-loop, load() replace, and the empty-model banner.
  * Mirrors the BpmnLiteEditor paint tests.

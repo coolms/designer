@@ -12,10 +12,10 @@ import {
 import type { DmnDrdModel } from '../../../../src/dmn/drd/index.js';
 
 /**
- * Interaction-layer tests — the three property-panel scopes
+ * Interaction-layer tests -- the three property-panel scopes
  * (element / requirement / diagram), the kind-dependent element schema,
  * the editing commands (element name + decision-logic ref, requirement
- * endpoints, diagram key) with undo, and the panel→command end-to-end
+ * endpoints, diagram key) with undo, and the panel->command end-to-end
  * wiring through real field-change events. Mirrors the
  * state-machine interaction coverage.
  */
@@ -59,7 +59,7 @@ describe('DmnDrdEditor interaction layer', () => {
         document.body.innerHTML = '';
     });
 
-    // ─── property-panel scopes ────────────────────────────────────────────
+    // --- property-panel scopes --------------------------------------------
 
     it('renders the diagram scope when nothing is selected', () => {
         const panel = new DmnDrdPropertyPanel({ host: panelHost, editor });
@@ -89,14 +89,14 @@ describe('DmnDrdEditor interaction layer', () => {
         panel.dispose();
     });
 
-    // ─── editing commands (direct) + undo ─────────────────────────────────
+    // --- editing commands (direct) + undo ---------------------------------
 
     it('renames an element by name without touching its id or requirements', () => {
         editor.commandStack.execute(
             new UpdateElementPropertyCommand(editor, 'eligible', 'name', 'Loan eligibility'),
         );
         expect(editor.findElement('eligible')!.name).toBe('Loan eligibility');
-        // id is stable → the requirement endpoint still resolves.
+        // id is stable -> the requirement endpoint still resolves.
         expect(editor.findRequirement('ir1')!.to).toBe('eligible');
 
         editor.commandStack.undo();
@@ -134,7 +134,7 @@ describe('DmnDrdEditor interaction layer', () => {
         expect(editor.state.name).toBe('pricing');
     });
 
-    // ─── panel → command end-to-end (real field events) ───────────────────
+    // --- panel -> command end-to-end (real field events) -------------------
 
     it('renames an element when the panel name input commits', () => {
         const panel = new DmnDrdPropertyPanel({ host: panelHost, editor });

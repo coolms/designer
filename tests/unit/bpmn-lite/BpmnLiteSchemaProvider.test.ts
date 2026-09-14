@@ -115,7 +115,7 @@ describe('BpmnLiteSchemaProvider', () => {
         }
     });
 
-    /* ──────────────────── variant additions ─────────────────── */
+    /* -------------------- variant additions ------------------- */
 
     it('task schema exposes a variant SELECT after the label', () => {
         const schema = defaultBpmnLiteSchemaProvider().getSchema('task');

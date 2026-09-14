@@ -48,7 +48,7 @@ describe('BPMN-Lite JSON serializer', () => {
         return bpmnLiteJsonToModel(json);
     }
 
-    /* ──────────────────────── toJson structural pins ─────────────────────── */
+    /* ------------------------ toJson structural pins ----------------------- */
 
     describe('toJson', () => {
         it('emits process header + empty elements array for empty model', () => {
@@ -249,7 +249,7 @@ describe('BPMN-Lite JSON serializer', () => {
         });
     });
 
-    /* ────────────────────── fromJson structural pins ────────────────────── */
+    /* ---------------------- fromJson structural pins ---------------------- */
 
     describe('fromJson', () => {
         it('throws BpmnLiteParseError on invalid JSON', () => {
@@ -447,7 +447,7 @@ describe('BPMN-Lite JSON serializer', () => {
         });
     });
 
-    /* ────────────────────── Round-trip invariants ────────────────────── */
+    /* ---------------------- Round-trip invariants ---------------------- */
 
     describe('round-trip', () => {
         it('empty model survives', () => {
@@ -622,7 +622,7 @@ describe('BPMN-Lite JSON serializer', () => {
         });
     });
 
-    /* ───────────────────── variant / impl / formKey promotion ───────────────────── */
+    /* --------------------- variant / impl / formKey promotion --------------------- */
 
     describe('variant, implementation, formKey promotion', () => {
         it('reads variant/implementation/formKey out of element extras into top-level slots', () => {
@@ -658,7 +658,7 @@ describe('BPMN-Lite JSON serializer', () => {
 
         it('emits promoted slots at top level on toJson + leaves extras clean', () => {
             // **Wire task-type encoding**: editor `{type: 'task', variant: 'serviceTask'}`
-            // emits wire `type: 'serviceTask'` (NOT `type: 'task' + variant: '…'`)
+            // emits wire `type: 'serviceTask'` (NOT `type: 'task' + variant: '...'`)
             // because the engine parser dispatches the task family on the wire
             // `type` field, not on `variant`. The `variant` field is reserved
             // for event sub-flavours (`message`, `timer`); emitting it on a
@@ -749,7 +749,7 @@ describe('BPMN-Lite JSON serializer', () => {
         });
     });
 
-    /* ──────────────────── wire task-type translation ────────────────────────────── */
+    /* -------------------- wire task-type translation ------------------------------ */
 
     describe('wire-task-type ⇄ editor-variant translation', () => {
         it('reads wire `type: "userTask"` as editor `{type: "task", variant: "userTask"}`', () => {
@@ -922,7 +922,7 @@ describe('BPMN-Lite JSON serializer', () => {
         });
     });
 
-    /* ────────────────────── bpmnLiteWireToModel direct ────────────────────── */
+    /* ---------------------- bpmnLiteWireToModel direct ---------------------- */
 
     describe('bpmnLiteWireToModel + bpmnLiteModelToWire (object entry points)', () => {
         it('round-trip through the object form', () => {
