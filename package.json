@@ -67,6 +67,9 @@
         "lcap",
         "bpm"
     ],
+    "bugs": {
+        "url": "https://github.com/coolms/designer/issues"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/coolms/designer.git"

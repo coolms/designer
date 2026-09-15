@@ -8,6 +8,15 @@ This file starts at the package's first publish, so nothing in it is
 reconstructed -- every entry is written in the same commit as the change it
 describes.
 
+## Unreleased
+
+### Added
+
+- Declares `bugs` so a page imported from this package, and the catalogue,
+  know where a correction is filed. The registry filled the gap from GitHub when
+  the manifest was silent; the declared field is the one that holds on any
+  registry.
+
 ## 0.1.0-alpha.1 -- 2026-09-03
 
 First publish.
