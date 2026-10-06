@@ -7,6 +7,11 @@ on:
     branches: [main, develop]
 
 jobs:
+  # The committed lockfile's advisories against .github/advisories.txt: a new one fails, a listed one that is gone
+  # fails until its line is taken off (coolms/.github, npm-advisories.yml).
+  advisories:
+    uses: coolms/.github/.github/workflows/npm-advisories.yml@develop
+
   test:
     name: Node ${{ matrix.node }}
     runs-on: ubuntu-latest
