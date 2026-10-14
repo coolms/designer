@@ -8,6 +8,11 @@ import { DeleteFlowCommand } from './DeleteFlowCommand.js';
  * Options for constructing the polish-bundle (F-4 / F-5)
  * {@link BpmnLiteKeyboardController}.
  */
+/**
+ * Where a host's keys come from: subscribe a handler (true when it acted on the key), get back the unsubscribe.
+ */
+export type BpmnLiteKeySource = (handler: (ev: KeyboardEvent) => boolean) => () => void;
+
 export interface BpmnLiteKeyboardControllerOptions {
     /** The editor whose selection / command stack the controller drives. */
     readonly editor: BpmnLiteEditor;
@@ -44,6 +49,12 @@ export interface BpmnLiteKeyboardControllerOptions {
      * Tests can pass a jsdom document; the dialog can pass its host document.
      */
     readonly doc?: Document;
+    /**
+     * Where the keys come from. Default: a keydown listener on {@link doc}. A host whose surfaces stack (a dialog
+     * over the canvas) passes the binding of its keyboard scope, so only the topmost surface takes a key: Delete
+     * typed in a dialog over the canvas never deletes the canvas's selection.
+     */
+    readonly keys?: BpmnLiteKeySource;
 }
 
 /**
@@ -74,8 +85,12 @@ export interface BpmnLiteKeyboardControllerOptions {
  * the command stack, so a direct call would make the deletion
  * non-undoable + surprise users who hit Cmd-Z right after.
  *
- * **Dispose contract**: detaches the keydown listener. Safe to
- * call multiple times.
+ * **Where the keys come from**: the document by default; a host
+ * with a keyboard scope passes its binding as `keys`, and the
+ * controller then adds no listener of its own.
+ *
+ * **Dispose contract**: detaches the keydown listener (or the
+ * host's binding). Safe to call multiple times.
  *
  * **What this controller does NOT do** (future ships):
  *  - Cmd-Z / Cmd-Shift-Z for undo/redo (the CommandStack
@@ -97,6 +112,7 @@ export class BpmnLiteKeyboardController {
     private readonly readOnly: boolean;
     private readonly doc: Document;
     private readonly onKeyDown: (ev: KeyboardEvent) => void;
+    private readonly unbindKeys: (() => void) | null;
     private disposed = false;
 
     constructor(options: BpmnLiteKeyboardControllerOptions) {
@@ -112,13 +128,22 @@ export class BpmnLiteKeyboardController {
             this.editor.canvasGroup.ownerSVGElement?.ownerDocument ??
             (typeof window !== 'undefined' ? window.document : (null as unknown as Document));
         this.onKeyDown = (ev: KeyboardEvent): void => this.handleKeyDown(ev);
-        this.doc?.addEventListener('keydown', this.onKeyDown);
+        if (options.keys !== undefined) {
+            this.unbindKeys = options.keys((ev) => {
+                this.handleKeyDown(ev);
+                return ev.defaultPrevented;
+            });
+        } else {
+            this.unbindKeys = null;
+            this.doc?.addEventListener('keydown', this.onKeyDown);
+        }
     }
 
     dispose(): void {
         if (this.disposed) return;
         this.disposed = true;
-        this.doc?.removeEventListener('keydown', this.onKeyDown);
+        if (this.unbindKeys !== null) this.unbindKeys();
+        else this.doc?.removeEventListener('keydown', this.onKeyDown);
     }
 
     private handleKeyDown(ev: KeyboardEvent): void {
