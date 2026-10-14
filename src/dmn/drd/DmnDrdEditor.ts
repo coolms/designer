@@ -518,14 +518,13 @@ export class DmnDrdEditor {
 
         const title = doc.createElement('div');
         title.classList.add('coolms-designer__drd-banner-title');
-        title.textContent = this.t('designer.drd.banner.title', 'Decision Requirements editor');
+        title.textContent = this.t('designer.drd.banner.title');
         banner.appendChild(title);
 
         const subtitle = doc.createElement('div');
         subtitle.classList.add('coolms-designer__drd-banner-subtitle');
         subtitle.textContent = this.t(
             'designer.drd.banner.subtitle',
-            'Add a decision or input to start modelling your DRD',
         );
         banner.appendChild(subtitle);
 

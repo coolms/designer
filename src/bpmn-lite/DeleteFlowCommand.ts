@@ -26,7 +26,7 @@ export class DeleteFlowCommand implements Command {
         private readonly editor: BpmnLiteEditor,
         private readonly flow: BpmnSequenceFlow,
     ) {
-        this.label = editor.t('designer.command.deleteFlow', 'Delete Flow');
+        this.label = editor.t('designer.command.deleteFlow');
     }
 
     apply(): void {

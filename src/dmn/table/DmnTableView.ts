@@ -172,8 +172,8 @@ export class DmnTableView {
         addInputTh.classList.add('coolms-designer__dmn-table-add-input');
         const addInputBtn = doc.createElement('button');
         addInputBtn.type = 'button';
-        addInputBtn.textContent = this.t('designer.dmn.addInput', '+ input');
-        addInputBtn.setAttribute('aria-label', this.t('designer.dmn.addInput.aria', 'Add input column'));
+        addInputBtn.textContent = this.t('designer.dmn.addInput');
+        addInputBtn.setAttribute('aria-label', this.t('designer.dmn.addInput.aria'));
         addInputBtn.addEventListener('click', () => {
             this.commands.execute(new AddInputClauseCommand(this.model, undefined, this.t));
         });
@@ -215,8 +215,8 @@ export class DmnTableView {
         addOutputTh.classList.add('coolms-designer__dmn-table-add-output');
         const addOutputBtn = doc.createElement('button');
         addOutputBtn.type = 'button';
-        addOutputBtn.textContent = this.t('designer.dmn.addOutput', '+ output');
-        addOutputBtn.setAttribute('aria-label', this.t('designer.dmn.addOutput.aria', 'Add output column'));
+        addOutputBtn.textContent = this.t('designer.dmn.addOutput');
+        addOutputBtn.setAttribute('aria-label', this.t('designer.dmn.addOutput.aria'));
         addOutputBtn.addEventListener('click', () => {
             this.commands.execute(new AddOutputClauseCommand(this.model, undefined, this.t));
         });
@@ -323,8 +323,8 @@ export class DmnTableView {
         addRuleCell.classList.add('coolms-designer__dmn-table-add-rule-cell');
         const addRuleBtn = doc.createElement('button');
         addRuleBtn.type = 'button';
-        addRuleBtn.textContent = this.t('designer.dmn.addRule', '+ rule');
-        addRuleBtn.setAttribute('aria-label', this.t('designer.dmn.addRule.aria', 'Add rule'));
+        addRuleBtn.textContent = this.t('designer.dmn.addRule');
+        addRuleBtn.setAttribute('aria-label', this.t('designer.dmn.addRule.aria'));
         addRuleBtn.addEventListener('click', () => {
             this.commands.execute(new AddRuleCommand(this.model, undefined, this.t));
         });

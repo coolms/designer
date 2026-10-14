@@ -89,13 +89,14 @@ export { XRefs } from './shell/XRefs.js';
 export type { XRefItem } from './shell/XRefs.js';
 
 /**
- * Translation seam. The package carries message keys and an English
- * fallback at every call site and owns no catalogue, so it speaks English
- * with zero configuration and speaks anything else the moment a host passes
- * a {@link Translator}. See `src/i18n.ts` for the two consumer shapes.
+ * Translation seam. Code holds message keys only; the package bundles its
+ * base catalogue ({@link designerMessages}) as the last fallback of every
+ * lookup, so it speaks its source language with zero configuration and any
+ * other the moment a host passes a {@link Translator} built over the
+ * person's locale, its parent and the platform default. See `src/i18n.ts`.
  */
-export { createCatalogTranslator, defaultTranslator, interpolate } from './i18n.js';
-export type { TranslationParams, Translator } from './i18n.js';
+export { createCatalogTranslator, defaultTranslator, designerMessages, interpolate } from './i18n.js';
+export type { Messages, TranslationParams, Translator } from './i18n.js';
 
 /**
  * Package semver string. Useful when shipping the IIFE bundle via a CDN

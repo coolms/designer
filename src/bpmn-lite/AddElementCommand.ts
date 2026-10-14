@@ -40,7 +40,7 @@ export class AddElementCommand implements Command {
             element.variant,
             editor.t,
         );
-        this.label = editor.t('designer.command.addElement', 'Add %kind%', {
+        this.label = editor.t('designer.command.addElement', {
             kind: kindLabel,
         });
     }
