@@ -10,7 +10,41 @@ describes.
 
 ## Unreleased
 
+### Changed
+
+- **Code holds only message keys; the text lives in catalogues.** Every
+  translate call is `t(key)` or `t(key, params)` -- the English second argument
+  is gone from all 246 call sites. The package ships its base catalogue,
+  `src/i18n/messages.en.json` (240 keys), bundled into the build and exported
+  as `designerMessages`.
+- **`Translator` is `(key, params?) => string`** (was `(key, fallback,
+  params?)`). A host translator written for the old signature must drop its
+  `fallback` argument; a missing entry now falls through to the next catalogue
+  instead of to text at the call site.
+- **`createCatalogTranslator(...catalogues)` takes catalogues most specific
+  first** -- the person's locale, its parent, the platform default -- and
+  always appends the base catalogue last. One catalogue, as before, still
+  works. A key no catalogue holds reads as the key.
+- `PALETTE_LABELS` and `EVENT_SUBTYPE_LABELS` are read from the base catalogue;
+  `PALETTE_LABEL_KEYS` and `EVENT_SUBTYPE_LABEL_KEYS` name the keys. The three
+  palette keys composed at run time are maps of literal keys now.
+- `npm run i18n:extract` prints the base catalogue. It used to read the text
+  out of the call sites and skipped every call written `this.t(` or `x.t(`:
+  40 of the 240 keys never reached a host's catalogue.
+
 ### Added
+
+- **`npm run i18n:check`, in CI.** Fails on a key the code uses that the base
+  catalogue lacks, on a translate call passing text as its second argument,
+  on a key composed at run time, and on a base-catalogue message outside the
+  state-machine surface (`designer.sm.`) that names a framework -- the check
+  the publish guard held per source file, held per key now that the text is in
+  one catalogue -- with a state-machine key used outside `src/state-machine/`,
+  and a key written twice in the catalogue (JSON keeps only the last), failing
+  too. Reports each other shipped catalogue's
+  coverage of the base keys, base keys no code uses, and text still written
+  directly into the DOM (15 today). Its self-test plants each failing shape
+  and asserts it is caught.
 
 - Declares `bugs` so a page imported from this package, and the catalogue,
   know where a correction is filed. The registry filled the gap from GitHub when

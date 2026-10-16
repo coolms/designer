@@ -49,7 +49,7 @@ export class UpdateElementPropertyCommand implements Command {
     ) {
         const element = editor.findElement(elementId);
         this.previousValue = element !== null ? element[propertyKey] : undefined;
-        this.label = editor.t('designer.command.drd.editElement', 'Edit %property%', {
+        this.label = editor.t('designer.command.drd.editElement', {
             property: propertyKey,
         });
     }
@@ -84,7 +84,7 @@ export class UpdateRequirementPropertyCommand implements Command {
     ) {
         const requirement = editor.findRequirement(requirementId);
         this.previousValue = requirement !== null ? requirement[propertyKey] : undefined;
-        this.label = editor.t('designer.command.drd.editRequirement', 'Edit requirement %property%', {
+        this.label = editor.t('designer.command.drd.editRequirement', {
             property: propertyKey,
         });
     }
@@ -118,7 +118,7 @@ export class UpdateDiagramPropertyCommand implements Command {
         private readonly nextValue: unknown,
     ) {
         this.previousValue = editor.readDiagramDisplayValue(propertyKey);
-        this.label = editor.t('designer.command.drd.editDiagram', 'Edit diagram %property%', {
+        this.label = editor.t('designer.command.drd.editDiagram', {
             property: propertyKey,
         });
     }
@@ -149,8 +149,8 @@ export class AddElementCommand implements Command {
         private readonly element: DmnDrdElement,
     ) {
         this.label = element.kind === 'inputData'
-            ? editor.t('designer.command.drd.addInput', 'Add input %id%', { id: element.id })
-            : editor.t('designer.command.drd.addDecision', 'Add decision %id%', { id: element.id });
+            ? editor.t('designer.command.drd.addInput', { id: element.id })
+            : editor.t('designer.command.drd.addDecision', { id: element.id });
     }
 
     apply(): void {
@@ -180,7 +180,7 @@ export class RemoveElementCommand implements Command {
         this.requirements = editor.state.requirements.filter(
             (r) => r.from === elementId || r.to === elementId,
         );
-        this.label = editor.t('designer.command.drd.removeElement', 'Remove %id%', {
+        this.label = editor.t('designer.command.drd.removeElement', {
             id: elementId,
         });
     }
@@ -210,7 +210,7 @@ export class MoveElementCommand implements Command {
     ) {
         const element = editor.findElement(elementId);
         this.fromPosition = element !== null ? element.position : null;
-        this.label = editor.t('designer.command.drd.moveElement', 'Move %id%', {
+        this.label = editor.t('designer.command.drd.moveElement', {
             id: elementId,
         });
     }
@@ -239,7 +239,7 @@ export class AddRequirementCommand implements Command {
         private readonly editor: DmnDrdEditor,
         private readonly requirement: DmnInformationRequirement,
     ) {
-        this.label = editor.t('designer.command.drd.connect', 'Connect %source% → %target%', {
+        this.label = editor.t('designer.command.drd.connect', {
             source: requirement.from,
             target: requirement.to,
         });
@@ -264,7 +264,7 @@ export class RemoveRequirementCommand implements Command {
         requirementId: string,
     ) {
         this.requirement = editor.findRequirement(requirementId);
-        this.label = editor.t('designer.command.drd.removeRequirement', 'Remove requirement %id%', {
+        this.label = editor.t('designer.command.drd.removeRequirement', {
             id: requirementId,
         });
     }

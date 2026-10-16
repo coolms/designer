@@ -40,6 +40,7 @@
         "test:coverage": "vitest run --coverage",
         "typecheck": "tsc --noEmit",
         "i18n:extract": "node tools/extract-messages.mjs",
+        "i18n:check": "node tools/check-messages.mjs && node tools/check-messages.mjs --self-test",
         "build:visual": "node esbuild.visual.config.mjs",
         "test:visual": "npm run build:visual && playwright test",
         "test:visual:update": "npm run build:visual && playwright test --update-snapshots"

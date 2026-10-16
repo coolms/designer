@@ -50,7 +50,7 @@ export class DeleteElementCommand implements Command {
         private readonly element: BpmnElement,
     ) {
         const kindLabel = paletteItemLabel(element.type, element.subtype, undefined, editor.t);
-        this.label = editor.t('designer.command.deleteElement', 'Delete %kind%', {
+        this.label = editor.t('designer.command.deleteElement', {
             kind: kindLabel,
         });
     }

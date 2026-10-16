@@ -32,7 +32,7 @@ export class RenameDecisionCommand implements Command {
         private readonly next: string,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.renameDecision', 'Rename decision');
+        this.label = t('designer.command.dmn.renameDecision');
     }
     apply(): void {
         this.previous = this.model.setName(this.next);
@@ -50,7 +50,7 @@ export class SetHitPolicyCommand implements Command {
         private readonly next: HitPolicy,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.changeHitPolicy', 'Change hit policy');
+        this.label = t('designer.command.dmn.changeHitPolicy');
     }
     apply(): void {
         this.previous = this.model.setHitPolicy(this.next);
@@ -68,7 +68,7 @@ export class SetAggregatorCommand implements Command {
         private readonly next: Aggregator | null,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.changeAggregator', 'Change aggregator');
+        this.label = t('designer.command.dmn.changeAggregator');
     }
     apply(): void {
         this.previous = this.model.setAggregator(this.next);
@@ -87,7 +87,7 @@ export class AddRuleCommand implements Command {
         private readonly atIndex?: number,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.addRule', 'Add rule');
+        this.label = t('designer.command.dmn.addRule');
     }
     apply(): void {
         const state = this.model.state;
@@ -114,7 +114,7 @@ export class DeleteRuleCommand implements Command {
         private readonly atIndex: number,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.deleteRule', 'Delete rule');
+        this.label = t('designer.command.dmn.deleteRule');
     }
     apply(): void {
         this.removedRule = this.model.removeRuleAt(this.atIndex);
@@ -133,7 +133,7 @@ export class AddInputClauseCommand implements Command {
         private readonly atIndex?: number,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.addInputColumn', 'Add input column');
+        this.label = t('designer.command.dmn.addInputColumn');
     }
     apply(): void {
         const state = this.model.state;
@@ -161,7 +161,7 @@ export class DeleteInputClauseCommand implements Command {
         private readonly atIndex: number,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.deleteInputColumn', 'Delete input column');
+        this.label = t('designer.command.dmn.deleteInputColumn');
     }
     apply(): void {
         this.removed = this.model.removeInputClauseAt(this.atIndex);
@@ -187,7 +187,7 @@ export class AddOutputClauseCommand implements Command {
         private readonly atIndex?: number,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.addOutputColumn', 'Add output column');
+        this.label = t('designer.command.dmn.addOutputColumn');
     }
     apply(): void {
         const state = this.model.state;
@@ -214,7 +214,7 @@ export class DeleteOutputClauseCommand implements Command {
         private readonly atIndex: number,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.deleteOutputColumn', 'Delete output column');
+        this.label = t('designer.command.dmn.deleteOutputColumn');
     }
     apply(): void {
         this.removed = this.model.removeOutputClauseAt(this.atIndex);
@@ -239,7 +239,7 @@ export class SetInputNameCommand implements Command {
         private readonly next: string,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.renameInputColumn', 'Rename input column');
+        this.label = t('designer.command.dmn.renameInputColumn');
     }
     apply(): void {
         this.previous = this.model.setInputClauseName(this.index, this.next);
@@ -258,7 +258,7 @@ export class SetInputExpressionCommand implements Command {
         private readonly next: string,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.editInputExpression', 'Edit input expression');
+        this.label = t('designer.command.dmn.editInputExpression');
     }
     apply(): void {
         this.previous = this.model.setInputClauseExpression(this.index, this.next);
@@ -277,7 +277,7 @@ export class SetInputTypeCommand implements Command {
         private readonly next: DataType,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.changeInputType', 'Change input type');
+        this.label = t('designer.command.dmn.changeInputType');
     }
     apply(): void {
         this.previous = this.model.setInputClauseType(this.index, this.next);
@@ -296,7 +296,7 @@ export class SetOutputNameCommand implements Command {
         private readonly next: string,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.renameOutputColumn', 'Rename output column');
+        this.label = t('designer.command.dmn.renameOutputColumn');
     }
     apply(): void {
         this.previous = this.model.setOutputClauseName(this.index, this.next);
@@ -315,7 +315,7 @@ export class SetOutputTypeCommand implements Command {
         private readonly next: DataType,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.changeOutputType', 'Change output type');
+        this.label = t('designer.command.dmn.changeOutputType');
     }
     apply(): void {
         this.previous = this.model.setOutputClauseType(this.index, this.next);
@@ -335,7 +335,7 @@ export class SetInputEntryCommand implements Command {
         private readonly next: string,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.editInputEntry', 'Edit input entry');
+        this.label = t('designer.command.dmn.editInputEntry');
     }
     apply(): void {
         this.previous = this.model.setInputEntry(this.ruleIndex, this.columnIndex, this.next);
@@ -355,7 +355,7 @@ export class SetOutputEntryCommand implements Command {
         private readonly next: string,
         t: Translator = defaultTranslator,
     ) {
-        this.label = t('designer.command.dmn.editOutputEntry', 'Edit output entry');
+        this.label = t('designer.command.dmn.editOutputEntry');
     }
     apply(): void {
         this.previous = this.model.setOutputEntry(this.ruleIndex, this.columnIndex, this.next);

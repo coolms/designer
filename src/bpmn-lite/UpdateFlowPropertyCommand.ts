@@ -46,7 +46,7 @@ export class UpdateFlowPropertyCommand implements Command {
         this.previousValue = flow !== null
             ? this.readProperty(flow, propertyKey)
             : undefined;
-        this.label = editor.t('designer.command.editFlow', 'Edit flow %property%', {
+        this.label = editor.t('designer.command.editFlow', {
             property: propertyKey,
         });
     }

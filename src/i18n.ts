@@ -1,29 +1,35 @@
 /**
  * Translation seam.
  *
- * The package owns message KEYS and an English fallback written inline at
- * every call site. It owns no catalogue, no loader and no locale state --
- * a host supplies a {@link Translator} and the strings come from wherever
- * that host keeps them.
+ * Code holds only the KEY of a message: `t('designer.toolbar.undo')`, or
+ * `t('designer.command.connect', { source, target })` with parameters. The
+ * text lives in one place per language: a catalogue. The package ships its
+ * base catalogue -- every key it uses, in its source language -- as
+ * `src/i18n/messages.en.json`, bundled into the build, and that catalogue is
+ * the last thing every lookup falls back to. `npm run i18n:check` fails a key
+ * the code uses that the base catalogue lacks, and a translate call that
+ * passes text where a key's parameters belong.
  *
- * That split is what lets one package serve two very different consumers:
+ * The lookup order a host builds, most specific first:
  *
- *  - **Standalone.** Pass nothing and the editor speaks English, because
- *    the fallback IS the message. Pass {@link createCatalogTranslator} over
- *    your own JSON and it speaks whatever you loaded, with no dependency
- *    added and no build step.
- *  - **Server-driven.** Pass a translator backed by an API and the strings
- *    arrive from the backend, so a new language is a catalogue change
- *    rather than a release of this package.
+ *  1. the catalogue for the person's locale (`uk-UA`);
+ *  2. the catalogue for its parent (`uk`);
+ *  3. the catalogue for the platform's default locale, as the server reports it;
+ *  4. the package's bundled base catalogue -- always, and always last.
  *
- * **Placeholders are `%name%`**, deliberately: it is the spelling XLIFF
- * catalogues already use, so a message can move between a bundled JSON file
- * and a server catalogue without being rewritten.
+ * {@link createCatalogTranslator} takes 1-3 in that order and appends 4
+ * itself, so a host cannot forget it; a blank or missing entry falls through
+ * to the next. A host that passes nothing gets the base language
+ * ({@link defaultTranslator}).
+ *
+ * **Placeholders are `%name%`**: the spelling XLIFF catalogues already use,
+ * so a message moves between a bundled JSON file and a server catalogue
+ * without being rewritten.
  *
  * Keys are dotted and namespaced under `designer.` so they can live inside a
  * consuming module's own catalogue without colliding with its messages.
  *
- * @example Standalone, with a bundled catalogue
+ * @example Standalone, with a bundled translation
  * ```ts
  * import { createEditor, createCatalogTranslator } from '@coolms/designer';
  * import uk from './locale/uk.json';
@@ -31,31 +37,31 @@
  * createEditor(host, { surface: 'dmn-drd', t: createCatalogTranslator(uk) });
  * ```
  *
- * @example Server-driven
+ * @example Server-driven: the person's locale, its parent, the platform default
  * ```ts
  * createEditor(host, {
  *     surface: 'dmn-drd',
- *     t: (key, fallback, params) => catalogue.get(key, fallback, params),
+ *     t: createCatalogTranslator(forLocale, forParent, forPlatformDefault),
  * });
  * ```
  */
 
+import baseMessages from './i18n/messages.en.json';
+
 /** Values substituted into `%name%` placeholders. */
 export type TranslationParams = Readonly<Record<string, string | number>>;
 
+/** A flat catalogue: message key -> message text. */
+export type Messages = Readonly<Record<string, string>>;
+
+/** Resolves a message key, with its parameters, to display text. */
+export type Translator = (key: string, params?: TranslationParams) => string;
+
 /**
- * Resolves a message key to display text.
- *
- * `fallback` is the English source written at the call site. A translator
- * that has no entry for `key` MUST return it (interpolated) rather than the
- * key itself -- a missing translation should read as English, never as
- * `designer.toolbar.undo`.
+ * The package's base catalogue: every key the package uses, in its source
+ * language. Bundled into the build; the last fallback of every lookup.
  */
-export type Translator = (
-    key: string,
-    fallback: string,
-    params?: TranslationParams,
-) => string;
+export const designerMessages: Messages = baseMessages;
 
 /**
  * Substitute `%name%` placeholders.
@@ -73,28 +79,29 @@ export function interpolate(text: string, params?: TranslationParams): string {
 }
 
 /**
- * The translator used when a host supplies none: ignore the key, return the
- * interpolated English fallback. This is what makes the package usable with
- * zero configuration.
- */
-export const defaultTranslator: Translator = (_key, fallback, params) =>
-    interpolate(fallback, params);
-
-/**
- * Build a {@link Translator} over a flat `{key: message}` catalogue.
+ * Build a {@link Translator} over catalogues, most specific first -- the
+ * person's locale, its parent, the platform default -- with the package's
+ * base catalogue appended as the last fallback.
  *
- * Blank and missing entries both fall through to the call-site English, so a
- * partially translated catalogue degrades message by message instead of
- * showing empty labels.
+ * A blank or missing entry falls through to the next catalogue, so a
+ * partially translated catalogue degrades message by message. A key that no
+ * catalogue holds reads as the key itself: the base catalogue holds every key
+ * the package uses (`npm run i18n:check`), so only a key a host made up can
+ * get there, and it should be visible.
  */
-export function createCatalogTranslator(
-    messages: Readonly<Record<string, string>>,
-): Translator {
-    return (key, fallback, params) => {
-        const message = messages[key];
-        return interpolate(
-            message === undefined || message === '' ? fallback : message,
-            params,
-        );
+export function createCatalogTranslator(...catalogues: readonly Messages[]): Translator {
+    const chain: readonly Messages[] = [...catalogues, designerMessages];
+    return (key, params) => {
+        for (const catalogue of chain) {
+            const message = catalogue[key];
+            if (message !== undefined && message !== '') return interpolate(message, params);
+        }
+        return interpolate(key, params);
     };
 }
+
+/**
+ * The translator used when a host supplies none: the base catalogue alone.
+ * This is what makes the package usable with zero configuration.
+ */
+export const defaultTranslator: Translator = createCatalogTranslator();
