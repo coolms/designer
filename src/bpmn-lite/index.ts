@@ -50,7 +50,7 @@ export {
     BpmnLiteKeyboardController,
     isEditableTarget,
 } from './BpmnLiteKeyboardController.js';
-export type { BpmnLiteKeyboardControllerOptions } from './BpmnLiteKeyboardController.js';
+export type { BpmnLiteKeyboardControllerOptions, BpmnLiteKeySource } from './BpmnLiteKeyboardController.js';
 export { PanMode } from './PanMode.js';
 export type { PanModeOptions } from './PanMode.js';
 
