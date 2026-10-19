@@ -1082,13 +1082,13 @@ export class BpmnLiteEditor {
 
         const title = doc.createElement('div');
         title.classList.add('coolms-designer__bpmn-lite-banner-title');
-        title.textContent = this.t('designer.bpmn.banner.title', 'BPMN-Lite editor');
+        title.textContent = this.t('designer.bpmn.banner.title');
         banner.appendChild(title);
 
         const subtitle = doc.createElement('div');
         subtitle.classList.add('coolms-designer__bpmn-lite-banner-subtitle');
         subtitle.textContent =
-            this.t('designer.bpmn.banner.subtitle', 'Drag an element from the palette to begin.');
+            this.t('designer.bpmn.banner.subtitle');
         banner.appendChild(subtitle);
 
         host.appendChild(banner);

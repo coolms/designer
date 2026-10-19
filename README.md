@@ -68,7 +68,7 @@ Keeping it to one entry point is not just API taste. The editors share module-le
 
 ## Translation
 
-The package carries **message keys and an English fallback at every call site**, and owns no catalogue, no loader and no locale state. Pass nothing and the editor speaks English — that is the fallback doing its job, not a missing feature. Pass a translator and every label, description, placeholder, `aria-label` and undo tooltip comes from wherever you keep your strings.
+**Code holds only the key** of every message — `t('designer.toolbar.undo')`, or `t('designer.command.connect', { source, target })` with parameters. The text lives in catalogues. The package ships its **base catalogue** (`src/i18n/messages.en.json`, exported as `designerMessages`): every key it uses, in its source language, bundled into the build. Pass nothing and the editor reads that catalogue. Pass a translator and every label, description, placeholder, `aria-label` and undo tooltip comes from the catalogues you give it.
 
 ```ts
 import { createEditor, createCatalogTranslator } from '@coolms/designer';
@@ -77,22 +77,25 @@ import uk from './locale/uk.json';
 createEditor(host, { surface: 'bpmn-lite', t: createCatalogTranslator(uk) });
 ```
 
-`t` is `(key, fallback, params?) => string`, so a server-driven host supplies its own instead:
+`createCatalogTranslator` takes catalogues **most specific first** and always appends the base catalogue last. A server-driven host passes the person's locale, its parent (`uk-UA` → `uk`), then the platform's default locale as the server reports it:
 
 ```ts
 createEditor(host, {
     surface: 'bpmn-lite',
-    t: (key, fallback, params) => myCatalogue.get(key, fallback, params),
+    t: createCatalogTranslator(forLocale, forParent, forPlatformDefault),
 });
 ```
 
-Three properties worth knowing:
+`t` is `(key, params?) => string`.
 
-- **A missing entry reads as English, never as a key.** A partially translated catalogue degrades one message at a time; it never shows `designer.toolbar.undo` to a user.
-- **Placeholders are `%name%`**, the spelling XLIFF catalogues already use, so a message moves between a bundled JSON file and a server catalogue without being rewritten.
-- **Composed labels are one message, not a concatenation.** `'%subtype% Event'` is a single entry precisely so a translation can put the noun first — which most languages do.
+Four properties worth knowing:
 
-Keys are namespaced under `designer.` (`designer.toolbar.undo`, `designer.bpmn.field.label.label`, `designer.command.connect`) so they can live inside a host application's own catalogue without colliding. The editor exposes the resolved translator as `editor.t`, so surface code you construct yourself shares one rather than defaulting to English independently.
+- **A missing entry falls through to the next catalogue, ending at the base one.** A partially translated catalogue degrades one message at a time. The base catalogue holds every key the code uses, so a person never sees `designer.toolbar.undo`.
+- **`npm run i18n:check` holds that.** It fails on a key the code uses that the base catalogue lacks. It also fails on a call that passes text where a key's parameters belong, and on a key composed at run time, which nothing could check. It reports, without failing, how much of the base catalogue each other shipped catalogue covers. Its self-test plants each failing shape and asserts it is caught.
+- **Placeholders are `%name%`**, the spelling XLIFF catalogues already use. A message moves between a bundled JSON file and a server catalogue without being rewritten.
+- **Composed labels are one message, not a concatenation.** `'%subtype% Event'` is a single entry precisely so a translation can put the noun first, as most languages do.
+
+Keys are namespaced under `designer.` (`designer.toolbar.undo`, `designer.bpmn.field.label.label`, `designer.command.connect`), so they can live inside a host application's own catalogue without colliding. `npm run i18n:extract` prints the base catalogue for a host to convert to its own format. The editor exposes the resolved translator as `editor.t`, so surface code you construct yourself shares one instead of defaulting to the base catalogue independently.
 
 ## Module federation
 

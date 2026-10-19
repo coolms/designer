@@ -103,10 +103,11 @@ export interface EditorOptions {
     /**
      * Resolves the editor's user-visible text.
      *
-     * Omit it and every string is the English written at its call site,
-     * which is what keeps the package usable with no configuration. Supply
-     * one and the strings come from wherever you keep them -- a bundled
-     * catalogue via {@link createCatalogTranslator}, or a server.
+     * Omit it and every string comes from the package's bundled base
+     * catalogue, which is what keeps the package usable with no
+     * configuration. Supply one and the strings come from wherever you keep
+     * them -- catalogues via {@link createCatalogTranslator} (a bundled file,
+     * or a server's), which falls back to the base catalogue last.
      *
      * It is handed to the chrome this factory builds AND exposed on the
      * returned handle, so surface code a host constructs itself can pass

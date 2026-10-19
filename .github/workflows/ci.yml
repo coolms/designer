@@ -34,6 +34,11 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # Code holds keys only: a key missing from the base catalogue, a call passing text, or a key composed at run
+      # time fails here, and the check's self-test proves each of those is caught.
+      - name: Messages
+        run: npm run i18n:check
+
       - name: Test
         run: npm test
 

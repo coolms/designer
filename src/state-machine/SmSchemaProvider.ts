@@ -36,21 +36,19 @@ export class SmSchemaProvider {
             {
                 type: 'text',
                 key: 'name',
-                label: t('designer.sm.field.name.label', 'Name'),
+                label: t('designer.sm.field.name.label'),
                 description: t(
                     'designer.sm.place.name.description',
-                    'The place (state) name — used verbatim in the Symfony places list and referenced by transitions.',
                 ),
-                placeholder: t('designer.sm.place.name.placeholder', 'e.g. submitted'),
+                placeholder: t('designer.sm.place.name.placeholder'),
             },
             {
                 type: 'boolean',
                 key: 'initial',
-                label: t('designer.sm.field.initial.label', 'Initial state'),
-                checkboxLabel: t('designer.sm.field.initial.checkboxLabel', 'Start here'),
+                label: t('designer.sm.field.initial.label'),
+                checkboxLabel: t('designer.sm.field.initial.checkboxLabel'),
                 description: t(
                     'designer.sm.field.initial.description',
-                    "Symfony initial_marking. A state machine has exactly one — turning this on clears it on the previous initial place.",
                 ),
             },
         ];
@@ -66,34 +64,33 @@ export class SmSchemaProvider {
             {
                 type: 'text',
                 key: 'name',
-                label: t('designer.sm.field.name.label', 'Name'),
-                description: t('designer.sm.transition.name.description', 'The transition name — the verb that moves between states.'),
-                placeholder: t('designer.sm.transition.name.placeholder', 'e.g. submit'),
+                label: t('designer.sm.field.name.label'),
+                description: t('designer.sm.transition.name.description'),
+                placeholder: t('designer.sm.transition.name.placeholder'),
             },
             {
                 type: 'select',
                 key: 'from',
-                label: t('designer.sm.field.from.label', 'From'),
+                label: t('designer.sm.field.from.label'),
                 options,
                 allowEmpty: false,
             },
             {
                 type: 'select',
                 key: 'to',
-                label: t('designer.sm.field.to.label', 'To'),
+                label: t('designer.sm.field.to.label'),
                 options,
                 allowEmpty: false,
             },
             {
                 type: 'el-expression',
                 key: 'guard',
-                label: t('designer.sm.field.guard.label', 'Guard'),
+                label: t('designer.sm.field.guard.label'),
                 elFlavour: 'workflow',
                 description: t(
                     'designer.sm.field.guard.description',
-                    "Symfony EL — e.g. subject.totalAmount > 0 or is_granted('ROLE_MANAGER'). Blank means the transition is always allowed.",
                 ),
-                placeholder: t('designer.sm.field.guard.placeholder', 'subject.totalAmount > 0'),
+                placeholder: t('designer.sm.field.guard.placeholder'),
             },
         ];
     }
@@ -105,34 +102,33 @@ export class SmSchemaProvider {
             {
                 type: 'text',
                 key: 'workflowName',
-                label: t('designer.sm.field.workflowName.label', 'Workflow name'),
-                description: t('designer.sm.field.workflowName.description', 'The framework.workflows.<name> config key.'),
-                placeholder: t('designer.sm.field.workflowName.placeholder', 'order_lifecycle'),
+                label: t('designer.sm.field.workflowName.label'),
+                description: t('designer.sm.field.workflowName.description'),
+                placeholder: t('designer.sm.field.workflowName.placeholder'),
             },
             {
                 type: 'text',
                 key: 'markingProperty',
-                label: t('designer.sm.field.markingProperty.label', 'Marking property'),
+                label: t('designer.sm.field.markingProperty.label'),
                 description: t(
                     'designer.sm.field.markingProperty.description',
-                    'The entity property holding the current state (marking_store.property).',
                 ),
-                placeholder: t('designer.sm.field.markingProperty.placeholder', 'status'),
+                placeholder: t('designer.sm.field.markingProperty.placeholder'),
             },
             {
                 type: 'textarea',
                 key: 'supports',
-                label: t('designer.sm.field.supports.label', 'Supports (entity classes)'),
+                label: t('designer.sm.field.supports.label'),
                 rows: 3,
-                description: t('designer.sm.field.supports.description', 'One fully-qualified class name per line.'),
-                placeholder: t('designer.sm.field.supports.placeholder', 'Acme\\Shop\\Order'),
+                description: t('designer.sm.field.supports.description'),
+                placeholder: t('designer.sm.field.supports.placeholder'),
             },
             {
                 type: 'boolean',
                 key: 'auditTrail',
-                label: t('designer.sm.field.auditTrail.label', 'Audit trail'),
-                checkboxLabel: t('designer.sm.field.auditTrail.checkboxLabel', 'Log every transition'),
-                description: t('designer.sm.field.auditTrail.description', 'Symfony audit_trail.enabled — emit an audit log row per transition.'),
+                label: t('designer.sm.field.auditTrail.label'),
+                checkboxLabel: t('designer.sm.field.auditTrail.checkboxLabel'),
+                description: t('designer.sm.field.auditTrail.description'),
             },
         ];
     }

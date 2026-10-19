@@ -96,11 +96,11 @@ export class UpdateElementPropertyCommand implements Command {
             ? this.readProperty(element, propertyKey)
             : undefined;
         this.label = element !== null
-            ? editor.t('designer.command.editElementTyped', 'Edit %type% %property%', {
+            ? editor.t('designer.command.editElementTyped', {
                   type: element.type,
                   property: propertyKey,
               })
-            : editor.t('designer.command.editElement', 'Edit %property%', {
+            : editor.t('designer.command.editElement', {
                   property: propertyKey,
               });
     }

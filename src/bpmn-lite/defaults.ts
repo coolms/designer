@@ -57,37 +57,56 @@ export function defaultGeometryFor(kind: BpmnElementKind): GeometryDefault {
 }
 
 /**
- * Human-readable label for the palette button. Title case + spaced
- * for readability ("Start Event" not "startEvent"). Surface tooltips
- * + screen-reader labels reuse these.
+ * The message key of each kind's palette label. The text ("Start Event",
+ * title case, spaced) lives in the catalogues; surface tooltips and
+ * screen-reader labels reuse these.
  */
-export const PALETTE_LABELS: Record<BpmnElementKind, string> = {
-    startEvent: 'Start Event',
-    endEvent: 'End Event',
-    task: 'Task',
-    exclusiveGateway: 'Exclusive Gateway',
-    parallelGateway: 'Parallel Gateway',
-    inclusiveGateway: 'Inclusive Gateway',
-    eventBasedGateway: 'Event Gateway',
-    intermediateCatchEvent: 'Catch Event',
-    boundaryEvent: 'Boundary Event',
-    subProcess: 'Subprocess',
-    callActivity: 'Call Activity',
+export const PALETTE_LABEL_KEYS: Record<BpmnElementKind, string> = {
+    startEvent: 'designer.palette.kind.startEvent',
+    endEvent: 'designer.palette.kind.endEvent',
+    task: 'designer.palette.kind.task',
+    exclusiveGateway: 'designer.palette.kind.exclusiveGateway',
+    parallelGateway: 'designer.palette.kind.parallelGateway',
+    inclusiveGateway: 'designer.palette.kind.inclusiveGateway',
+    eventBasedGateway: 'designer.palette.kind.eventBasedGateway',
+    intermediateCatchEvent: 'designer.palette.kind.intermediateCatchEvent',
+    boundaryEvent: 'designer.palette.kind.boundaryEvent',
+    subProcess: 'designer.palette.kind.subProcess',
+    callActivity: 'designer.palette.kind.callActivity',
 };
+
+/** Each label of a key map, as the package's bundled base catalogue has it. */
+function baseLabels<K extends string>(keys: Record<K, string>): Record<K, string> {
+    const out = {} as Record<K, string>;
+    for (const kind of Object.keys(keys) as K[]) {
+        out[kind] = defaultTranslator(keys[kind]);
+    }
+    return out;
+}
+
+/**
+ * Each kind's palette label in the package's base language, read from its
+ * bundled catalogue (see {@link PALETTE_LABEL_KEYS}); a translated label
+ * comes from the host's {@link Translator}.
+ */
+export const PALETTE_LABELS: Record<BpmnElementKind, string> = baseLabels(PALETTE_LABEL_KEYS);
 
 /**
  * Display name per event subtype. Used to build the per-subtype
  * palette tiles ("Timer Event") + the {@link AddElementCommand} undo
  * label, shared by the catch + boundary families.
  */
-export const EVENT_SUBTYPE_LABELS: Record<BpmnEventSubtype, string> = {
-    timer: 'Timer',
-    message: 'Message',
-    signal: 'Signal',
-    condition: 'Condition',
-    error: 'Error',
-    compensation: 'Compensation',
+export const EVENT_SUBTYPE_LABEL_KEYS: Record<BpmnEventSubtype, string> = {
+    timer: 'designer.palette.subtype.timer',
+    message: 'designer.palette.subtype.message',
+    signal: 'designer.palette.subtype.signal',
+    condition: 'designer.palette.subtype.condition',
+    error: 'designer.palette.subtype.error',
+    compensation: 'designer.palette.subtype.compensation',
 };
+
+/** Each event subtype's label in the base language, from the bundled catalogue. */
+export const EVENT_SUBTYPE_LABELS: Record<BpmnEventSubtype, string> = baseLabels(EVENT_SUBTYPE_LABEL_KEYS);
 
 /**
  * The ordered list of element kinds the palette ships with.
@@ -175,7 +194,7 @@ export const PALETTE_ITEMS: readonly PaletteItem[] = [
 
 /**
  * Display label for a palette tile / undo entry. Typed events read
- * "Timer Event"; untyped kinds fall back to {@link PALETTE_LABELS}.
+ * "Timer Event"; untyped kinds fall back to {@link PALETTE_LABEL_KEYS}.
  */
 export function paletteItemLabel(
     kind: BpmnElementKind,
@@ -183,29 +202,24 @@ export function paletteItemLabel(
     variant?: string,
     t: Translator = defaultTranslator,
 ): string {
-    const kindLabel = (): string => t(`designer.palette.kind.${kind}`, PALETTE_LABELS[kind]);
+    const kindLabel = (): string => t(PALETTE_LABEL_KEYS[kind]);
     if (kind === 'task' && variant !== undefined) {
-        const variantLabel = TASK_VARIANT_LABELS[variant];
-        return variantLabel === undefined
-            ? kindLabel()
-            : t(`designer.palette.variant.${variant}`, variantLabel);
+        const variantKey = TASK_VARIANT_LABEL_KEYS[variant];
+        return variantKey === undefined ? kindLabel() : t(variantKey);
     }
     if (subtype === undefined) return kindLabel();
 
     // The composed forms are ONE message each, not a concatenation of two:
     // English puts the noun last, and a translator has to be free to move it.
-    const subtypeLabel = t(
-        `designer.palette.subtype.${subtype}`,
-        EVENT_SUBTYPE_LABELS[subtype],
-    );
+    const subtypeLabel = t(EVENT_SUBTYPE_LABEL_KEYS[subtype]);
     if (kind === 'intermediateCatchEvent') {
-        return t('designer.palette.catchEvent', '%subtype% Event', { subtype: subtypeLabel });
+        return t('designer.palette.catchEvent', { subtype: subtypeLabel });
     }
     if (kind === 'boundaryEvent') {
         // "Timer Boundary" reads better on a narrow tile than
         // "Boundary Timer Event", and keeps the subtype word first so
         // the tiles sort/scan by what they catch.
-        return t('designer.palette.boundaryEvent', '%subtype% Boundary', { subtype: subtypeLabel });
+        return t('designer.palette.boundaryEvent', { subtype: subtypeLabel });
     }
     return kindLabel();
 }
@@ -226,10 +240,10 @@ export function paletteItemKey(
     return discriminator === undefined ? kind : `${kind}:${discriminator}`;
 }
 
-/** Human labels for the task flavours the palette ships as tiles. */
-const TASK_VARIANT_LABELS: Record<string, string> = {
-    userTask: 'User Task',
-    serviceTask: 'Service Task',
+/** The message keys of the task flavours the palette ships as tiles. */
+const TASK_VARIANT_LABEL_KEYS: Record<string, string> = {
+    userTask: 'designer.palette.variant.userTask',
+    serviceTask: 'designer.palette.variant.serviceTask',
 };
 
 /**
