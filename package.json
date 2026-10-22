@@ -1,6 +1,6 @@
 {
     "name": "@coolms/designer",
-    "version": "0.1.0-alpha.1",
+    "version": "0.1.0-alpha.2",
     "description": "Framework-agnostic vanilla TypeScript visual designer for BPMN-Lite, DMN decision tables, DMN DRDs, and Symfony Workflow state machines. MIT-licensed, zero runtime dependencies.",
     "license": "MIT",
     "author": {
