@@ -12,6 +12,20 @@ describes.
 
 ### Changed
 
+- **Breaking: requires Node 22.12, 24 or 26.** `engines.node` moves from
+  `>=20` to `^22.12.0 || ^24.0.0 || ^26.0.0`: exactly the Node lines CI runs,
+  each from the highest floor any package in the lockfile declares. Node 20 is
+  past its end of life; the odd lines and Node 27 and later are not declared
+  until CI runs them, and CI checks the range against its matrix and the
+  lockfile. The build runs on esbuild 0.28 and the tests on vitest 5 with vite
+  8.3.4, which clears 20 of the 21 advisories `.github/advisories.txt` listed.
+  Both built bundles gain the same four statements and lose none: esbuild 0.28
+  declares TypeScript parameter properties as class fields (`editor` and
+  `element` on the add-element command, `kind` on
+  `UnknownElementKindError`), as TypeScript does with
+  `useDefineForClassFields`, and keeps a `void` the source writes. Every value
+  is the same; on the add-element command, `editor` and `element` now come
+  before `label` in its own keys.
 - **Code holds only message keys; the text lives in catalogues.** Every
   translate call is `t(key)` or `t(key, params)` -- the English second argument
   is gone from all 246 call sites. The package ships its base catalogue,
