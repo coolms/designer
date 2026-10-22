@@ -8,7 +8,7 @@ This file starts at the package's first publish, so nothing in it is
 reconstructed -- every entry is written in the same commit as the change it
 describes.
 
-## Unreleased
+## 0.1.0-alpha.2 -- 2026-10-22
 
 ### Changed
 
