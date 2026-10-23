@@ -44,8 +44,7 @@
     --coolms-designer-accent-wash:       #dbeafe;  /* the active-mode fill */
     --coolms-designer-accent-wash-hover: #bfdbfe;  /* that fill, hovered */
     --coolms-designer-accent-tint:       #eef2ff;  /* the faintest accent fill: pressed palette, DRD input box */
-    --coolms-designer-focus:             #6366f1;  /* focus ring colour */
-    --coolms-designer-focus-ring:        rgba(99, 102, 241, 0.15);  /* the ring itself */
+    --coolms-designer-focus:             var(--coolms-designer-accent);  /* the focus ring: a solid 2px outline, never a halo */
     --coolms-designer-danger:            #ef4444;  /* destructive affordances */
     --coolms-designer-danger-line:       #fecaca;  /* their border */
     --coolms-designer-danger-wash:       #fee2e2;  /* their hover fill */
@@ -428,10 +427,17 @@
     box-sizing: border-box;
 }
 
+/*
+ * A solid ring, not a translucent halo: a 15% wash of the focus colour around
+ * a white field is barely distinguishable from the field, which is the one
+ * thing a focus indicator must not be. Drawn as an outline, so it costs no
+ * layout and survives forced-colors mode, where a box-shadow is dropped.
+ */
 .coolms-designer__field-input:focus {
-    outline: none;
+    outline: 2px solid var(--coolms-designer-focus);
+    outline-offset: -1px;
     border-color: var(--coolms-designer-field-input-focus-border);
-    box-shadow: 0 0 0 3px var(--coolms-designer-focus-ring, rgba(99, 102, 241, 0.15));
+    box-shadow: none;
 }
 
 .coolms-designer__field-input:disabled {
@@ -603,7 +609,7 @@
 }
 
 .coolms-designer__dmn-table-entry-input:focus {
-    outline: 2px solid var(--coolms-designer-focus, #6366f1);
+    outline: 2px solid var(--coolms-designer-focus);
     outline-offset: -2px;
 }
 
@@ -1417,8 +1423,6 @@
     --coolms-designer-accent-wash:       #16263f;
     --coolms-designer-accent-wash-hover: #1e3a5f;
     --coolms-designer-accent-tint:       #16263f;
-    --coolms-designer-focus:             #818cf8;
-    --coolms-designer-focus-ring:        rgba(129, 140, 248, 0.28);
     --coolms-designer-danger:            #f87171;
     --coolms-designer-danger-line:       #7f3a40;
     --coolms-designer-danger-wash:       #3a1a1d;

@@ -46,6 +46,20 @@ describes.
   out of the call sites and skipped every call written `this.t(` or `x.t(`:
   40 of the 240 keys never reached a host's catalogue.
 
+### Changed
+
+- The focus indicator is a solid 2px ring in the editor accent, on every
+  focusable field: the property panel's inputs drew a 15% translucent halo,
+  and the decision table's cells an indigo ring that matched nothing else.
+  `--coolms-designer-focus` now defaults to `--coolms-designer-accent`, so
+  re-pointing the accent moves the ring with it; a host that has its own
+  focus colour sets `--coolms-designer-focus` on `.coolms-designer`.
+
+### Removed
+
+- `--coolms-designer-focus-ring`, the halo's colour. Nothing draws a halo
+  any more, so an override of it would paint nothing.
+
 ### Added
 
 - **`npm run i18n:check`, in CI.** Fails on a key the code uses that the base
