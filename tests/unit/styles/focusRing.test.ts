@@ -27,14 +27,16 @@ interface Rule {
 function rules(): Rule[] {
     const found: Rule[] = [];
     for (const m of CSS.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-        found.push({ selector: m[1].trim(), body: m[2] });
+        const [, selector = '', body = ''] = m;
+        found.push({ selector: selector.trim(), body });
     }
     return found;
 }
 
 function declaration(body: string, property: string): string | null {
     const m = new RegExp(`(?:^|;|\\s)${property}\\s*:\\s*([^;]+)`).exec(body);
-    return m ? m[1].trim() : null;
+    const value = m?.[1];
+    return undefined === value ? null : value.trim();
 }
 
 /** The custom properties as the light theme declares them, with the dark theme's on top when asked. */
@@ -42,7 +44,10 @@ function tokens(dark: boolean): Map<string, string> {
     const map = new Map<string, string>();
     const take = (r: Rule): void => {
         for (const m of r.body.matchAll(/(--coolms-designer-[\w-]+)\s*:\s*([^;]+)/g)) {
-            map.set(m[1], m[2].trim());
+            const [, name, value] = m;
+            if (undefined !== name && undefined !== value) {
+                map.set(name, value.trim());
+            }
         }
     };
     const all = rules();
@@ -59,8 +64,9 @@ function resolveValue(value: string, map: Map<string, string>, depth = 0): strin
     if (null === m) {
         return value.trim();
     }
-    const next = map.get(m[1]) ?? m[2];
-    expect(next, `${m[1]} is declared nowhere and has no fallback`).toBeDefined();
+    const [, name = '', fallback] = m;
+    const next = map.get(name) ?? fallback;
+    expect(next, `${name} is declared nowhere and has no fallback`).toBeDefined();
     return resolveValue(next as string, map, depth + 1);
 }
 
@@ -74,7 +80,7 @@ function luminance(hex: string): number {
 }
 
 function contrast(a: string, b: string): number {
-    const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+    const [hi = 0, lo = 0] = [luminance(a), luminance(b)].sort((x, y) => y - x);
     return (hi + 0.05) / (lo + 0.05);
 }
 
