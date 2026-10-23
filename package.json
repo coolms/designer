@@ -1,6 +1,6 @@
 {
     "name": "@coolms/designer",
-    "version": "0.1.0-alpha.1",
+    "version": "0.1.0-alpha.2",
     "description": "Framework-agnostic vanilla TypeScript visual designer for BPMN-Lite, DMN decision tables, DMN DRDs, and Symfony Workflow state machines. MIT-licensed, zero runtime dependencies.",
     "license": "MIT",
     "author": {
@@ -40,6 +40,7 @@
         "test:coverage": "vitest run --coverage",
         "typecheck": "tsc --noEmit",
         "i18n:extract": "node tools/extract-messages.mjs",
+        "i18n:check": "node tools/check-messages.mjs && node tools/check-messages.mjs --self-test",
         "build:visual": "node esbuild.visual.config.mjs",
         "test:visual": "npm run build:visual && playwright test",
         "test:visual:update": "npm run build:visual && playwright test --update-snapshots"
@@ -47,14 +48,15 @@
     "devDependencies": {
         "@playwright/test": "^1.49.1",
         "@types/node": "^22.10.0",
-        "@vitest/coverage-v8": "^2.1.8",
-        "esbuild": "^0.24.0",
+        "@vitest/coverage-v8": "^5.0.5",
+        "esbuild": "^0.28.0",
         "jsdom": "^25.0.1",
         "typescript": "^5.7.2",
-        "vitest": "^2.1.8"
+        "vite": "8.3.4",
+        "vitest": "^5.0.5"
     },
     "engines": {
-        "node": ">=20"
+        "node": "^22.12.0 || ^24.0.0 || ^26.0.0"
     },
     "keywords": [
         "bpmn",

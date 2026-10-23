@@ -26,18 +26,18 @@ export interface ToolbarLabels {
  */
 function defaultLabels(t: Translator): ToolbarLabels {
     return {
-        save: t('designer.toolbar.save', 'Save'),
-        deploy: t('designer.toolbar.deploy', 'Deploy'),
-        undo: t('designer.toolbar.undo', 'Undo'),
-        redo: t('designer.toolbar.redo', 'Redo'),
-        zoomIn: t('designer.toolbar.zoomIn', 'Zoom in'),
-        zoomOut: t('designer.toolbar.zoomOut', 'Zoom out'),
-        zoomReset: t('designer.toolbar.zoomReset', 'Reset zoom'),
-        zoomFit: t('designer.toolbar.zoomFit', 'Fit diagram to canvas'),
-        connect: t('designer.toolbar.connect', 'Connect mode — draw flows between elements'),
-        connectExit: t('designer.toolbar.connectExit', 'Exit connect mode'),
-        hand: t('designer.toolbar.hand', 'Hand tool — drag to pan the canvas'),
-        handExit: t('designer.toolbar.handExit', 'Exit hand tool'),
+        save: t('designer.toolbar.save'),
+        deploy: t('designer.toolbar.deploy'),
+        undo: t('designer.toolbar.undo'),
+        redo: t('designer.toolbar.redo'),
+        zoomIn: t('designer.toolbar.zoomIn'),
+        zoomOut: t('designer.toolbar.zoomOut'),
+        zoomReset: t('designer.toolbar.zoomReset'),
+        zoomFit: t('designer.toolbar.zoomFit'),
+        connect: t('designer.toolbar.connect'),
+        connectExit: t('designer.toolbar.connectExit'),
+        hand: t('designer.toolbar.hand'),
+        handExit: t('designer.toolbar.handExit'),
     };
 }
 
@@ -203,7 +203,7 @@ export class Toolbar {
         this.host.setAttribute('role', 'toolbar');
         this.host.setAttribute(
             'aria-label',
-            t('designer.toolbar.ariaLabel', 'Designer toolbar'),
+            t('designer.toolbar.ariaLabel'),
         );
 
         // F-8 redesign -- four subgroups in document order. The

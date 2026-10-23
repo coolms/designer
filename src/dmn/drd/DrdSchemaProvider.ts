@@ -39,33 +39,29 @@ export class DrdSchemaProvider {
             {
                 type: 'text',
                 key: 'name',
-                label: t('designer.drd.element.name.label', 'Name'),
+                label: t('designer.drd.element.name.label'),
                 description: isInput
                     ? t(
                           'designer.drd.element.name.description.inputData',
-                          'The input-data name — the raw fact this node supplies to the decisions that require it.',
                       )
                     : t(
                           'designer.drd.element.name.description.decision',
-                          'The decision name — what this node decides.',
                       ),
                 placeholder: isInput
-                    ? t('designer.drd.element.name.placeholder.inputData', 'e.g. Applicant age')
-                    : t('designer.drd.element.name.placeholder.decision', 'e.g. Eligibility'),
+                    ? t('designer.drd.element.name.placeholder.inputData')
+                    : t('designer.drd.element.name.placeholder.decision'),
             },
         ];
         if (kind === 'decision') {
             fields.push({
                 type: 'text',
                 key: 'decisionLogicRef',
-                label: t('designer.drd.element.decisionLogicRef.label', 'Decision logic'),
+                label: t('designer.drd.element.decisionLogicRef.label'),
                 description: t(
                     'designer.drd.element.decisionLogicRef.description',
-                    'The decisionTable definition key supplying this decision\'s logic. Blank means the logic is authored elsewhere.',
                 ),
                 placeholder: t(
                     'designer.drd.element.decisionLogicRef.placeholder',
-                    'e.g. pricing.eligibility',
                 ),
             });
         }
@@ -82,10 +78,9 @@ export class DrdSchemaProvider {
             {
                 type: 'select',
                 key: 'from',
-                label: t('designer.drd.requirement.from.label', 'From (required)'),
+                label: t('designer.drd.requirement.from.label'),
                 description: t(
                     'designer.drd.requirement.from.description',
-                    'The source node — the Decision or InputData this requirement depends on.',
                 ),
                 options,
                 allowEmpty: false,
@@ -93,10 +88,9 @@ export class DrdSchemaProvider {
             {
                 type: 'select',
                 key: 'to',
-                label: t('designer.drd.requirement.to.label', 'To (requiring decision)'),
+                label: t('designer.drd.requirement.to.label'),
                 description: t(
                     'designer.drd.requirement.to.description',
-                    'The decision that requires the source. The arrow points into it.',
                 ),
                 options,
                 allowEmpty: false,
@@ -111,12 +105,11 @@ export class DrdSchemaProvider {
             {
                 type: 'text',
                 key: 'name',
-                label: t('designer.drd.diagram.name.label', 'Definition key'),
+                label: t('designer.drd.diagram.name.label'),
                 description: t(
                     'designer.drd.diagram.name.description',
-                    'The DecisionDefinition.definitionKey this DRD deploys as.',
                 ),
-                placeholder: t('designer.drd.diagram.name.placeholder', 'e.g. pricing'),
+                placeholder: t('designer.drd.diagram.name.placeholder'),
             },
         ];
     }

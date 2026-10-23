@@ -20,7 +20,9 @@ export {
     PALETTE_KINDS,
     PALETTE_ITEMS,
     PALETTE_LABELS,
+    PALETTE_LABEL_KEYS,
     EVENT_SUBTYPE_LABELS,
+    EVENT_SUBTYPE_LABEL_KEYS,
     defaultGeometryFor,
     defaultDirectionFor,
     gatewayCarriesDirection,
@@ -48,7 +50,7 @@ export {
     BpmnLiteKeyboardController,
     isEditableTarget,
 } from './BpmnLiteKeyboardController.js';
-export type { BpmnLiteKeyboardControllerOptions } from './BpmnLiteKeyboardController.js';
+export type { BpmnLiteKeyboardControllerOptions, BpmnLiteKeySource } from './BpmnLiteKeyboardController.js';
 export { PanMode } from './PanMode.js';
 export type { PanModeOptions } from './PanMode.js';
 

@@ -3,14 +3,14 @@ import { describe, expect, it } from 'vitest';
 import {
     createCatalogTranslator,
     defaultTranslator,
+    designerMessages,
     interpolate,
 } from '../../src/i18n.js';
 
 /**
- * The translation seam. The load-bearing property is that a MISSING
- * translation reads as English, never as a key -- a package that shows
- * `designer.toolbar.undo` to a user because a catalogue was incomplete is
- * worse than one that never offered translation at all.
+ * The translation seam. Code holds keys only; the text lives in catalogues, and the lookup runs the person's
+ * locale, its parent, the platform default, then the package's bundled base catalogue -- which holds every key the
+ * package uses, so a missing translation reads as the base language, never as a key.
  */
 describe('interpolate', () => {
     it('substitutes %name% placeholders', () => {
@@ -42,41 +42,59 @@ describe('interpolate', () => {
     });
 });
 
+describe('designerMessages, the bundled base catalogue', () => {
+    it('holds the keys the package uses, each with text', () => {
+        expect(Object.keys(designerMessages).length).toBeGreaterThan(200);
+        for (const [key, text] of Object.entries(designerMessages)) {
+            expect(key.startsWith('designer.'), key).toBe(true);
+            expect(text.trim()).not.toBe('');
+        }
+    });
+});
+
 describe('defaultTranslator', () => {
-    it('ignores the key and returns the interpolated fallback', () => {
-        expect(defaultTranslator('designer.any.key', 'Undo')).toBe('Undo');
-        expect(defaultTranslator('k', 'Add %kind%', { kind: 'Task' })).toBe('Add Task');
+    it('reads the bundled base catalogue', () => {
+        expect(defaultTranslator('designer.toolbar.undo')).toBe(designerMessages['designer.toolbar.undo']);
+    });
+
+    it('interpolates its parameters', () => {
+        expect(defaultTranslator('designer.command.connect', { source: 'a', target: 'b' })).toBe(
+            interpolate(designerMessages['designer.command.connect'] ?? '', { source: 'a', target: 'b' }),
+        );
+        expect(defaultTranslator('designer.command.connect', { source: 'a', target: 'b' })).not.toContain('%source%');
     });
 });
 
 describe('createCatalogTranslator', () => {
-    const t = createCatalogTranslator({
-        'designer.toolbar.undo': 'Скасувати',
-        'designer.command.add': 'Додати %kind%',
-        'designer.blank': '',
+    const forLocale = { 'designer.toolbar.undo': 'Скасувати', 'designer.blank': '' };
+    const forParent = { 'designer.toolbar.undo': 'parent-undo', 'designer.toolbar.redo': 'Повторити' };
+    const forDefault = { 'designer.toolbar.redo': 'default-redo', 'designer.toolbar.save': 'Зберегти' };
+    const t = createCatalogTranslator(forLocale, forParent, forDefault);
+
+    it('takes the most specific catalogue first: the locale over its parent', () => {
+        expect(t('designer.toolbar.undo')).toBe('Скасувати');
     });
 
-    it('resolves a key present in the catalogue', () => {
-        expect(t('designer.toolbar.undo', 'Undo')).toBe('Скасувати');
+    it('falls through to the parent, then to the platform default', () => {
+        expect(t('designer.toolbar.redo')).toBe('Повторити');
+        expect(t('designer.toolbar.save')).toBe('Зберегти');
     });
 
-    it('interpolates into the translated message, not the fallback', () => {
-        expect(t('designer.command.add', 'Add %kind%', { kind: 'Задача' })).toBe(
-            'Додати Задача',
-        );
+    it('falls through to the bundled base catalogue last', () => {
+        expect(t('designer.toolbar.zoomIn')).toBe(designerMessages['designer.toolbar.zoomIn']);
     });
 
-    it('falls back to the call-site English for a missing key', () => {
-        expect(t('designer.not.translated', 'Reroute Flow')).toBe('Reroute Flow');
+    it('falls through a blank entry, so a partial catalogue degrades per message', () => {
+        const blank = createCatalogTranslator({ 'designer.toolbar.deploy': '' });
+        expect(blank('designer.toolbar.deploy')).toBe(designerMessages['designer.toolbar.deploy']);
     });
 
-    it('falls back for a blank entry, so a partial catalogue degrades per message', () => {
-        expect(t('designer.blank', 'Delete Flow')).toBe('Delete Flow');
+    it('interpolates into the translated message', () => {
+        const uk = createCatalogTranslator({ 'designer.command.connect': "З'єднати %source% та %target%" });
+        expect(uk('designer.command.connect', { source: 'a', target: 'b' })).toBe("З'єднати a та b");
     });
 
-    it('never returns the key itself', () => {
-        const out = t('designer.totally.absent', 'Definition key');
-        expect(out).not.toContain('designer.');
-        expect(out).toBe('Definition key');
+    it('shows a key no catalogue holds -- only a key a host made up can get there', () => {
+        expect(t('designer.totally.absent')).toBe('designer.totally.absent');
     });
 });

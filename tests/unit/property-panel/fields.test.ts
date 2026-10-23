@@ -7,6 +7,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Mock } from 'vitest';
 import { XRefs } from '../../../src/shell/XRefs.js';
 import { BooleanField } from '../../../src/property-panel/fields/BooleanField.js';
 import { ElExpressionField } from '../../../src/property-panel/fields/ElExpressionField.js';
@@ -27,7 +28,7 @@ import type {
 
 describe('TextField', () => {
     let host: HTMLDivElement;
-    let onChange: ReturnType<typeof vi.fn>;
+    let onChange: Mock<(next: string) => void>;
     let instance: FieldInstance;
     let input: HTMLInputElement;
     let xrefs: XRefs;
@@ -35,7 +36,7 @@ describe('TextField', () => {
     beforeEach(() => {
         host = document.createElement('div');
         document.body.appendChild(host);
-        onChange = vi.fn();
+        onChange = vi.fn<(next: string) => void>();
         xrefs = new XRefs();
         const descriptor: TextFieldDescriptor = {
             key: 'name',

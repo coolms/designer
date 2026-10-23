@@ -42,7 +42,7 @@ export class RenamePlaceCommand implements Command {
         private readonly fromId: string,
         private readonly toId: string,
     ) {
-        this.label = editor.t('designer.command.sm.renamePlace', 'Rename place %from% → %to%', {
+        this.label = editor.t('designer.command.sm.renamePlace', {
             from: fromId,
             to: toId,
         });
@@ -79,10 +79,10 @@ export class SetInitialPlaceCommand implements Command {
             ? [placeId]
             : this.before.filter((id) => id !== placeId);
         this.label = makeInitial
-            ? editor.t('designer.command.sm.setInitial', 'Make %id% the initial state', {
+            ? editor.t('designer.command.sm.setInitial', {
                   id: placeId,
               })
-            : editor.t('designer.command.sm.clearInitial', 'Clear initial state on %id%', {
+            : editor.t('designer.command.sm.clearInitial', {
                   id: placeId,
               });
     }
@@ -116,7 +116,7 @@ export class UpdateTransitionPropertyCommand implements Command {
     ) {
         const transition = editor.findTransition(transitionId);
         this.previousValue = transition !== null ? transition[propertyKey] : undefined;
-        this.label = editor.t('designer.command.sm.editTransition', 'Edit transition %property%', {
+        this.label = editor.t('designer.command.sm.editTransition', {
             property: propertyKey,
         });
     }
@@ -159,7 +159,7 @@ export class UpdateWorkflowPropertyCommand implements Command {
         private readonly nextValue: unknown,
     ) {
         this.previousValue = editor.readWorkflowDisplayValue(propertyKey);
-        this.label = editor.t('designer.command.sm.editWorkflow', 'Edit workflow %property%', {
+        this.label = editor.t('designer.command.sm.editWorkflow', {
             property: propertyKey,
         });
     }
@@ -211,7 +211,7 @@ export class AddPlaceCommand implements Command {
             ...state.places,
             isFirst ? { ...place, initial: true } : place,
         ];
-        this.label = editor.t('designer.command.sm.addState', 'Add state %id%', {
+        this.label = editor.t('designer.command.sm.addState', {
             id: place.id,
         });
     }
@@ -244,7 +244,7 @@ export class AddTransitionCommand implements Command {
         this.places = state.places;
         this.beforeTransitions = state.transitions;
         this.afterTransitions = [...state.transitions, transition];
-        this.label = editor.t('designer.command.sm.addTransition', 'Add transition %name%', {
+        this.label = editor.t('designer.command.sm.addTransition', {
             name: transition.name,
         });
     }
@@ -282,7 +282,7 @@ export class RemovePlaceCommand implements Command {
         this.afterTransitions = state.transitions.filter(
             (t) => t.from !== placeId && t.to !== placeId,
         );
-        this.label = editor.t('designer.command.sm.removeState', 'Remove state %id%', {
+        this.label = editor.t('designer.command.sm.removeState', {
             id: placeId,
         });
     }
@@ -314,7 +314,7 @@ export class RemoveTransitionCommand implements Command {
         this.places = state.places;
         this.beforeTransitions = state.transitions;
         this.afterTransitions = state.transitions.filter((t) => t.id !== transitionId);
-        this.label = editor.t('designer.command.sm.removeTransition', 'Remove transition %id%', {
+        this.label = editor.t('designer.command.sm.removeTransition', {
             id: transitionId,
         });
     }

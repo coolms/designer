@@ -560,14 +560,13 @@ export class StateMachineEditor {
 
         const title = doc.createElement('div');
         title.classList.add('coolms-designer__sm-banner-title');
-        title.textContent = this.t('designer.sm.banner.title', 'State Machine editor');
+        title.textContent = this.t('designer.sm.banner.title');
         banner.appendChild(title);
 
         const subtitle = doc.createElement('div');
         subtitle.classList.add('coolms-designer__sm-banner-subtitle');
         subtitle.textContent = this.t(
             'designer.sm.banner.subtitle',
-            'Add a place to start modelling your state machine',
         );
         banner.appendChild(subtitle);
 

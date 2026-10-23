@@ -112,6 +112,37 @@ describe('BpmnLiteKeyboardController', () => {
         document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete' }));
         expect(editor.state.elements.find((e) => e.id === 'task_1')).toBeDefined();
     });
+
+    it('with a key source from the host: keys come only through it, it hears what acted, dispose unbinds once', () => {
+        controller.dispose();
+        let bound: ((ev: KeyboardEvent) => boolean) | null = null;
+        let unbound = 0;
+        const scoped = new BpmnLiteKeyboardController({
+            editor,
+            commands: stack,
+            doc: document,
+            keys: (handler) => {
+                bound = handler;
+                return () => {
+                    unbound += 1;
+                };
+            },
+        });
+        editor.selection.select({ kind: 'element', id: 'task_1' });
+
+        // A Delete the host's scope did not hand over (typed in a dialog over the canvas) deletes nothing.
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete', bubbles: true, cancelable: true }));
+        expect(editor.state.elements.find((e) => e.id === 'task_1')).toBeDefined();
+
+        expect(bound).not.toBeNull();
+        expect(bound!(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }))).toBe(false);
+        expect(bound!(new KeyboardEvent('keydown', { key: 'Delete', cancelable: true }))).toBe(true);
+        expect(editor.state.elements.find((e) => e.id === 'task_1')).toBeUndefined();
+
+        scoped.dispose();
+        scoped.dispose();
+        expect(unbound).toBe(1);
+    });
 });
 
 describe('BpmnLiteKeyboardController F-5 navigation', () => {

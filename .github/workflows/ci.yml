@@ -7,13 +7,20 @@ on:
     branches: [main, develop]
 
 jobs:
+  # The committed lockfile's advisories against .github/advisories.txt: a new one fails, a listed one that is gone
+  # fails until its line is taken off (coolms/.github, npm-advisories.yml).
+  advisories:
+    uses: coolms/.github/.github/workflows/npm-advisories.yml@develop
+
   test:
     name: Node ${{ matrix.node }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        node: ['20', '22']
+        # engines.node names exactly these lines, each from the lockfile's floor (the
+        # engines step below checks both), so the matrix is the claim.
+        node: ['22', '24', '26']
 
     steps:
       - uses: actions/checkout@v4
@@ -26,8 +33,19 @@ jobs:
       - name: Install
         run: npm ci
 
+      # engines.node names exactly the Node lines this matrix runs (no open
+      # ">=22"), and within each the highest floor any package in the lockfile
+      # declares.
+      - name: Engines, against the matrix and the lockfile
+        run: node .github/scripts/engines-check.mjs --root .
+
       - name: Typecheck
         run: npm run typecheck
+
+      # Code holds keys only: a key missing from the base catalogue, a call passing text, or a key composed at run
+      # time fails here, and the check's self-test proves each of those is caught.
+      - name: Messages
+        run: npm run i18n:check
 
       - name: Test
         run: npm test
@@ -77,3 +95,7 @@ jobs:
               exit 1
           fi
           echo "Bundle resolves entirely within src/."
+
+  # README, a LICENSE matching the manifest, and CHANGELOG (coolms/.github's basic-files.yml), pinned to a commit.
+  basic-files:
+    uses: coolms/.github/.github/workflows/basic-files.yml@595d36957a135e7d753abe34ca1ce90a0a6f2215

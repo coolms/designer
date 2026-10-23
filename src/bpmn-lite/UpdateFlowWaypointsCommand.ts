@@ -47,7 +47,7 @@ export class UpdateFlowWaypointsCommand implements Command {
         private readonly flowId: string,
         nextWaypoints: ReadonlyArray<BpmnPosition>,
     ) {
-        this.label = editor.t('designer.command.rerouteFlow', 'Reroute Flow');
+        this.label = editor.t('designer.command.rerouteFlow');
         // Defensive clone so later edits to the caller's array don't
         // mutate the command's captured state.
         this.nextWaypoints = [...nextWaypoints];

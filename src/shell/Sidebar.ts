@@ -96,7 +96,7 @@ export class Sidebar {
         this.toggle = doc.createElement('button');
         this.toggle.type = 'button';
         this.toggle.classList.add('coolms-designer__sidebar-toggle');
-        this.toggle.setAttribute('aria-label', this.t('designer.sidebar.toggle', 'Toggle sidebar'));
+        this.toggle.setAttribute('aria-label', this.t('designer.sidebar.toggle'));
         this.host.appendChild(this.toggle);
 
         this.body = doc.createElement('div');
