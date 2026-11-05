@@ -9,4 +9,3 @@
 # reasons below were measured on 2026-10-07 from this lockfile: which direct dependencies bring the package in, whether
 # it ships, and what npm offers to clear it.
 
-form-data        GHSA-hmw2-7cc7-3qxx  high      2026-11-06  Build and test tooling only, not in the published package (through jsdom); a lockfile update within the declared ranges clears it.
