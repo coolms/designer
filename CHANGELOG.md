@@ -8,6 +8,11 @@ This file starts at the package's first publish, so nothing in it is
 reconstructed -- every entry is written in the same commit as the change it
 describes.
 
+## Unreleased
+
+- `@coolms/designer/global` has types: `dist/global.d.ts` declares `window.CoolmsDesigner`, which the `<script>`-tag build sets, as the module entry's exports. Before, the export named no types.
+- `sideEffects` names the two files that have any: the `<script>`-tag build (it sets the global) and the stylesheet. The module entry does nothing on import, so a bundler may drop what it does not use.
+
 ## 0.1.0-alpha.2 -- 2026-10-22
 
 ### Changed
